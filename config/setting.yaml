@@ -1,8 +1,8 @@
 repository:
   root: "/home/etienne/central_repo"
-  folders: 
-    gizmos: "gizmos"
-    scripts: "scripts"
+  subfolder:
+    - gizmos
+    - scripts
 
 user:
   nuke_dir: "~/.nuke"

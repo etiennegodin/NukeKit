@@ -6,7 +6,8 @@ def load_config():
     try:
         with open(path, 'r') as file:
             return yaml.load(file, Loader=yaml.FullLoader)
-    except Exception as e:
+    except FileNotFoundError as e:
+        #logger
         raise(e)
     
         
