@@ -1,8 +1,7 @@
-from ..utils import to_Path
 # Copy 
 gizmo_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
-
-
+from ..utils import Context
+from pathlib import Path
 
 
 def copy():
@@ -13,8 +12,8 @@ def metadata():
     pass
 
 
-def main(config:dict):
-    gizmo = to_Path(gizmo_path)
-
+def main(context:Context):
+    gizmo = Path(gizmo_path)
+    context.logger.info(gizmo)
     print(gizmo)
     pass
