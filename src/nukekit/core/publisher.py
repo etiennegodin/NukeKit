@@ -1,8 +1,7 @@
-# Copy 
-gizmo_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
+from __future__ import annotations
 from ..utils import Context
-from pathlib import Path
-
+from typing import Optional
+from .. import core
 
 def copy():
     pass
@@ -12,8 +11,26 @@ def metadata():
     pass
 
 
-def main(context:Context):
-    gizmo = Path(gizmo_path)
-    context.logger.info(gizmo)
-    print(gizmo)
+
+def publish_gizmo(context:Context,
+                  path:str,
+                  version:core.Version,
+                  changelog:str,
+                  author: Optional[str])-> bool:
+    """
+    Docstring for publish_gizmo
+    
+    :param context: Description
+    :type context: Context
+    :param version: Description
+    :type version: str
+    :param changelog: Description
+    :type changelog: str
+    :param author: Description
+    :type author: Optional[str]
+    :return: Description
+    :rtype: bool
+    """
+    print(path)
+
     pass
