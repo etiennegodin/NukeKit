@@ -1,8 +1,5 @@
-
-from dataclasses import dataclass, field, asdict
 import semver
 from typing import Self
-
 
 class Version():
 
@@ -12,15 +9,10 @@ class Version():
         self.minor = ver.minor
         self.patch = ver.patch
 
-    def compare(self, other:Self):
+    @classmethod
+    def from_tuple(cls, version_tuple:tuple[int,int,int]):
+        return cls('.'.join(str(val) for val in version_tuple))
+
+    def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \
                (other.major, other.minor, other.patch)
-
-
-
-
-x = Version('1.1.0')
-y = Version('1.1.1')
-
-test = x.compare(y)
-print(test)

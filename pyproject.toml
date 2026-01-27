@@ -12,7 +12,8 @@ description = "Nuke gizmo/script publishing system"
 authors = [{ name="Etienne Godin", email="etiennegodin@duck.com" }]
 
 dependencies = [
- 'semver'
+ 'semver',
+ 'pytest'
 ]
 
 [project.scripts]   # <-- entry point CLI
