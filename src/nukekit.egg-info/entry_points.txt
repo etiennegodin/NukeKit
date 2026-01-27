@@ -1,0 +1,2 @@
+[console_scripts]
+nukekit = nukekit.cli:main

@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: nukekit
+Version: 0.0.1
+Summary: Nuke gizmo/script publishing system
+Author-email: Etienne Godin <etiennegodin@duck.com>
+Requires-Dist: semver
+Requires-Dist: pytest

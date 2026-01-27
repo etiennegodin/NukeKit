@@ -1,7 +1,16 @@
 repository:
   root: "/home/etienne/central_repo"
-  gizmos: "gizmos"
-  scripts: "scripts"
+  folders: 
+    gizmos: "gizmos"
+    scripts: "scripts"
 
 user:
   nuke_dir: "~/.nuke"
+
+publishing:
+  require_changelog: true
+  auto_increment_patch: false
+  
+validation:
+  check_dependencies: true
+  warn_on_deprecated: true

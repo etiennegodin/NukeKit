@@ -17,5 +17,5 @@ dependencies = [
 ]
 
 [project.scripts]   # <-- entry point CLI
-nukekit = "nukit.cli:main"
+nukekit = "nukekit.cli:main"
 
