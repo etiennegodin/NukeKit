@@ -1,8 +1,7 @@
 import yaml 
 from pathlib import Path
-from .paths import ROOT_FOLDER
 
-def load_config():
+def load_config(ROOT_FOLDER):
     path = Path(f"{ROOT_FOLDER}/config/setting.yaml")
     try:
         with open(path, 'r') as file:
