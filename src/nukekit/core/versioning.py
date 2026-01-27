@@ -2,7 +2,6 @@ import semver
 from typing import Self
 
 class Version():
-
     def __init__(self, version_string:str):
         ver = semver.Version.parse(version_string)
         self.major = ver.major
@@ -16,3 +15,9 @@ class Version():
     def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \
                (other.major, other.minor, other.patch)
+    
+    def __repr__(self):
+        return str(f"{self.major}.{self.minor}.{self.patch}")
+    
+    def __str__(self):
+        return str(f"{self.major}.{self.minor}.{self.patch}")

@@ -1,2 +1,3 @@
-from .publisher import publish_gizmo
+from .publisher import Publisher
 from .versioning import Version
+from .gizmo import Gizmo
