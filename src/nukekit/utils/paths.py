@@ -9,7 +9,7 @@ def to_Path(file_path: str):
     if not isinstance(file_path, Path):
         return Path(file_path)
         
-def init_central_repo(config:dict):
+def create_central_repo(config:dict):
     repo = config['repository']
     root = Path(repo['root'])
     root.mkdir(exist_ok= True)

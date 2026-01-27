@@ -1,10 +1,16 @@
-from .utils import load_config, init_central_repo
+from nukekit.utils import *
 from .core import publisher
 from pprint import pprint
 
+
+
 def main():
     CONFIG = load_config()
-    init_central_repo(CONFIG)
+    LOGGER = setup_logger('main', log_file= f'{ROOT_FOLDER}/test.log')
+    print(LOGGER)
+    if not to_Path(CONFIG['repository']['root']).exists():
+        create_central_repo(CONFIG)
+
     pprint(CONFIG)
     publisher.main(CONFIG)
 
