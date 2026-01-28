@@ -47,7 +47,6 @@ def load_latest_asset_version(contetx:Context,asset_name, asset_type:Context.ass
     with open('data.json', 'r') as file:
         data = json.load(file, object_hook=universal_decoder)
     
-    print(data)
 
 def update_manifest(context:Context, asset:Gizmo|Scripts):
     data = read_manifest(context)
@@ -64,14 +63,10 @@ def update_manifest(context:Context, asset:Gizmo|Scripts):
         data[category][asset.name]['versions'][version] = asset  
         data[category][asset.name]['latest_version'] = version
     
-    pprint(data)
-
     with open(context.manifest, "w") as json_file:
         json.dump(data, json_file, indent=4, cls=UniversalEncoder) # indent for pretty-printing
-        context.logger.info(f"Successfully added {asset.name} v{version} to repo")
+        context.logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
     
-
-
 
 def init_manifest(manifest_path:Path)->bool:
     if manifest_path.exists():

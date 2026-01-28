@@ -3,7 +3,7 @@ from .versioning import Version
 from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
-
+from datetime import datetime
 
 @dataclass
 class Asset():
@@ -13,7 +13,7 @@ class Asset():
     changelog:str
     author: str = NotImplemented
     destination_path: Path = NotImplemented
-
+    time:str = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
     def __post_init__(self):
         #Convert to path if string
         if isinstance(self.source_path, str):

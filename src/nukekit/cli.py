@@ -18,5 +18,6 @@ def main():
     pub = Publisher(context)
 
     gizmo = Gizmo('my_gizmo',gizmo_path, version, 'change', author= 'eti')
-
+    gizmo2 = Gizmo('my_gizmo', gizmo_path, version = Version('1.2.3'), changelog='v2', author='eti')
     pub.publish_gizmo(gizmo)
+    pub.publish_gizmo(gizmo2)

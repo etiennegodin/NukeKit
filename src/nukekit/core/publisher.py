@@ -27,11 +27,12 @@ class Publisher():
             self.context.logger.error(error)
             raise TypeError(error)
         
-        # if first publish 
-        # 
-        # else increment  
 
+        #version comaprison logic 
+
+        
         paths.set_asset_destination_path(gizmo, self.context)
+
 
         self.copy_to_repo(gizmo)
         update_manifest(self.context, gizmo)

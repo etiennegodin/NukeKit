@@ -48,7 +48,7 @@ def set_asset_destination_path(asset:Asset, context:Context):
     gizmos_folder = get_repo_subdir_path(context, 'gizmos')
     gizmos_list = list_subdirs(gizmos_folder)
     gizmo_subdir = Path(gizmos_folder / asset.name)
-    gizmo_path = Path(gizmo_subdir/ f"{asset.name}_{asset.version}")
+    gizmo_path = Path(gizmo_subdir/ f"{asset.name}_{asset.version}.gizmo")
     # Create folder if not existing 
     if gizmo_subdir not in gizmos_list:
         gizmo_subdir.mkdir()
