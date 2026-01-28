@@ -1,6 +1,5 @@
 from __future__ import annotations
-from .. import core
-from .context import Context
+from .versioning import Version
 from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -10,7 +9,7 @@ from dataclasses import dataclass, field
 class Asset():
     name:str 
     source_path:str
-    version: core.Version
+    version: Version
     changelog:str
     author: str = NotImplemented
     destination_path: Path = NotImplemented

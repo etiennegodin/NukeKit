@@ -1,9 +1,9 @@
 from __future__ import annotations
 import json 
 from pprint import pprint
-from .assets import Asset, Gizmo, Scripts
 from .context import Context
-from .versioning import Version
+from ..core.assets import Asset, Gizmo, Scripts
+from ..core.versioning import Version
 from dataclasses import asdict
 
 from pathlib import Path
@@ -40,8 +40,6 @@ def universal_decoder(dct):
 
 def load_latest_asset_version(contetx:Context,asset_name, asset_type:Context.asset_types):
 
-    with open('data.json', 'r') as file:
-        data = json.load(file, object_hook=universal_decoder)
     with open('data.json', 'r') as file:
         data = json.load(file, object_hook=universal_decoder)
     
