@@ -5,8 +5,9 @@ from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
 
+
 @dataclass
-class Gizmo():
+class Asset():
     name:str 
     source_path:Path | str
     version: core.Version
@@ -30,19 +31,14 @@ class Gizmo():
             gizmo_subdir.mkdir()
         self.destination_path = gizmo_path
 
+@dataclass
+class Gizmo(Asset):
+    type:str = 'gizmo'
 
 @dataclass
-class Scripts():
-    name:str 
-    path:Path | str
-    version: core.Version
-    changelog:str
-    author: str = NotImplemented
+class Scripts(Asset):
+    type:str = 'scripts'
 
-    def __post_init__(self):
-        #Convert to path if string
-        if isinstance(self.path, str):
-            self.path  = Path(self.path)
 
 
 

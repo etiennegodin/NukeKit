@@ -27,17 +27,22 @@ class Publisher():
             self.context.logger.error(error)
             raise TypeError(error)
         
+        # if first publish 
+        # 
+        # else increment  
+
         gizmo.set_destination_path(self.context)
 
-        if self.copy(gizmo):
-            self.context.logger.info(f"Successfully saved {gizmo.name} to {gizmo.destination_path} ")
+        self.copy_to_repo(gizmo)
+
+        print(gizmo.__dict__)
+            
 
 
-    def copy(self, gizmo:Gizmo)-> bool:
-        
+    def copy_to_repo(self, gizmo:Gizmo)-> bool:
         try:
             shutil.copy2(gizmo.source_path, gizmo.destination_path)
-            return True
+            self.context.logger.info(f"Successfully saved {gizmo.name} to {gizmo.destination_path} ")
         except shutil.SameFileError:
             print("Source and destination represent the same file.")
         except PermissionError:
@@ -46,8 +51,6 @@ class Publisher():
             print("The source file or destination directory was not found.")
         except Exception as e:
             print(f"An error occurred: {e}")
-
- 
 
     def metadata():
         pass
