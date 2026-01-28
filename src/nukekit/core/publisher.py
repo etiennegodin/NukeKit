@@ -1,9 +1,7 @@
 from __future__ import annotations
 import shutil
-from pathlib import Path
-from ..utils import Context
-from ..utils.paths import get_repo_subdir_path, list_subdirs
-from ..core import Gizmo
+from ..core import Gizmo, Context
+from ..core.manifest import add_asset_to_manifest
 
 
 class Publisher():
@@ -34,8 +32,7 @@ class Publisher():
         gizmo.set_destination_path(self.context)
 
         self.copy_to_repo(gizmo)
-
-        print(gizmo.__dict__)
+        add_asset_to_manifest(gizmo)
             
 
 

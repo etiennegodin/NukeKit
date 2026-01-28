@@ -12,10 +12,7 @@ def main():
     context = set_context(ROOT_FOLDER)
     create_central_repo(context)
     pub = Publisher(context)
-    pprint(context)
 
     gizmo = Gizmo('my_gizmo',gizmo_path, version, 'change', author= 'eti')
-
-
 
     pub.publish_gizmo(gizmo)

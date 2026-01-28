@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .. import core
-from ..utils import get_repo_subdir_path, list_subdirs, Context
+from .context import Context
 from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -21,15 +21,7 @@ class Asset():
             self.source_path  = Path(self.source_path)
 
 
-    def set_destination_path(self, context:Context):
-        gizmos_folder = get_repo_subdir_path(context, 'gizmos')
-        gizmos_list = list_subdirs(gizmos_folder)
-        gizmo_subdir = Path(gizmos_folder / self.name)
-        gizmo_path = Path(gizmo_subdir/ f"{self.name}_{self.version}")
-        # Create folder if not existing 
-        if gizmo_subdir not in gizmos_list:
-            gizmo_subdir.mkdir()
-        self.destination_path = gizmo_path
+
 
 @dataclass
 class Gizmo(Asset):

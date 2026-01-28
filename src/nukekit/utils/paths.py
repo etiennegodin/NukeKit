@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .context import Context
+from ..core import Context, Asset
 from pathlib import Path
 from typing import Literal, List
 import os 
@@ -41,3 +41,14 @@ def list_subdirs(parent_path:Path, output_type:path_types = 'Path')->List[Path|s
         return [folder.name for folder in subdirs]
     else:
         return subdirs
+
+def set_asset_destination_path(asset:Asset, context:Context):
+    from ..utils import get_repo_subdir_path, list_subdirs
+    gizmos_folder = get_repo_subdir_path(context, 'gizmos')
+    gizmos_list = list_subdirs(gizmos_folder)
+    gizmo_subdir = Path(gizmos_folder / asset.name)
+    gizmo_path = Path(gizmo_subdir/ f"{asset.name}_{asset.version}")
+    # Create folder if not existing 
+    if gizmo_subdir not in gizmos_list:
+        gizmo_subdir.mkdir()
+    asset.destination_path = gizmo_path
