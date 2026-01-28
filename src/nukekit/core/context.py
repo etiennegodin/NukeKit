@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ..utils.config import load_config
 from ..utils.logger import setup_logger
+#from .manifest import init_manifest
 
 @dataclass
 class Context():
@@ -18,5 +19,6 @@ class Context():
 def set_context(ROOT_FOLDER):
     LOGGER = setup_logger('main', log_file= f'{ROOT_FOLDER}/nukekit.log')
     CONFIG = load_config(ROOT_FOLDER, LOGGER)
+    #manifest_path = init_manifest(ROOT_FOLDER)
     print(ROOT_FOLDER)
-    return Context(ROOT_FOLDER,CONFIG['repository']['root'],CONFIG, LOGGER)
+    return Context(ROOT_FOLDER,CONFIG['repository']['root'],CONFIG,LOGGER)
