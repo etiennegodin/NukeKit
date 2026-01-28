@@ -1,6 +1,4 @@
-from nukekit.core import Gizmo, Version
-
-
+from nukekit.core.assets import Gizmo, Version
 
 def test_create_gizmo():
     gizmo_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'

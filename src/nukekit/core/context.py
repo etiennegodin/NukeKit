@@ -16,7 +16,7 @@ class Context():
     date: str
     config: Dict[str, Any ] = field(default_factory=dict)
     logger: logging.Logger = None
-    asset_types: TypeAlias = Literal['gizmos', 'scripts']
+    asset_types: TypeAlias = Literal['gizmos', 'Script']
 
 def set_context(ROOT_FOLDER):
     LOGGER = setup_logger('main', log_file= f'{ROOT_FOLDER}/nukekit.log')

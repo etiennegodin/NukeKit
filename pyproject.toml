@@ -16,6 +16,6 @@ dependencies = [
  'pytest'
 ]
 
-[project.scripts]   # <-- entry point CLI
+[project.Script]   # <-- entry point CLI
 nukekit = "nukekit.cli:main"
 

@@ -4,6 +4,11 @@ from typing import Self, Literal
 
 types = Literal['major', 'minor','patch']
 
+"""
+Major: Breaking changes (different inputs/outputs)
+Minor: New features, backward compatible
+Patch: Bug fixes
+"""
 
 class Version():
     def __init__(self, version_string:str):

@@ -1,6 +1,6 @@
 from __future__ import annotations
 import shutil
-from ..core.assets import Gizmo
+from ..core.assets import Gizmo, Asset
 from .context import Context
 from ..utils.manifest import update_manifest, init_manifest
 from ..utils import paths
@@ -17,7 +17,9 @@ class Publisher():
         self.context = context
         self.repo = context.config['repository']
         print(init_manifest(context.manifest))
-        
+    
+    def publish_script(self, script:Script):
+        raise NotImplementedError('Script publishing not avaliable yet')
 
     def publish_gizmo(self, gizmo:Gizmo
                     )-> bool:

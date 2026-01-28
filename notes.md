@@ -12,7 +12,7 @@ project_structure/
 │   ├── core/
 │   │   ├── __init__.py
 │   │   ├── publisher.py      # Publishing logic
-│   │   ├── scanner.py         # Find gizmos in scripts/filesystem
+│   │   ├── scanner.py         # Find gizmos in Script/filesystem
 │   │   ├── versioning.py      # Version comparison, semver
 │   │   └── validator.py       # Gizmo health checks
 │   ├── ui/

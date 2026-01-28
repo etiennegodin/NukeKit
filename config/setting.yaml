@@ -2,7 +2,7 @@ repository:
   root: "/home/etienne/central_repo"
   subfolder:
     - gizmos
-    - scripts
+    - Script
 
 user:
   nuke_dir: "~/.nuke"
