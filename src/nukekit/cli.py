@@ -38,7 +38,6 @@ def main():
         if args.file is None:
             #scanner
             debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
-            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_script.nk'
             asset_path = Path(debug_path)
         else:
             asset_path = Path(args.file)

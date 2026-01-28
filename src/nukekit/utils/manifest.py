@@ -37,8 +37,9 @@ def universal_decoder(dct):
     return dct
 
 def read_manifest(context:Context):
-    with open(context.manifest, 'r') as file:
-        return json.load(file, object_hook=universal_decoder)
+    if init_manifest(context.manifest):
+        with open(context.manifest, 'r') as file:
+            return json.load(file, object_hook=universal_decoder)
 
 
 def load_latest_asset_version(contetx:Context,asset_name, asset_type:Context.asset_types):
@@ -68,12 +69,13 @@ def update_manifest(context:Context, asset:Asset):
     
 
 def init_manifest(manifest_path:Path)->bool:
+    #to-do check if empty
     if manifest_path.exists():
         return False
     else:
-        data = {
-            "gizmos" : {},
-            "Script" : {}}
+        data = {}
+        for type in ASSET_REGISTRY.keys():
+            data[f"{type}s"] = {}
         with open(manifest_path, "w") as json_file:
             json.dump(data, json_file, indent= 4)
         return True

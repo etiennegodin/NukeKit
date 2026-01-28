@@ -10,10 +10,10 @@ from datetime import datetime
 class Asset():
     name:str 
     source_path:str
-    version: Version = NotImplemented
-    changelog:str = NotImplemented
-    author: str = NotImplemented
-    destination_path: Path = NotImplemented
+    version: Version = None
+    changelog:str = None
+    author: str = None
+    destination_path: Path = None
     time:str = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
 
     def __post_init__(self):

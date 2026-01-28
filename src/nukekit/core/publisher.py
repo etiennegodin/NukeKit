@@ -16,7 +16,6 @@ class Publisher():
         """
         self.context = context
         self.repo = context.config['repository']
-        print(init_manifest(context.manifest))
 
 
     def publish_asset(self, asset:Asset
@@ -28,9 +27,12 @@ class Publisher():
             raise TypeError(error)
         
         
-        if asset.type == 'Script':
+        if asset.type == 'script':
             raise NotImplementedError
             
+        if asset.version is None:
+            #version 
+            pass
         
         paths.set_asset_destination_path(asset, self.context)
 
