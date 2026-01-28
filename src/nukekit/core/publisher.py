@@ -1,6 +1,8 @@
 from __future__ import annotations
 import shutil
+from pathlib import Path
 from ..utils import Context
+from ..utils.paths import get_repo_subdir_path, list_subdirs
 from ..core import Gizmo
 
 
@@ -14,35 +16,30 @@ class Publisher():
         :type context: Context
         """
         self.context = context
-        pass
+        self.repo = context.config['repository']
+        
 
     def publish_gizmo(self, gizmo:Gizmo
                     )-> bool:
-        """
-        Docstring for publish_gizmo
         
-        :param context: Description
-        :type context: Context
-        :param version: Description
-        :type version: str
-        :param changelog: Description
-        :type changelog: str
-        :param author: Description
-        :type author: Optional[str]
-        :return: Description
-        :rtype: bool
-        """
+        if not isinstance(gizmo, Gizmo):
+            error = 'Provided object is not at Gizmo'
+            self.context.logger.error(error)
+            raise TypeError(error)
+
+        repo_subdir = get_repo_subdir_path(self.context, 'gizmos')
+        gizmos_subdirs = list_subdirs(repo_subdir, output_type='str')
+        if gizmo.name not in gizmos_subdirs:
+            Path(repo_subdir / gizmo.name).mkdir()
 
 
 
-
-    def copy(self, gizmo:Gizmo):
-        
+    def copy(self, gizmo:Gizmo)-> bool:
+        shutil.copy(gizmo.path, )
 
 
 
         pass    
-    # Update manifest
 
     def metadata():
         pass

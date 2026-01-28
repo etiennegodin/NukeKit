@@ -1,0 +1,48 @@
+from __future__ import annotations
+from .. import core
+from ..utils import get_repo_subdir_path, list_subdirs, Context
+from typing import Optional
+from pathlib import Path
+from dataclasses import dataclass, field
+
+@dataclass
+class Gizmo():
+    name:str 
+    source_path:Path | str
+    version: core.Version
+    changelog:str
+    author: str = NotImplemented
+
+    def __post_init__(self):
+        #Convert to path if string
+        if isinstance(self.source_path, str):
+            self.source_path  = Path(self.source_path)
+
+
+    def set_destination_path(self, context:Context):
+        gizmos_subdir = get_repo_subdir_path(context, 'gizmos')
+        gizmos_list = list_subdirs(gizmos_subdir)
+        destination_path = Path(gizmos_subdir / self.name)
+
+        # Create folder if not existing 
+        if destination_path not in gizmos_list:
+            destination_path.mkdir()
+
+        self.destination_path = destination_path()
+
+
+@dataclass
+class Scripts():
+    name:str 
+    path:Path | str
+    version: core.Version
+    changelog:str
+    author: str = NotImplemented
+
+    def __post_init__(self):
+        #Convert to path if string
+        if isinstance(self.path, str):
+            self.path  = Path(self.path)
+
+
+
