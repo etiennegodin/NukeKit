@@ -3,7 +3,7 @@ import shutil
 from ..core.assets import Gizmo
 from ..core.context import Context
 from ..core.manifest import add_asset_to_manifest
-
+from ..utils import paths
 
 class Publisher():
     def __init__(self, context:Context):
@@ -30,7 +30,7 @@ class Publisher():
         # 
         # else increment  
 
-        gizmo.set_destination_path(self.context)
+        paths.set_asset_destination_path(gizmo, self.context)
 
         self.copy_to_repo(gizmo)
         add_asset_to_manifest(gizmo)
