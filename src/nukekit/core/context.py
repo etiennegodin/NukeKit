@@ -19,5 +19,7 @@ class Context():
 def set_context(ROOT_FOLDER):
     LOGGER = setup_logger('main', log_file= f'{ROOT_FOLDER}/nukekit.log')
     CONFIG = load_config(ROOT_FOLDER, LOGGER)
-    manifest_path = Path(ROOT_FOLDER/f"data/manifest.json")
-    return Context(ROOT_FOLDER,CONFIG['repository']['root'],manifest_path,CONFIG,LOGGER)
+    REPO_PATH = CONFIG['repository']['root']
+    print(REPO_PATH)
+    MANIFEST_PATH = Path(REPO_PATH + "/manifest.json")
+    return Context(ROOT_FOLDER, REPO_PATH, MANIFEST_PATH, CONFIG,LOGGER)

@@ -53,12 +53,13 @@ def add_asset_to_manifest(asset:Asset):
     pass
 
 
-def init_manifest(ROOT_FOLDER):
-    manifest_path = Path(ROOT_FOLDER/f"data/manifest.json")
+def init_manifest(manifest_path:Path)->bool:
     if manifest_path.exists():
-        return manifest_path
+        return False
     else:
-        data = {'gizmos' : {}, "scripts" : {}}
+        data = {
+            "gizmos" : {},
+            "scripts" : {}}
         with open(manifest_path, "w") as json_file:
-            json.dumps(data, json_file, indent= 4)
-        return manifest_path
+            json.dump(data, json_file, indent= 4)
+        return True

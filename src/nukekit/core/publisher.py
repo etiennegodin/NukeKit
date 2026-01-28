@@ -2,7 +2,7 @@ from __future__ import annotations
 import shutil
 from ..core.assets import Gizmo
 from .context import Context
-from ..utils.manifest import add_asset_to_manifest
+from ..utils.manifest import add_asset_to_manifest, init_manifest
 from ..utils import paths
 
 class Publisher():
@@ -16,6 +16,7 @@ class Publisher():
         """
         self.context = context
         self.repo = context.config['repository']
+        print(init_manifest(context.manifest))
         
 
     def publish_gizmo(self, gizmo:Gizmo

@@ -13,6 +13,7 @@ version = Version('1.1.0')
 
 def main():
     context = set_context(ROOT_FOLDER)
+    pprint(context)
     create_central_repo(context)
     pub = Publisher(context)
 
