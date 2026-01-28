@@ -37,8 +37,9 @@ def main():
         else:
             asset_path = Path(args.file)
 
+        #Create asset 
         asset = asset_factory(asset_path)
-        print(asset)
+        
         #Init publisher
         pub = Publisher(context)
 

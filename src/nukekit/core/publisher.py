@@ -38,11 +38,16 @@ class Publisher():
         latest_version = ma.get_latest_asset_version(self.context, asset)
 
         if latest_version is None:
-            asset.version = Version('0.1.0')
+            latest_version = Version('0.0.0')
+            if asset.version is None:
+                asset.version = Version('0.1.0')
+
+        if asset.version > latest_version:
+            #check if really want to override
+            if self.copy_to_repo(asset):
+                ma.update_manifest(self.context, asset)
         else:
-            if asset.version > latest_version:
-                if self.copy_to_repo(asset):
-                    ma.update_manifest(self.context, asset)
+            raise Exception('version')
 
 
     def copy_to_repo(self, asset:Asset)-> bool:

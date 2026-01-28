@@ -147,3 +147,7 @@
 2026-01-28 16:45:22,774 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
 2026-01-28 16:45:39,497 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
 2026-01-28 16:45:39,497 - main - INFO - Successfully added my_gizmo vNone to repo manifest
+2026-01-28 17:12:40,311 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
+2026-01-28 17:12:40,312 - main - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 17:14:03,984 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
+2026-01-28 17:14:03,984 - main - INFO - Successfully added my_gizmo v1.2.3 to repo manifest
