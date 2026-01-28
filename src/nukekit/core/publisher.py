@@ -1,6 +1,7 @@
 from __future__ import annotations
 import shutil
-from ..core import Gizmo, Context
+from ..core.assets import Gizmo
+from ..core.context import Context
 from ..core.manifest import add_asset_to_manifest
 
 
