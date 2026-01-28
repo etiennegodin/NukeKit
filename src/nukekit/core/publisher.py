@@ -2,7 +2,7 @@ from __future__ import annotations
 import shutil
 from ..core.assets import Gizmo
 from ..core.context import Context
-from ..core.manifest import add_asset_to_manifest
+from ..core.manifest import add_asset_to_manifest, load_manifest
 from ..utils import paths
 
 class Publisher():
@@ -33,8 +33,8 @@ class Publisher():
         paths.set_asset_destination_path(gizmo, self.context)
 
         self.copy_to_repo(gizmo)
-        add_asset_to_manifest(gizmo)
-            
+        #add_asset_to_manifest(gizmo)
+        load_manifest()
 
 
     def copy_to_repo(self, gizmo:Gizmo)-> bool:

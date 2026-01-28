@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 @dataclass
 class Asset():
     name:str 
-    source_path:Path | str
+    source_path:str
     version: core.Version
     changelog:str
     author: str = NotImplemented
