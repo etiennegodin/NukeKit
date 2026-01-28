@@ -1,9 +1,10 @@
 from __future__ import annotations
 import shutil
 from ..core.assets import Asset
+from ..core.versioning import Version
 from .context import Context
 from ..utils import manifest as ma
-from ..utils import paths
+from ..utils import paths as p
 
 class Publisher():
     def __init__(self, context:Context):
@@ -31,22 +32,24 @@ class Publisher():
         if asset.version is None:
             #version 
             pass
+            raise ValueError('No version for asset')
+        
+        asset.destination_path = p.set_asset_destination_path(asset, self.context)
+        latest_version = ma.get_latest_asset_version(self.context, asset)
 
-        latest = ma.get_latest_asset_version(self.context, asset)
-
-        print(latest)
-        quit()
-        paths.set_asset_destination_path(asset, self.context)
-
-
-        self.copy_to_repo(asset)
-        ma.update_manifest(self.context, asset)
+        if latest_version is None:
+            asset.version = Version('0.1.0')
+        else:
+            if asset.version > latest_version:
+                if self.copy_to_repo(asset):
+                    ma.update_manifest(self.context, asset)
 
 
     def copy_to_repo(self, asset:Asset)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
             self.context.logger.info(f"Successfully saved {asset.name} to {asset.destination_path} ")
+            return True
         except shutil.SameFileError:
             print("Source and destination represent the same file.")
         except PermissionError:

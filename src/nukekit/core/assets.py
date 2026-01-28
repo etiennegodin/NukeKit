@@ -4,7 +4,7 @@ from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
 from datetime import datetime
-
+from pprint import pprint
 
 @dataclass
 class Asset():
@@ -16,12 +16,11 @@ class Asset():
     destination_path: Path = None
     time:str = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
     type:str = 'Asset'
+
     def __post_init__(self):
         #Convert to path if string
         if isinstance(self.source_path, str):
             self.source_path  = Path(self.source_path)
-
-
 
 @dataclass
 class Gizmo(Asset):
@@ -36,20 +35,31 @@ ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script, "Asset": Asset}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
 
 def asset_factory(asset_path:Path):
+    asset_version = None
+
+    #Force Path for stem and suffix method
     if isinstance(asset_path, str):
         asset_path = Path(asset_path)
-    asset_name = asset_path.stem
+
+    # Get stem & suffix 
+    asset_stem = asset_path.stem
     asset_suffix = asset_path.suffix
-    
-    #check if version s in naming
-    #to-do
+
+    # Check if naming matches with enforced versionning
+    if "_v" in asset_stem:
+        asset_name = asset_stem.split(sep='_v')[0]
+        asset_version = Version(asset_stem.split(sep='_v')[1])
+    else:
+        asset_name = asset_stem
 
     if asset_suffix in ASSET_SUFFIXES:
         cls = ASSET_SUFFIXES.get(asset_suffix) 
         if cls:
+            if asset_version is not None:
+                return cls(asset_name,asset_path, asset_version)
             return cls(asset_name, asset_path)
     else: 
-        raise TypeError('Provided path is not a supported asset [.gizmo, .nk] ')
+        raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 
     
 

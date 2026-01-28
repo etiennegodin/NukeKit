@@ -7,13 +7,13 @@ import os
 
 path_types = Literal['str', 'Path']
         
-def create_central_repo(context:Context):
+def init_central_repo(context:Context):
     try:
         repo = context.config['repository']
         try:
             root = Path(repo['root'])
         except KeyError:
-            context.logger.error('Root folder for central repository not sepcified')
+            context.logger.error('Root folder for central repository not specified')
     except KeyError as e:
         context.logger.error('Repository setting not found in user settings')
 
@@ -22,6 +22,8 @@ def create_central_repo(context:Context):
         context.logger.info(f'Created central repo at {root}')
         for s in repo['subfolder']:
             Path(f"{root}/{s}").mkdir(exist_ok= True)
+        return True
+    return False
 
 
 def get_repo_subdir_path(context:Context, asset_type:Context.asset_types)->Path:
@@ -43,7 +45,7 @@ def list_subdirs(parent_path:Path, output_type:path_types = 'Path')->List[Path|s
     else:
         return subdirs
 
-def set_asset_destination_path(asset:Asset, context:Context):
+def set_asset_destination_path(asset:Asset, context:Context)->Path:
     from ..utils import get_repo_subdir_path, list_subdirs
     gizmos_folder = get_repo_subdir_path(context, 'gizmos')
     gizmos_list = list_subdirs(gizmos_folder)
@@ -52,4 +54,5 @@ def set_asset_destination_path(asset:Asset, context:Context):
     # Create folder if not existing 
     if gizmo_subdir not in gizmos_list:
         gizmo_subdir.mkdir()
-    asset.destination_path = gizmo_path
+    return gizmo_path
+

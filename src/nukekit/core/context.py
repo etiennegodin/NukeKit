@@ -18,7 +18,7 @@ class Context():
     logger: logging.Logger = None
     asset_types: TypeAlias = Literal['gizmos', 'Script']
 
-def set_context(ROOT_FOLDER):
+def init_context(ROOT_FOLDER):
     LOGGER = setup_logger('main', log_file= f'{ROOT_FOLDER}/nukekit.log')
     CONFIG = load_config(ROOT_FOLDER, LOGGER)
     REPO_PATH = CONFIG['repository']['root']
