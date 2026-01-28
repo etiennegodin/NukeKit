@@ -5,7 +5,7 @@ from pathlib import Path
 from nukekit.utils import create_central_repo 
 from .core.publisher import Publisher
 from .core.versioning import Version
-from .core.assets import Gizmo, Script
+from .core.assets import asset_factory
 from .core.context import set_context
 
 ROOT_FOLDER = Path(os.getcwd())
@@ -43,14 +43,16 @@ def main():
         else:
             asset_path = Path(args.file)
 
+        asset = asset_factory(asset_path)
+        print(asset)
         #Init publisher
         pub = Publisher(context)
-        if asset_path.suffix == '.gizmo':
-            gizmo = Gizmo('my_gizmo',asset_path)
-            pub.publish_gizmo(gizmo)
-        elif asset_path.suffix == '.nk':
-            script = Script('my_script', asset_path)
-            pub.publish_script(script)
+
+        pub.publish_asset(asset)
+
+
+        
+
 
 
 if __name__ == '__main__':

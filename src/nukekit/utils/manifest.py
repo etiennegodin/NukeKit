@@ -2,13 +2,12 @@ from __future__ import annotations
 import json 
 from pprint import pprint
 from ..core.context import Context
-from ..core.assets import Asset, Gizmo, Script
+from ..core.assets import Asset, ASSET_REGISTRY
 from ..core.versioning import Version
 from dataclasses import asdict
 
 from pathlib import Path
 
-CLASS_REGISTRY = {"Gizmos": Gizmo, "Script": Script, "Asset": Asset}
 
 class UniversalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -32,7 +31,7 @@ def universal_decoder(dct):
     # After fixing paths, handle dataclass reconstruction
     if "__type__" in dct:
         type_name = dct.pop("__type__")
-        cls = CLASS_REGISTRY.get(type_name)
+        cls = ASSET_REGISTRY.get(type_name)
         if cls:
             return cls(**dct)
     return dct
@@ -48,7 +47,7 @@ def load_latest_asset_version(contetx:Context,asset_name, asset_type:Context.ass
         data = json.load(file, object_hook=universal_decoder)
     
 
-def update_manifest(context:Context, asset:Gizmo|Script):
+def update_manifest(context:Context, asset:Asset):
     data = read_manifest(context)
 
     category = f"{asset.type}s"

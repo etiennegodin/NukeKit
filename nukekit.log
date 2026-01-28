@@ -118,3 +118,8 @@
 2026-01-28 15:42:28,364 - main - INFO - Successfully added my_gizmo v1.1.0 to repo manifest
 2026-01-28 15:42:28,365 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
 2026-01-28 15:42:28,365 - main - INFO - Successfully added my_gizmo v1.2.3 to repo manifest
+2026-01-28 16:05:19,502 - main - ERROR - Provided object is not at Asset
+2026-01-28 16:10:39,544 - main - ERROR - Provided object is not at Asset
+2026-01-28 16:13:54,470 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
+2026-01-28 16:14:26,141 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
+2026-01-28 16:14:41,578 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
