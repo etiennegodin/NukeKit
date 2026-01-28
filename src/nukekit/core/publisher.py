@@ -26,20 +26,28 @@ class Publisher():
             error = 'Provided object is not at Gizmo'
             self.context.logger.error(error)
             raise TypeError(error)
+        
+        gizmo.set_destination_path(self.context)
 
-        repo_subdir = get_repo_subdir_path(self.context, 'gizmos')
-        gizmos_subdirs = list_subdirs(repo_subdir, output_type='str')
-        if gizmo.name not in gizmos_subdirs:
-            Path(repo_subdir / gizmo.name).mkdir()
-
+        if self.copy(gizmo):
+            self.context.logger.info(f"Successfully saved {gizmo.name} to {gizmo.destination_path} ")
 
 
     def copy(self, gizmo:Gizmo)-> bool:
-        shutil.copy(gizmo.path, )
+        
+        try:
+            shutil.copy2(gizmo.source_path, gizmo.destination_path)
+            return True
+        except shutil.SameFileError:
+            print("Source and destination represent the same file.")
+        except PermissionError:
+            print("Permission denied.")
+        except FileNotFoundError:
+            print("The source file or destination directory was not found.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
-
-
-        pass    
+ 
 
     def metadata():
         pass

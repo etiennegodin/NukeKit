@@ -15,7 +15,6 @@ def main():
     pprint(context)
 
     gizmo = Gizmo('my_gizmo',gizmo_path, version, 'change', author= 'eti')
-    pprint(gizmo)
 
 
 

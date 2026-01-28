@@ -12,6 +12,7 @@ class Gizmo():
     version: core.Version
     changelog:str
     author: str = NotImplemented
+    destination_path: Path = NotImplemented
 
     def __post_init__(self):
         #Convert to path if string
@@ -20,15 +21,14 @@ class Gizmo():
 
 
     def set_destination_path(self, context:Context):
-        gizmos_subdir = get_repo_subdir_path(context, 'gizmos')
-        gizmos_list = list_subdirs(gizmos_subdir)
-        destination_path = Path(gizmos_subdir / self.name)
-
+        gizmos_folder = get_repo_subdir_path(context, 'gizmos')
+        gizmos_list = list_subdirs(gizmos_folder)
+        gizmo_subdir = Path(gizmos_folder / self.name)
+        gizmo_path = Path(gizmo_subdir/ f"{self.name}_{self.version}")
         # Create folder if not existing 
-        if destination_path not in gizmos_list:
-            destination_path.mkdir()
-
-        self.destination_path = destination_path()
+        if gizmo_subdir not in gizmos_list:
+            gizmo_subdir.mkdir()
+        self.destination_path = gizmo_path
 
 
 @dataclass
