@@ -2,7 +2,7 @@ from nukekit.utils import create_central_repo
 from .core.publisher import Publisher
 from .core.versioning import Version
 from .core.assets import Gizmo
-from .utils.context import set_context
+from .core.context import set_context
 from pathlib import Path
 import os 
 from pprint import pprint

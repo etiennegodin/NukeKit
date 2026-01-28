@@ -1,7 +1,7 @@
 from __future__ import annotations
 import json 
 from pprint import pprint
-from .context import Context
+from ..core.context import Context
 from ..core.assets import Asset, Gizmo, Scripts
 from ..core.versioning import Version
 from dataclasses import asdict

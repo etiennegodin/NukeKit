@@ -1,7 +1,7 @@
 from __future__ import annotations
 import shutil
 from ..core.assets import Gizmo
-from ..utils.context import Context
+from .context import Context
 from ..utils.manifest import add_asset_to_manifest
 from ..utils import paths
 
