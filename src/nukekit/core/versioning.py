@@ -12,7 +12,11 @@ Patch: Bug fixes
 
 class Version():
     def __init__(self, version_string:str):
-        ver = semver.Version.parse(version_string)
+        try:
+            ver = semver.Version.parse(version_string)
+        except ValueError as e:
+            raise e
+            
         self.major = ver.major
         self.minor = ver.minor
         self.patch = ver.patch

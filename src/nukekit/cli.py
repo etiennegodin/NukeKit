@@ -43,7 +43,6 @@ def main():
             asset_path = Path(args.file)
 
         asset = asset_factory(asset_path)
-        print(asset)
         #Init publisher
         pub = Publisher(context)
 

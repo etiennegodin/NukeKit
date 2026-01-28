@@ -15,7 +15,7 @@ class Asset():
     author: str = None
     destination_path: Path = None
     time:str = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
-
+    type:str = 'Asset'
     def __post_init__(self):
         #Convert to path if string
         if isinstance(self.source_path, str):
@@ -40,6 +40,7 @@ def asset_factory(asset_path:Path):
         asset_path = Path(asset_path)
     asset_name = asset_path.stem
     asset_suffix = asset_path.suffix
+    
     #check if version s in naming
     #to-do
 

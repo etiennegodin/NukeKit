@@ -2,7 +2,7 @@ from __future__ import annotations
 import shutil
 from ..core.assets import Asset
 from .context import Context
-from ..utils.manifest import update_manifest, init_manifest
+from ..utils import manifest as ma
 from ..utils import paths
 
 class Publisher():
@@ -17,7 +17,6 @@ class Publisher():
         self.context = context
         self.repo = context.config['repository']
 
-
     def publish_asset(self, asset:Asset
                     )-> bool:
         
@@ -26,19 +25,22 @@ class Publisher():
             self.context.logger.error(error)
             raise TypeError(error)
         
-        
         if asset.type == 'script':
             raise NotImplementedError
             
         if asset.version is None:
             #version 
             pass
-        
+
+        latest = ma.get_latest_asset_version(self.context, asset)
+
+        print(latest)
+        quit()
         paths.set_asset_destination_path(asset, self.context)
 
 
         self.copy_to_repo(asset)
-        update_manifest(self.context, asset)
+        ma.update_manifest(self.context, asset)
 
 
     def copy_to_repo(self, asset:Asset)-> bool:
