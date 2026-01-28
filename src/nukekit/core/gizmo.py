@@ -1,5 +1,5 @@
 from __future__ import annotations
-from ..core import Version
+from .. import core
 from typing import Optional
 from dataclasses import dataclass, field
 
@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 class Gizmo():
     name:str 
     path:str
-    version: Version
+    version: core.Version
     changelog:str
     author: str = NotImplemented
 

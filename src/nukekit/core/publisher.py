@@ -1,7 +1,7 @@
 from __future__ import annotations
+import shutil
 from ..utils import Context
-from .. import core
-
+from ..core import Gizmo
 
 
 class Publisher():
@@ -16,7 +16,7 @@ class Publisher():
         self.context = context
         pass
 
-    def publish_gizmo(self,
+    def publish_gizmo(self, gizmo:Gizmo
                     )-> bool:
         """
         Docstring for publish_gizmo
@@ -33,11 +33,12 @@ class Publisher():
         :rtype: bool
         """
 
-        print(version)
-        print(changelog)
-        print(path)
 
-    def copy(self):
+
+
+    def copy(self, gizmo:Gizmo):
+        
+
 
 
         pass    

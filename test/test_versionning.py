@@ -7,6 +7,21 @@ def test_version_comparison_gt():
     v2 = Version("1.1.5")
     assert v1 > v2
 
+def test_version_up_major():
+    v1 = Version("1.1.13")
+    v1.version_up('major')
+
+    assert v1.major == 2
+    assert v1.minor == 0 
+    assert v1.patch == 0
+
+def test_version_up_minor():
+    v1 = Version("1.1.13")
+    v1.version_up('minor')
+
+    assert v1.major == 1
+    assert v1.minor == 2 
+    assert v1.patch == 0
 
 def test_version_from_tuple():
     v = Version.from_tuple((1,2,3))
