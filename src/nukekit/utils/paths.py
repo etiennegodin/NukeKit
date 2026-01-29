@@ -3,7 +3,6 @@ from ..core.context import Context
 from ..core.assets import Asset
 from pathlib import Path
 from typing import Literal, List
-import os 
 
 path_types = Literal['str', 'Path']
         
@@ -46,7 +45,6 @@ def list_subdirs(parent_path:Path, output_type:path_types = 'Path')->List[Path|s
         return subdirs
 
 def set_asset_destination_path(asset:Asset, context:Context)->Path:
-    from ..utils import get_repo_subdir_path, list_subdirs
     gizmos_folder = get_repo_subdir_path(context, 'gizmos')
     gizmos_list = list_subdirs(gizmos_folder)
     gizmo_subdir = Path(gizmos_folder / asset.name)

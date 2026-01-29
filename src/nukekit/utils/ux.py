@@ -11,7 +11,6 @@ def add_question_mark(question:str)->str:
 def format_options_list(options:Any):
     if get_origin(options) is Literal:
         options = list(get_args(options))
-    
     return options
 
 def user_input(question:str, options:list = ['y','n'], type:return_type = 'bool')-> bool | str:

@@ -2,7 +2,7 @@ import argparse
 import os 
 from pathlib import Path
 
-from nukekit.utils import init_central_repo 
+from .utils.paths import init_central_repo
 from .core.publisher import Publisher
 from .core.versioning import Version
 from .core.assets import asset_factory
@@ -32,7 +32,7 @@ def main():
     if args.action == 'publish':
         if args.file is None:
             #scanner
-            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
+            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
             asset_path = Path(debug_path)
         else:
             asset_path = Path(args.file)

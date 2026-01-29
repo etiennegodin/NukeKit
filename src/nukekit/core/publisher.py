@@ -36,7 +36,7 @@ class Publisher():
             asset.destination_path = paths.set_asset_destination_path(asset, self.context)
             latest_version = manifest.get_latest_asset_version(self.context, asset)
 
-            #SUCCESS CONDITION: New asset or newer than repo
+            #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
                 break
 

@@ -25,6 +25,7 @@ def init_context(ROOT_FOLDER):
     CONFIG = load_config(ROOT_FOLDER)
     REPO_PATH = CONFIG['repository']['root']
     MANIFEST_PATH = Path(REPO_PATH + "/manifest.json")
+    
     return Context(ROOT_FOLDER,
                     REPO_PATH,
                     MANIFEST_PATH,

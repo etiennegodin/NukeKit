@@ -12,7 +12,7 @@ def test_version_up_major():
     v1.version_up('major')
 
     assert v1.major == 2
-    assert v1.minor == 0 
+    assert v1.minor == 1
     assert v1.patch == 0
 
 def test_version_up_minor():
