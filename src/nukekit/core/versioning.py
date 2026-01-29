@@ -2,7 +2,6 @@ from __future__ import annotations
 import semver
 from typing import Self, Literal
 
-types = Literal['major', 'minor','patch']
 
 """
 Major: Breaking changes (different inputs/outputs)
@@ -11,6 +10,9 @@ Patch: Bug fixes
 """
 
 class Version():
+    
+    classes = Literal['major', 'minor','patch']
+
     def __init__(self, version_string:str):
         try:
             ver = semver.Version.parse(version_string)
@@ -25,13 +27,13 @@ class Version():
     def from_tuple(cls, version_tuple:tuple[int,int,int])->Self:
         return cls('.'.join(str(val) for val in version_tuple))
     
-    def version_up(self, type_name:types)->Self:
+    def version_up(self, type_name:classes)->Self:
         """
         Docstring for version_up
         
         :param self: Description
         :param type_name: Description
-        :type type_name: types
+        :type type_name: VERSION_ITEM
         """
         current_val = getattr(self,type_name)
         setattr(self,type_name, current_val+1)
@@ -46,6 +48,9 @@ class Version():
     def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \
                (other.major, other.minor, other.patch)
+    
+    def __eq__(self, other:Self):
+        return (self.major == other.major and self.minor == other.minor and self.patch == other.patch)
     
     def __repr__(self):
         return str(f"{self.major}.{self.minor}.{self.patch}")

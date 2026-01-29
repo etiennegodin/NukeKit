@@ -1,12 +1,13 @@
 from __future__ import annotations
 import shutil
+from typing import get_args
 from ..core.assets import Asset
 from ..core.versioning import Version
 from .context import Context
 from ..utils import manifest 
 from ..utils import paths 
 from ..utils.logger import setup_logger 
-from ..utils.ux import bool_user_input
+from ..utils.ux import user_input
 class Publisher():
     def __init__(self, context:Context):
         """
@@ -34,29 +35,37 @@ class Publisher():
         
         asset.destination_path = paths.set_asset_destination_path(asset, self.context)
         latest_version = manifest.get_latest_asset_version(self.context, asset)
-        print(latest_version)
+
         if latest_version is None:
             #New asset not published in repo
-            if asset.version is None:
-                #Force init version if not specified
-                asset.version = Version('0.1.0')
-            self._copy_to_repo(asset)
-            manifest.update_manifest(self.context, asset)
-        else:
-            if bool_user_input('bump?'):
-                asset.version = latest_version.version_up('major')
-                if self._copy_to_repo(asset):
-                    manifest.update_manifest(self.context, asset)
+            self._publish_to_repo(asset)
+        elif latest_version == asset.version:
+            if user_input(f'{asset} already exists in repo. \nDo you want to publish a new version?'):
+                self._version_up(asset)
             else:
-                raise Exception('version')
+                self.context.logger.info(f'Aborted publishing {asset}')
+        elif latest_version > asset.version:
+            if user_input(f'A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?'):
+                asset.version = latest_version
+                self._version_up(asset)
+            else:
+                self.context.logger.info(f'Aborted publishing {asset}')
+        else:
+            self._publish_to_repo(asset)
 
+    def _version_up(self,asset):
+        version_update = user_input('Which type of update', Version.classes, type='str')
+        asset.version.version_up(version_update)
+        self.publish_asset(asset)
 
-    def _copy_to_repo(self, asset:Asset)-> bool:
+    def _publish_to_repo(self, asset:Asset)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
-            self.context.logger.info(f"Successfully saved {asset.name}_v{asset.version} to {asset.destination_path} ")
+            self.context.logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
+            manifest.update_manifest(self.context, asset)
+
             return True
-        except shutil.SameFileError:
+        except shutil.SameFileError as e :
             print("Source and destination represent the same file.")
         except PermissionError:
             print("Permission denied.")

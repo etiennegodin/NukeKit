@@ -23,6 +23,9 @@ class Asset():
         if isinstance(self.source_path, str):
             self.source_path  = Path(self.source_path)
 
+    def __str__(self):
+        return f"{self.name}_v{self.version}"
+
 @dataclass
 class Gizmo(Asset):
     type:str = 'Gizmo'
@@ -35,7 +38,7 @@ class Script(Asset):
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script, "Asset": Asset}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
 
-def asset_factory(context:Context, asset_path:Path):
+def asset_factory(asset_path:Path):
     asset_version = None
 
     #Force Path for stem and suffix method
@@ -58,9 +61,8 @@ def asset_factory(context:Context, asset_path:Path):
         if cls:
             if asset_version is not None:
                 return cls(asset_name,asset_path, asset_version)
-            
-            context.logger.warning(f"Asset '{asset_name}' has no specified version")
-            return cls(asset_name, asset_path)
+            #to-do logger warning 
+            return cls(asset_name, asset_path, Version('0.1.0'))
     else: 
         raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 
