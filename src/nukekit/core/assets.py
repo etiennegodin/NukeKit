@@ -1,5 +1,6 @@
 from __future__ import annotations
 from .versioning import Version
+from .context import Context
 from typing import Optional
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -34,7 +35,7 @@ class Script(Asset):
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script, "Asset": Asset}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
 
-def asset_factory(asset_path:Path):
+def asset_factory(context:Context, asset_path:Path):
     asset_version = None
 
     #Force Path for stem and suffix method
@@ -57,6 +58,8 @@ def asset_factory(asset_path:Path):
         if cls:
             if asset_version is not None:
                 return cls(asset_name,asset_path, asset_version)
+            
+            context.logger.warning(f"Asset '{asset_name}' has no specified version")
             return cls(asset_name, asset_path)
     else: 
         raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')

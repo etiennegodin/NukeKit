@@ -3,9 +3,10 @@ import shutil
 from ..core.assets import Asset
 from ..core.versioning import Version
 from .context import Context
-from ..utils import manifest as ma
-from ..utils import paths as p
-
+from ..utils import manifest 
+from ..utils import paths 
+from ..utils.logger import setup_logger 
+from ..utils.ux import bool_user_input
 class Publisher():
     def __init__(self, context:Context):
         """
@@ -15,7 +16,9 @@ class Publisher():
         :param context: Description
         :type context: Context
         """
+        #context.logger = setup_logger('Publisher', context.log_file )
         self.context = context
+        self.context.logger = setup_logger('Publisher', context.log_file)
         self.repo = context.config['repository']
 
     def publish_asset(self, asset:Asset
@@ -28,32 +31,30 @@ class Publisher():
         
         if asset.type == 'script':
             raise NotImplementedError
-            
-        if asset.version is None:
-            #version 
-            pass
-            raise ValueError('No version for asset')
         
-        asset.destination_path = p.set_asset_destination_path(asset, self.context)
-        latest_version = ma.get_latest_asset_version(self.context, asset)
-
+        asset.destination_path = paths.set_asset_destination_path(asset, self.context)
+        latest_version = manifest.get_latest_asset_version(self.context, asset)
+        print(latest_version)
         if latest_version is None:
-            latest_version = Version('0.0.0')
+            #New asset not published in repo
             if asset.version is None:
+                #Force init version if not specified
                 asset.version = Version('0.1.0')
-
-        if asset.version > latest_version:
-            #check if really want to override
-            if self.copy_to_repo(asset):
-                ma.update_manifest(self.context, asset)
+            self._copy_to_repo(asset)
+            manifest.update_manifest(self.context, asset)
         else:
-            raise Exception('version')
+            if bool_user_input('bump?'):
+                asset.version = latest_version.version_up('major')
+                if self._copy_to_repo(asset):
+                    manifest.update_manifest(self.context, asset)
+            else:
+                raise Exception('version')
 
 
-    def copy_to_repo(self, asset:Asset)-> bool:
+    def _copy_to_repo(self, asset:Asset)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
-            self.context.logger.info(f"Successfully saved {asset.name} to {asset.destination_path} ")
+            self.context.logger.info(f"Successfully saved {asset.name}_v{asset.version} to {asset.destination_path} ")
             return True
         except shutil.SameFileError:
             print("Source and destination represent the same file.")
@@ -63,6 +64,9 @@ class Publisher():
             print("The source file or destination directory was not found.")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+
+
 
     def metadata():
         pass

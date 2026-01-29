@@ -32,13 +32,13 @@ def main():
     if args.action == 'publish':
         if args.file is None:
             #scanner
-            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.3.gizmo'
+            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
             asset_path = Path(debug_path)
         else:
             asset_path = Path(args.file)
 
         #Create asset 
-        asset = asset_factory(asset_path)
+        asset = asset_factory(context, asset_path)
         
         #Init publisher
         pub = Publisher(context)

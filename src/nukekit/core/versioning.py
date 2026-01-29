@@ -22,10 +22,10 @@ class Version():
         self.patch = ver.patch
 
     @classmethod
-    def from_tuple(cls, version_tuple:tuple[int,int,int]):
+    def from_tuple(cls, version_tuple:tuple[int,int,int])->Self:
         return cls('.'.join(str(val) for val in version_tuple))
     
-    def version_up(self, type_name:types):
+    def version_up(self, type_name:types)->Self:
         """
         Docstring for version_up
         
@@ -40,6 +40,8 @@ class Version():
             self.patch = 0
         elif type_name == 'minor':
             self.patch = 0 
+
+        return self
 
     def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \

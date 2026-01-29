@@ -1,153 +1,37 @@
-2026-01-27 19:50:47,173 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo 
-2026-01-27 19:55:10,433 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 19:56:01,990 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 19:56:07,022 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 19:56:34,546 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:01:21,702 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:01:28,836 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:01:38,165 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:09:20,056 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:10:11,291 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:11:37,541 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:11:49,246 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:29:23,735 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:32:28,679 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:33:33,093 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:38:47,700 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:39:23,663 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:43:33,855 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:45:29,901 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:45:36,573 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:48:18,894 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 20:50:28,402 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:01:43,259 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:08:53,980 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:09:27,712 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:14:56,877 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:15:13,071 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:15:28,774 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:16:39,854 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:23:06,193 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:23:42,343 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:23:52,549 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:24:23,596 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:26:29,686 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:26:29,686 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:27:14,338 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:27:43,448 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:28:09,129 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:30:59,767 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:31:14,871 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:31:51,999 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:32:03,226 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:32:07,034 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:32:19,593 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:32:42,259 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:33:03,973 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:33:08,777 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:33:33,796 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:33:44,942 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:34:00,068 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:34:00,069 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:34:15,351 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:34:24,935 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:35:12,794 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:35:20,587 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:35:31,605 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:35:50,082 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:37:15,153 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:39:59,994 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:39:59,995 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:46:32,694 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:46:32,695 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:48:09,406 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:48:09,407 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:48:09,408 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:48:09,409 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:49:47,644 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:49:47,646 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:49:47,647 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:49:47,648 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:50:54,115 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:50:54,116 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:50:54,117 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:50:54,118 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:52:38,267 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:52:38,268 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:52:38,269 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:52:38,270 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:53:02,052 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:53:02,054 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:53:02,055 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:53:02,057 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:17,721 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:54:17,723 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:54:17,724 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:54:17,726 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:33,132 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:54:33,133 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:37,600 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:54:37,601 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:39,010 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:54:39,011 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:41,213 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3 
-2026-01-27 21:54:41,215 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:54:57,152 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0 
-2026-01-27 21:54:57,153 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:55:57,357 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:55:57,358 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:56:06,142 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:56:06,144 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:56:28,004 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:56:28,005 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:56:28,006 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-27 21:56:28,007 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:56:56,864 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:56:56,865 - main - INFO - Successfully added my_gizmo v1.1.0 to repo
-2026-01-27 21:56:56,866 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-27 21:56:56,867 - main - INFO - Successfully added my_gizmo v1.2.3 to repo
-2026-01-27 21:57:15,096 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:57:15,096 - main - INFO - Successfully added my_gizmo v1.1.0 to manifest
-2026-01-27 21:57:15,097 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-27 21:57:15,099 - main - INFO - Successfully added my_gizmo v1.2.3 to manifest
-2026-01-27 21:57:21,782 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-27 21:57:21,782 - main - INFO - Successfully added my_gizmo v1.1.0 to repo manifest
-2026-01-27 21:57:21,783 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-27 21:57:21,783 - main - INFO - Successfully added my_gizmo v1.2.3 to repo manifest
-2026-01-28 15:42:28,363 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.1.0.gizmo 
-2026-01-28 15:42:28,364 - main - INFO - Successfully added my_gizmo v1.1.0 to repo manifest
-2026-01-28 15:42:28,365 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-28 15:42:28,365 - main - INFO - Successfully added my_gizmo v1.2.3 to repo manifest
-2026-01-28 16:05:19,502 - main - ERROR - Provided object is not at Asset
-2026-01-28 16:10:39,544 - main - ERROR - Provided object is not at Asset
-2026-01-28 16:13:54,470 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
-2026-01-28 16:14:26,141 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
-2026-01-28 16:14:41,578 - main - INFO - Successfully saved my_script to /home/etienne/central_repo/gizmos/my_script/my_script_NotImplemented.gizmo 
-2026-01-28 16:24:17,383 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:25:41,633 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:25:50,352 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:26:02,022 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:28:58,424 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:29:57,553 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:30:37,569 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:30:54,369 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:31:44,140 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:33:12,075 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:34:02,973 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:34:31,734 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_NotImplemented.gizmo 
-2026-01-28 16:34:45,371 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:34:58,056 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:35:22,235 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:36:01,912 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:38:34,094 - main - INFO - Successfully added my_gizmo vNone to repo manifest
-2026-01-28 16:43:22,354 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:44:39,246 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:44:48,830 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:45:00,968 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:45:22,774 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:45:39,497 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_None.gizmo 
-2026-01-28 16:45:39,497 - main - INFO - Successfully added my_gizmo vNone to repo manifest
-2026-01-28 17:12:40,311 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-28 17:12:40,312 - main - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
-2026-01-28 17:14:03,984 - main - INFO - Successfully saved my_gizmo to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_1.2.3.gizmo 
-2026-01-28 17:14:03,984 - main - INFO - Successfully added my_gizmo v1.2.3 to repo manifest
+2026-01-28 21:00:51,772 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:02:25,554 - Publihser - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:02:41,694 - Publisher - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:02:59,778 - Publisher - WARNING - publish_asset - Asset 'my_gizmo' has no specified version
+2026-01-28 21:18:36,949 - root - INFO - Created central repo at /home/etienne/central_repo
+2026-01-28 21:18:36,949 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:18:36,950 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:18:36,950 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:18:36,950 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 21:18:36,950 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 21:18:45,551 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:19:08,974 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:19:11,025 - Publisher - INFO - Successfully saved my_gizmo_vNone to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:11,025 - Publisher - INFO - Successfully saved my_gizmo_vNone to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:11,025 - Publisher - INFO - Successfully added my_gizmo vNone to repo manifest
+2026-01-28 21:19:11,025 - Publisher - INFO - Successfully added my_gizmo vNone to repo manifest
+2026-01-28 21:19:33,516 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:19:49,773 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:19:49,774 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:49,774 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:49,774 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 21:19:49,774 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 21:19:54,891 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:19:58,321 - Publisher - INFO - Successfully saved my_gizmo_vNone to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:58,321 - Publisher - INFO - Successfully saved my_gizmo_vNone to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:19:58,322 - Publisher - INFO - Successfully added my_gizmo vNone to repo manifest
+2026-01-28 21:19:58,322 - Publisher - INFO - Successfully added my_gizmo vNone to repo manifest
+2026-01-28 21:21:07,732 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:21:09,424 - Publisher - INFO - Successfully saved my_gizmo_v1.0.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:21:09,424 - Publisher - INFO - Successfully saved my_gizmo_v1.0.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:21:09,425 - Publisher - INFO - Successfully added my_gizmo v1.0.0 to repo manifest
+2026-01-28 21:21:09,425 - Publisher - INFO - Successfully added my_gizmo v1.0.0 to repo manifest
+2026-01-28 21:21:15,852 - root - WARNING - Asset 'my_gizmo' has no specified version
+2026-01-28 21:21:16,980 - Publisher - INFO - Successfully saved my_gizmo_v2.0.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:21:16,980 - Publisher - INFO - Successfully saved my_gizmo_v2.0.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_vNone.gizmo 
+2026-01-28 21:21:16,981 - Publisher - INFO - Successfully added my_gizmo v2.0.0 to repo manifest
+2026-01-28 21:21:16,981 - Publisher - INFO - Successfully added my_gizmo v2.0.0 to repo manifest
