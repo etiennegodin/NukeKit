@@ -20,7 +20,6 @@ class Publisher():
         #context.logger = setup_logger('Publisher', context.log_file )
         self.context = context
         self.context.logger = setup_logger('Publisher', context.log_file)
-        self.repo = context.config['repository']
 
     def publish_asset(self, asset:Asset
                     )-> bool:

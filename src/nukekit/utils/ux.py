@@ -24,7 +24,8 @@ def user_input(question:str, options:list = ['y','n'], type:return_type = 'bool'
         user_input = input(f"{question} {[f'{str(o)}' for o in options]} ")
         if user_input in options:
             correct = True
-        print("\033[1A\033[K", end="") 
+        else:
+            print("\033[1A\033[K", end="") 
 
     if type == 'bool':
         return user_input == 'y'
