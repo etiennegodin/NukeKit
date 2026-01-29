@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from .utils.paths import init_central_repo
+from .utils.logger import setup_logger
 from .core.publisher import Publisher
 from .core.versioning import Version
 from .core.assets import asset_factory
@@ -27,12 +28,14 @@ def main():
     args = parser.parse_args()
     context = init_context(ROOT_FOLDER)
     central_repo = init_central_repo(context)
+    logger = setup_logger(context.log_file)
 
     if args.action == 'publish':
         if args.file is None:
             #scanner
-            debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
-            asset_path = Path(debug_path)
+            #debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
+            #asset_path = Path(debug_path)
+            raise FileExistsError('Please provide a file to publish')
         else:
             asset_path = Path(args.file)
 

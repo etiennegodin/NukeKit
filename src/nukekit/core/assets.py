@@ -6,6 +6,10 @@ from typing import Self
 from .versioning import Version
 from .context import Context
 from ..utils import paths
+import logging
+
+logger = logging.getLogger(__name__)
+
 @dataclass
 class Asset():
     name:str 
@@ -64,7 +68,9 @@ def asset_factory(asset_path:Path):
         # No specified version
         asset_name = asset_stem
         asset_version = Version('0.1.0') #assumes init version
+        logger.warning(f'No specified version for {asset_name}')
         #to-do log no specified version
+
 
     cls = ASSET_SUFFIXES.get(asset_suffix) 
     if cls:

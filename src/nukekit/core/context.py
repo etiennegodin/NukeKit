@@ -15,13 +15,11 @@ class Context():
     manifest:Path
     date: str
     config: Dict[str, Any ] = field(default_factory=dict)
-    logger: logging.Logger = None
     log_file:str = None
     asset_types: TypeAlias = Literal['gizmos', 'Script']
 
 def init_context(ROOT_FOLDER):
     base_log_path = f'{ROOT_FOLDER}/nukekit.log'
-    LOGGER = setup_logger('root', log_file= base_log_path)
     CONFIG = load_config(ROOT_FOLDER)
     REPO_PATH = CONFIG['repository']['root']
     MANIFEST_PATH = Path(REPO_PATH + "/manifest.json")
@@ -31,5 +29,4 @@ def init_context(ROOT_FOLDER):
                     MANIFEST_PATH,
                     str(date.today()),
                     CONFIG,
-                    LOGGER,
                     log_file= base_log_path)
