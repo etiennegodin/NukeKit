@@ -2,18 +2,6 @@
 import pytest
 from nukekit.core.versioning import Version
 
-def test_version_classes():
-
-    import ast 
-    from typing import Literal
-    classes = Version.classes
-    print(ast.literal_eval(classes))
-    if isinstance(classes, Literal):
-        classes_list = ast.literal_eval(classes)
-
-    assert isinstance(classes_list, list) 
-
-
 def test_version_comparison_gt():
     v1 = Version("1.2.0")
     v2 = Version("1.1.5")

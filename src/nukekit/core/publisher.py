@@ -48,7 +48,7 @@ class Publisher():
                 asset.version = latest_version
                 self._version_up(asset)
             else:
-                self.context.logger.info(f'Aborted publishing {asset}')
+                self.context.logger.info(f'Aborted publish of {asset}')
         else:
             self._publish_to_repo(asset)
 
@@ -72,9 +72,3 @@ class Publisher():
             print("The source file or destination directory was not found.")
         except Exception as e:
             print(f"An error occurred: {e}")
-
-
-
-
-    def metadata():
-        pass

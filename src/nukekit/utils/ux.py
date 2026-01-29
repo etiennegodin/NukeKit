@@ -15,13 +15,12 @@ def format_options_list(options:Any):
     return options
 
 def user_input(question:str, options:list = ['y','n'], type:return_type = 'bool')-> bool | str:
-
+    correct = False
     question = add_question_mark(question)
     options = format_options_list(options)
 
-    correct = False
     while not correct:
-        user_input = input(f"{question} {[f'{str(o)}' for o in options]} ")
+        user_input = input(f"{question} {[o for o in options]} ")
         if user_input in options:
             correct = True
         else:
