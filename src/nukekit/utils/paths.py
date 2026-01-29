@@ -44,13 +44,5 @@ def list_subdirs(parent_path:Path, output_type:path_types = 'Path')->List[Path|s
     else:
         return subdirs
 
-def set_asset_destination_path(asset:Asset, context:Context)->Path:
-    gizmos_folder = get_repo_subdir_path(context, 'gizmos')
-    gizmos_list = list_subdirs(gizmos_folder)
-    gizmo_subdir = Path(gizmos_folder / asset.name)
-    gizmo_path = Path(gizmo_subdir/ f"{asset.name}_v{asset.version}.gizmo")
-    # Create folder if not existing 
-    if gizmo_subdir not in gizmos_list:
-        gizmo_subdir.mkdir()
-    return gizmo_path
+
 

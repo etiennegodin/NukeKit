@@ -33,7 +33,7 @@ class Publisher():
             raise NotImplementedError
         
         while True:
-            asset.destination_path = paths.set_asset_destination_path(asset, self.context)
+            asset.update_destination_path(self.context)
             latest_version = manifest.get_latest_asset_version(self.context, asset)
 
             #New asset or newer than repo

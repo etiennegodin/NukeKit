@@ -1,14 +1,15 @@
 from __future__ import annotations
-from .versioning import Version
 from pathlib import Path
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from pprint import pprint
-
+from typing import Self
+from .versioning import Version
+from .context import Context
+from ..utils import paths
 @dataclass
 class Asset():
     name:str 
-    source_path:str
+    source_path:str|Path
     version: Version = None
     changelog:str = None
     author: str = None
@@ -21,8 +22,20 @@ class Asset():
         if isinstance(self.source_path, str):
             self.source_path  = Path(self.source_path)
 
+    def update_destination_path(self, context:Context)->Self:
+        gizmos_folder = paths.get_repo_subdir_path(context, 'gizmos')
+        gizmos_list = paths.list_subdirs(gizmos_folder)
+        gizmo_subdir = Path(gizmos_folder / self.name)
+        gizmo_path = Path(gizmo_subdir/ f"{self.name}_v{self.version}.gizmo")
+        # Create folder if not existing 
+        if gizmo_subdir not in gizmos_list:
+            gizmo_subdir.mkdir()
+        self.destination_path = gizmo_path
+        return self 
+    
     def __str__(self):
         return f"{self.name}_v{self.version}"
+    
 @dataclass
 class Gizmo(Asset):
     type:str = 'Gizmo'
