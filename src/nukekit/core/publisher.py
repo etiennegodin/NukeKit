@@ -32,37 +32,42 @@ class Publisher():
         if asset.type == 'script':
             raise NotImplementedError
         
-        asset.destination_path = paths.set_asset_destination_path(asset, self.context)
-        latest_version = manifest.get_latest_asset_version(self.context, asset)
+        while True:
+            asset.destination_path = paths.set_asset_destination_path(asset, self.context)
+            latest_version = manifest.get_latest_asset_version(self.context, asset)
 
-        if latest_version is None:
-            #New asset not published in repo
-            self._publish_to_repo(asset)
-        elif latest_version == asset.version:
-            if user_input(f'{asset} already exists in repo. \nDo you want to publish a new version?'):
-                self._version_up(asset)
-            else:
-                self.context.logger.info(f'Aborted publishing {asset}')
-        elif latest_version > asset.version:
-            if user_input(f'A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?'):
-                asset.version = latest_version
-                self._version_up(asset)
-            else:
-                self.context.logger.info(f'Aborted publish of {asset}')
-        else:
-            self._publish_to_repo(asset)
+            #SUCCESS CONDITION: New asset or newer than repo
+            if latest_version is None or asset.version > latest_version:
+                break
 
+            # Version Logic: Conflict/Exists 
+            to_update = False
+            if latest_version == asset.version:
+                to_update = user_input(f'{asset} already exists in repo. \nDo you want to publish a new version?')
+            elif latest_version > asset.version:
+                if user_input(f'A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?'):
+                    asset.version = latest_version
+                    to_update = True
+
+            # Handle the Decision
+            if to_update:
+                asset = self._version_up(asset)
+                continue
+            self.context.logger.info(f'Aborted publish of {asset}')
+            return False
+    
+        return self._publish_to_repo(asset)
+    
     def _version_up(self,asset):
         version_update = user_input('Which type of update', Version.classes, type='str')
         asset.version.version_up(version_update)
-        self.publish_asset(asset)
+        return asset 
 
     def _publish_to_repo(self, asset:Asset)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
             self.context.logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
             manifest.update_manifest(self.context, asset)
-
             return True
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")

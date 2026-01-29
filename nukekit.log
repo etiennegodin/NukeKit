@@ -105,3 +105,24 @@
 2026-01-28 22:52:35,544 - root - INFO - Created central repo at /home/etienne/central_repo
 2026-01-28 22:52:35,545 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
 2026-01-28 22:52:35,546 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 23:05:12,623 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:05:12,624 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 23:05:24,133 - Publisher - INFO - Successfully saved my_gizmo_v0.2.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:05:24,134 - Publisher - INFO - Successfully added my_gizmo v0.2.0 to repo manifest
+2026-01-28 23:05:24,134 - Publisher - INFO - Aborted publish of my_gizmo_v0.2.0
+2026-01-28 23:06:16,756 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:06:16,762 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 23:06:44,927 - Publisher - INFO - Successfully saved my_gizmo_v0.3.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:06:44,931 - Publisher - INFO - Successfully added my_gizmo v0.3.0 to repo manifest
+2026-01-28 23:08:22,632 - Publisher - INFO - Aborted publish of my_gizmo_v0.4.0
+2026-01-28 23:11:25,689 - root - INFO - Created central repo at /home/etienne/central_repo
+2026-01-28 23:11:25,690 - Publisher - INFO - Successfully saved my_gizmo_v0.1.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:11:25,691 - Publisher - INFO - Successfully added my_gizmo v0.1.0 to repo manifest
+2026-01-28 23:11:35,655 - Publisher - INFO - Successfully saved my_gizmo_v0.2.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:11:35,655 - Publisher - INFO - Successfully added my_gizmo v0.2.0 to repo manifest
+2026-01-28 23:12:50,439 - Publisher - INFO - Successfully saved my_gizmo_v0.2.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.1.0.gizmo 
+2026-01-28 23:12:50,439 - Publisher - INFO - Successfully added my_gizmo v0.2.0 to repo manifest
+2026-01-28 23:13:24,336 - Publisher - INFO - Successfully saved my_gizmo_v0.2.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v0.2.0.gizmo 
+2026-01-28 23:13:24,336 - Publisher - INFO - Successfully added my_gizmo v0.2.0 to repo manifest
+2026-01-28 23:13:37,185 - Publisher - INFO - Successfully saved my_gizmo_v1.0.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v1.0.0.gizmo 
+2026-01-28 23:13:37,185 - Publisher - INFO - Successfully added my_gizmo v1.0.0 to repo manifest
