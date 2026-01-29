@@ -132,3 +132,5 @@
 2026-01-28 23:16:17,308 - Publisher - INFO - Successfully added my_gizmo v1.2.4 to repo manifest
 2026-01-29 09:29:37,065 - Publisher - INFO - Successfully saved my_gizmo_v1.3.0 to /home/etienne/central_repo/gizmos/my_gizmo/my_gizmo_v1.3.0.gizmo 
 2026-01-29 09:29:37,066 - Publisher - INFO - Successfully added my_gizmo v1.3.0 to repo manifest
+2026-01-29 09:43:11,242 - Publisher - ERROR - Provided object is not at Asset
+2026-01-29 09:43:18,376 - Publisher - ERROR - Provided object is not at Asset

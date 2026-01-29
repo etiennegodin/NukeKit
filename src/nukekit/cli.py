@@ -9,7 +9,6 @@ from .core.assets import asset_factory
 from .core.context import init_context
 
 ROOT_FOLDER = Path(os.getcwd())
-version = Version('1.1.0')
 
 def main():
 

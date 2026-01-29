@@ -35,6 +35,6 @@ def test_version_parsing():
     assert v.minor == 10
     assert v.patch == 3
 
-def test_invalid_version():
+def test_version_invalid():
     with pytest.raises(ValueError):
         Version("1.2")  # Missing patch
