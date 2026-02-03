@@ -4,8 +4,8 @@ import logging
 
 from ..core.assets import Asset
 from ..core.versioning import Version
-from .context import Context
-from ..utils import manifest 
+from ..utils.paths import CentralRepo
+from ..utils.manifest import Manifest 
 from ..utils.logger import setup_logger 
 from ..utils.ux import user_input
 
@@ -22,8 +22,10 @@ class Publisher():
         """
         #logger = setup_logger('Publisher', context.log_file )
 
-    def publish_asset(self, asset:Asset, context:Context)-> bool:
+    def publish_asset(self, asset:Asset, repo:CentralRepo)-> bool:
         
+        manifest = Manifest(repo.MANIFEST)
+
         if not isinstance(asset, Asset):
             error = 'Provided object is not at Asset'
             logger.error(error)
@@ -33,8 +35,8 @@ class Publisher():
             raise NotImplementedError
         
         while True:
-            asset.update_destination_path(context.repo)
-            latest_version = manifest.get_latest_asset_version(context, asset)
+            asset.update_destination_path(repo)
+            latest_version = manifest.get_latest_asset_version(repo.MANIFEST, asset)
 
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:

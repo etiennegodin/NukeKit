@@ -66,7 +66,7 @@ def main():
         #Init publisher
         pub = Publisher()
 
-        pub.publish_asset(asset, CONTEXT)
+        pub.publish_asset(asset, CONTEXT.repo)
 
 
         
