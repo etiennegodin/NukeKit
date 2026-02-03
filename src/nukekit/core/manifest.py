@@ -2,8 +2,8 @@ from __future__ import annotations
 import json 
 from dataclasses import asdict
 from pathlib import Path
-from ..core.assets import Asset, ASSET_REGISTRY
-from ..core.versioning import Version
+from .assets import Asset, ASSET_REGISTRY
+from .versioning import Version
 import logging
 
 logger = logging.getLogger(__name__)

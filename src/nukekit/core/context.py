@@ -4,7 +4,8 @@ from typing import Any, Dict, Literal, TypeAlias
 import logging 
 from pathlib import Path
 from datetime import date
-from ..utils.paths import CentralRepo, UserPaths
+from ..core.repo import CentralRepo
+from ..utils.paths import UserPaths 
 
 logger = logging.getLogger(__name__)
 

@@ -6,10 +6,11 @@ from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
 
 
-from .utils.paths import CentralRepo, UserPaths
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
+from .utils.paths import UserPaths
 
+from .core.repo import CentralRepo
 from .core.publisher import Publisher
 from .core.assets import asset_factory
 from .core.context import init_context

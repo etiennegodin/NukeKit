@@ -4,8 +4,8 @@ import logging
 
 from ..core.assets import Asset
 from ..core.versioning import Version
-from ..utils.paths import CentralRepo
-from ..utils.manifest import Manifest 
+from ..core.repo import CentralRepo
+from .manifest import Manifest 
 from ..utils.logger import setup_logger 
 from ..utils.ux import user_input
 

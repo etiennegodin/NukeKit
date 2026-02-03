@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Self
 from .versioning import Version
 from .context import Context
-from ..utils.paths import CentralRepo
+from ..core.repo import CentralRepo
 import logging
 
 logger = logging.getLogger(__name__)
