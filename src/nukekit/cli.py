@@ -1,24 +1,49 @@
 import argparse
 import os 
 import sys 
+from pprint import pprint
 from pathlib import Path
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
-
 
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 
+from .core.context import Context
 from .core.repo import CentralRepo
 from .core.publisher import Publisher
 from .core.assets import asset_factory
 from .core.context import init_context
 
-from .ui import MainWindow
+from .ui import Ui
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
+
+
+def init()->Context:
+
+    # Load .env 
+    load_dotenv()
+
+    #Setup user paths 
+    USER_PATHS = UserPaths()
+    USER_PATHS.ensure()
+
+    # Init logger
+    logger = setup_logger(USER_PATHS.LOG_FILE)
+
+    # Config solver
+    CONFIG = ConfigLoader().load()
+
+    # Init Central Repo
+    REPO = CentralRepo(CONFIG['repository'])
+    # Setup Context dataclass
+    return init_context(REPO, CONFIG, USER_PATHS)
+
+
+
 
 
 def main():
@@ -37,24 +62,7 @@ def main():
     )
     args = parser.parse_args()
 
-    # Load .env 
-    load_dotenv()
-
-    #Setup user paths 
-    USER_PATHS = UserPaths()
-    USER_PATHS.ensure()
-
-    # Init logger
-    logger = setup_logger(USER_PATHS.LOG_FILE)
-
-    # Config solver
-    CONFIG = ConfigLoader().load()
-
-    # Init Central Repo
-    REPO = CentralRepo(CONFIG['repository'])
-
-    # Setup Context dataclass
-    CONTEXT = init_context(REPO, CONFIG, USER_PATHS)
+    context = init()
 
     # Ui 
     if args.no_gui:
@@ -65,9 +73,8 @@ def main():
         pass
     else:
         app = QApplication(sys.argv)
-        window = MainWindow()
-        window.show()
-        app.exec()
+        window = Ui(context)
+        sys.exit(app.exec_())
 
 
 

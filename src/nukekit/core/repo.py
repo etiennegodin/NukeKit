@@ -2,6 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 import logging
+from .manifest import Manifest
 
 path_types = Literal['str', 'Path']
 

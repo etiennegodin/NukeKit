@@ -2,9 +2,12 @@ import pytest
 from pathlib import Path
 import os
 from nukekit.core.publisher import Publisher
-from nukekit.core.versioning import Version
 from nukekit.core.assets import asset_factory
 from nukekit.core.context import init_context
+from nukekit.core.repo import CentralRepo
+from nukekit.utils.logger import setup_logger
+from nukekit.utils.config import ConfigLoader
+from nukekit.utils.paths import UserPaths
 
 
 def test_publisher_script():
@@ -15,9 +18,22 @@ def test_publisher_gizmo():
 
 
 def test_publisher_none_type():
-    ROOT_FOLDER = Path(os.getcwd())
-    context = init_context(ROOT_FOLDER)
-    pub = Publisher(context)
+ #Setup user paths 
+    USER_PATHS = UserPaths()
+    USER_PATHS.ensure()
+
+    # Init logger
+    logger = setup_logger(USER_PATHS.LOG_FILE)
+
+    # Config solver
+    CONFIG = ConfigLoader().load()
+
+    # Init Central Repo
+    REPO = CentralRepo(CONFIG['repository'])
+
+    # Setup Context dataclass
+    CONTEXT = init_context(REPO, CONFIG, USER_PATHS)
+    pub = Publisher()
     asset = None
     with pytest.raises(TypeError): # Catches any Exception type
         pub.publish_asset(asset)

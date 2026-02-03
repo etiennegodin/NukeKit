@@ -35,6 +35,7 @@ def universal_decoder(dct):
         if cls:
             return cls(**dct)
     return dct
+
 class Manifest:
     def __init__(self, path:Path):
         self.ROOT = path 
@@ -55,17 +56,17 @@ class Manifest:
                 json.dump(data, json_file, indent= 4)
             return True
 
-    def _read_manifest(self):
+    def read_manifest(self):
         with open(self.ROOT, 'r') as file:
             return json.load(file, object_hook=self.decoder)
 
     def get_latest_asset_version(self, asset:Asset):
-        data = self._read_manifest()
+        data = self.read_manifest()
         if asset.name in data[asset.type]:
             return Version(data[asset.type][asset.name]['latest_version'])
 
     def update_manifest(self, asset:Asset):
-        data = self._read_manifest()
+        data = self.read_manifest()
         version = str(asset.version)
         if asset.type not in data:
             raise Exception('manifest')

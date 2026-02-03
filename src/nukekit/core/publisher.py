@@ -4,9 +4,7 @@ import logging
 
 from ..core.assets import Asset
 from ..core.versioning import Version
-from ..core.repo import CentralRepo
 from .manifest import Manifest 
-from ..utils.logger import setup_logger 
 from ..utils.ux import user_input
 
 logger = logging.getLogger(__name__)
