@@ -57,8 +57,14 @@ class Manifest:
             return True
 
     def read_manifest(self):
-        with open(self.ROOT, 'r') as file:
-            return json.load(file, object_hook=self.decoder)
+        try:
+            open(self.ROOT, 'r')
+        except FileNotFoundError:
+            logger.error(f"Manifest file {self.ROOT} doesn't exist")
+            return None
+        else:
+            with open(self.ROOT, 'r') as file:
+                return json.load(file, object_hook=self.decoder)
 
     def get_latest_asset_version(self, asset:Asset):
         data = self.read_manifest()

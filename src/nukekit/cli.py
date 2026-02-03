@@ -5,18 +5,20 @@ from pprint import pprint
 from pathlib import Path
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
+from datetime import date
+
 
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 
+from .core.manifest import Manifest
 from .core.context import Context
 from .core.repo import CentralRepo
 from .core.publisher import Publisher
 from .core.assets import asset_factory
-from .core.context import init_context
 
-from .ui import Ui
+from .ui.main_window import Ui
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
@@ -39,12 +41,23 @@ def init()->Context:
 
     # Init Central Repo
     REPO = CentralRepo(CONFIG['repository'])
-    # Setup Context dataclass
-    return init_context(REPO, CONFIG, USER_PATHS)
+    
+    #Read remote and local manifest
+    REPO_MANIFEST = Manifest(REPO.MANIFEST).read_manifest()
+    LOCAL_MANIFEST = Manifest(UserPaths.STATE_FILE).read_manifest()
 
-
-
-
+    try:
+        context = Context(REPO,
+                USER_PATHS,
+                CONFIG,
+                REPO_MANIFEST,
+                LOCAL_MANIFEST,
+                str(date.today())
+                )
+    except Exception as e:
+        raise e 
+    else:
+        return context
 
 def main():
     actions = ['publish']
@@ -74,6 +87,7 @@ def main():
     else:
         app = QApplication(sys.argv)
         window = Ui(context)
+        pprint(window.__dict__)
         sys.exit(app.exec_())
 
 
