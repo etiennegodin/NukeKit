@@ -22,7 +22,7 @@ class UniversalEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-def universal_decoder(self,dct):
+def universal_decoder(dct):
     # Dynamic: Convert any key that ends with '_path' into a Path object
     for k, v in dct.items():
         if isinstance(v, str) and k.endswith('_path'):
@@ -78,5 +78,5 @@ class Manifest:
             data[asset.type][asset.name]['latest_version'] = version
         
         with open(self.ROOT, "w") as json_file:
-            json.dump(data, json_file, indent=4, cls=self.decoder)
+            json.dump(data, json_file, indent=4, cls=self.encoder)
             logger.info(f"Successfully added {asset.name} v{version} to repo manifest")

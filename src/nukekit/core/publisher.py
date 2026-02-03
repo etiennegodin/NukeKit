@@ -36,7 +36,7 @@ class Publisher():
         
         while True:
             asset.update_destination_path(repo)
-            latest_version = manifest.get_latest_asset_version(repo.MANIFEST, asset)
+            latest_version = manifest.get_latest_asset_version(asset)
 
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
