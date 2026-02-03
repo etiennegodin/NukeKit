@@ -12,4 +12,7 @@ dependencies:
       - semver
       - pytest
       - PyYAML
+      - python-dotenv
+      - PyQt5
+
 

@@ -11,7 +11,6 @@ class ConfigLoader:
     @classmethod
     def resolve(cls)->Path:
         env_path = os.getenv(cls.ENV_VAR)
-        print(env_path)
         if env_path and Path(env_path).exists():
             return Path(env_path)
         

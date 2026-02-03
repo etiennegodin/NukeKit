@@ -1,27 +1,31 @@
 import argparse
 import os 
+import sys 
 from pathlib import Path
 from dotenv import load_dotenv
+from PyQt5.QtWidgets import QApplication
+
 
 from .utils.paths import CentralRepo, UserPaths
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 
 from .core.publisher import Publisher
-from .core.versioning import Version
 from .core.assets import asset_factory
 from .core.context import init_context
+
+from .ui import MainWindow
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
 
 
 def main():
-    
-    actions = ['publish','load']
+    actions = ['publish']
     global_parser = argparse.ArgumentParser(add_help = False)
-    global_parser.add_argument("action", choices= actions,help = 'Actions to take')
-    global_parser.add_argument("--file", "-f", help = "File" )
+    global_parser.add_argument("-action", choices= actions,help = 'Actions to take')
+    #global_parser.add_argument("--file", "-f", help = "File" )
+    global_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without GUi")
     global_parser.add_argument("--force", action= 'store_true', help = "Ignore last checkpoint")
 
     parser = argparse.ArgumentParser(
@@ -51,22 +55,30 @@ def main():
     # Setup Context dataclass
     CONTEXT = init_context(REPO, CONFIG, USER_PATHS)
 
-    if args.action == 'publish':
-        if args.file is None:
-            #scanner
-            dev_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
-            asset_path = Path(dev_path)
-            #raise FileExistsError('Please provide a file to publish')
-        else:
-            asset_path = Path(args.file)
+    # Ui 
+    if args.no_gui:
+        if args.action is None:
+            print('Please chose an action in non gui mode')
+        if args.action == 'publish':
+            print('publish ') 
+        pass
+    else:
+        app = QApplication(sys.argv)
+        window = MainWindow()
+        window.show()
+        app.exec()
 
-        #Create asset 
-        asset = asset_factory(asset_path)
-        
-        #Init publisher
-        pub = Publisher()
 
-        pub.publish_asset(asset, CONTEXT.repo)
+
+
+
+    #Create asset 
+    #asset = asset_factory(asset_path)
+    
+    #Init publisher
+    #pub = Publisher()
+
+    #pub.publish_asset(asset, CONTEXT.repo)
 
 
         
