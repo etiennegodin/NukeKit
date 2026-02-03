@@ -58,18 +58,18 @@ class Publisher():
             logger.info(f'Aborted publish of {asset}')
             return False
     
-        return self._publish_to_repo(asset)
+        return self._publish_to_repo(asset, manifest)
     
-    def _version_up(self,asset):
+    def _version_up(self,asset:Asset):
         version_update = user_input('Which type of update', Version.classes, type='str')
         asset.version.version_up(version_update)
         return asset 
 
-    def _publish_to_repo(self, asset:Asset)-> bool:
+    def _publish_to_repo(self, asset:Asset, manifest:Manifest)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
             logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
-            manifest.update_manifest(context, asset)
+            manifest.update_manifest(asset)
             return True
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")
