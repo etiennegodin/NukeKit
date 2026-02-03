@@ -1,15 +1,18 @@
 from __future__ import annotations
 import shutil
-from typing import get_args
+import logging
+
 from ..core.assets import Asset
 from ..core.versioning import Version
 from .context import Context
 from ..utils import manifest 
-from ..utils import paths 
 from ..utils.logger import setup_logger 
 from ..utils.ux import user_input
+
+logger = logging.getLogger(__name__)
+
 class Publisher():
-    def __init__(self, context:Context):
+    def __init__(self):
         """
         Docstring for __init__
         
@@ -17,24 +20,21 @@ class Publisher():
         :param context: Description
         :type context: Context
         """
-        #context.logger = setup_logger('Publisher', context.log_file )
-        self.context = context
-        self.context.logger = setup_logger('Publisher', context.log_file)
+        #logger = setup_logger('Publisher', context.log_file )
 
-    def publish_asset(self, asset:Asset
-                    )-> bool:
+    def publish_asset(self, asset:Asset, context:Context)-> bool:
         
         if not isinstance(asset, Asset):
             error = 'Provided object is not at Asset'
-            self.context.logger.error(error)
+            logger.error(error)
             raise TypeError(error)
         
         if asset.type == 'script':
             raise NotImplementedError
         
         while True:
-            asset.update_destination_path(self.context)
-            latest_version = manifest.get_latest_asset_version(self.context, asset)
+            asset.update_destination_path(context.repo)
+            latest_version = manifest.get_latest_asset_version(context, asset)
 
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
@@ -53,7 +53,7 @@ class Publisher():
             if to_update:
                 asset = self._version_up(asset)
                 continue
-            self.context.logger.info(f'Aborted publish of {asset}')
+            logger.info(f'Aborted publish of {asset}')
             return False
     
         return self._publish_to_repo(asset)
@@ -66,8 +66,8 @@ class Publisher():
     def _publish_to_repo(self, asset:Asset)-> bool:
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
-            self.context.logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
-            manifest.update_manifest(self.context, asset)
+            logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
+            manifest.update_manifest(context, asset)
             return True
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")

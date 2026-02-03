@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Self
 from .versioning import Version
 from .context import Context
-from ..utils import paths
+from ..utils.paths import CentralRepo
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,15 +26,17 @@ class Asset():
         if isinstance(self.source_path, str):
             self.source_path  = Path(self.source_path)
 
-    def update_destination_path(self, context:Context)->Self:
-        gizmos_folder = paths.get_repo_subdir_path(context, 'gizmos')
-        gizmos_list = paths.list_subdirs(gizmos_folder)
-        gizmo_subdir = Path(gizmos_folder / self.name)
-        gizmo_path = Path(gizmo_subdir/ f"{self.name}_v{self.version}.gizmo")
+    def update_destination_path(self, repo:CentralRepo)->Self:
+        asset_type_root = repo.get_subdir('gizmo')
+        assets_list = repo.list_assets('gizmo')
+
+        asset_folder = asset_type_root / self.name
+        asset_path = asset_folder/ f"{self.name}_v{self.version}.gizmo"
+
         # Create folder if not existing 
-        if gizmo_subdir not in gizmos_list:
-            gizmo_subdir.mkdir()
-        self.destination_path = gizmo_path
+        if asset_folder not in assets_list:
+            asset_folder.mkdir()
+        self.destination_path = asset_path
         return self 
     
     def __str__(self):

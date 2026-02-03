@@ -39,25 +39,20 @@ class CentralRepo:
             return True
         return False
 
+    def get_subdir(self,asset_type:Context.asset_types)->Path:
+        subdir = Path(f"{self.ROOT}/{asset_type}s")
+        if subdir.exists():
+            return subdir
 
-def get_repo_subdir_path(context:Context, asset_type:Context.asset_types)->Path:
-    subdir = Path(f"{context.repo}/{asset_type}")
-    if subdir.is_dir():
-        return subdir
-    else:
-        error = f"Repo subdir {asset_type} not found"
-        context.logger.error(error)
-        raise FileExistsError(error)
+    def list_assets(self, asset_type:Context.asset_types, output_type:path_types = 'Path'):
+        subdir = self.get_subdir(asset_type)
+        assets_dir = [p for p in subdir.iterdir() if p.is_dir()]
+        if output_type == 'str':
+            return [folder.name for folder in assets_dir]
+        else:
+            return assets_dir
 
-def list_subdirs(parent_path:Path, output_type:path_types = 'Path')->List[Path|str]:
-    if not isinstance(parent_path, Path):
-        parent_path= Path(parent_path)
-    subdirs = [p for p in parent_path.iterdir() if p.is_dir()]
 
-    if output_type == 'str':
-        return [folder.name for folder in subdirs]
-    else:
-        return subdirs
 
 
 

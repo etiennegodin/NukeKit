@@ -31,6 +31,7 @@ def main():
                     parents=[global_parser]
     )
     args = parser.parse_args()
+
     # Load .env 
     load_dotenv()
 
@@ -50,14 +51,12 @@ def main():
     # Setup Context dataclass
     CONTEXT = init_context(REPO, CONFIG, USER_PATHS)
 
-    #central_repo = init_central_repo(context)
-
     if args.action == 'publish':
         if args.file is None:
             #scanner
-            #debug_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
-            #asset_path = Path(debug_path)
-            raise FileExistsError('Please provide a file to publish')
+            dev_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo_v1.2.4.gizmo'
+            asset_path = Path(dev_path)
+            #raise FileExistsError('Please provide a file to publish')
         else:
             asset_path = Path(args.file)
 
@@ -65,9 +64,9 @@ def main():
         asset = asset_factory(asset_path)
         
         #Init publisher
-        pub = Publisher(context)
+        pub = Publisher()
 
-        pub.publish_asset(asset)
+        pub.publish_asset(asset, CONTEXT)
 
 
         

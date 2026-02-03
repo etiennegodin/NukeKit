@@ -14,7 +14,7 @@ class Context():
     user_paths: UserPaths
     config: Dict[str, Any ]
     date: str
-    asset_types: TypeAlias = Literal['gizmos', 'Script']
+    asset_types: TypeAlias = Literal['gizmo', 'script']
 
 def init_context(REPO:CentralRepo, CONFIG:dict, USER_PATHS:UserPaths):
     try:
