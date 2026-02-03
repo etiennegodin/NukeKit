@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from .utils.paths import init_central_repo, UserPaths
+from .utils.paths import CentralRepo, UserPaths
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 
@@ -34,18 +34,23 @@ def main():
     # Load .env 
     load_dotenv()
 
+    #Setup user paths 
+    USER_PATHS = UserPaths()
+    USER_PATHS.ensure()
+
     # Init logger
-    logger = setup_logger(LOG_PATH)
+    logger = setup_logger(USER_PATHS.LOG_FILE)
 
     # Config solver
     CONFIG = ConfigLoader().load()
 
-    #Setup user paths 
-    user_paths = UserPaths()
-    user_paths.ensure()
+    # Init Central Repo
+    REPO = CentralRepo(CONFIG['repository'])
 
-    context = init_context(ROOT_FOLDER, CONFIG)
-    central_repo = init_central_repo(context)
+    # Setup Context dataclass
+    CONTEXT = init_context(REPO, CONFIG, USER_PATHS)
+
+    #central_repo = init_central_repo(context)
 
     if args.action == 'publish':
         if args.file is None:

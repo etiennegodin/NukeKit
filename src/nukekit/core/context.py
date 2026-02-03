@@ -4,24 +4,23 @@ from typing import Any, Dict, Literal, TypeAlias
 import logging 
 from pathlib import Path
 from datetime import date
+from ..utils.paths import CentralRepo, UserPaths
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Context():
-    root: Path
-    repo: str
-    manifest:Path
-    date: str
+    repo: CentralRepo
+    user_paths: UserPaths
     config: Dict[str, Any ] = field(default_factory=dict)
-    log_file:str = None
+    date: str
     asset_types: TypeAlias = Literal['gizmos', 'Script']
 
-def init_context(ROOT_FOLDER, CONFIG):
-    REPO_PATH = CONFIG['repository']['root']
-    MANIFEST_PATH = Path(REPO_PATH + "/manifest.json")
+def init_context(REPO:CentralRepo, CONFIG:dict, USER_PATHS:UserPaths):
+
     
-    return Context(ROOT_FOLDER,
-                    REPO_PATH,
-                    MANIFEST_PATH,
-                    str(date.today()),
-                    CONFIG,
-                    log_file= base_log_path)
+    return Context(REPO,
+                   USER_PATHS,
+                   CONFIG,
+                    str(date.today())
+                    )

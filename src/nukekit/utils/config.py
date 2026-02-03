@@ -4,8 +4,6 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-logger = logging.getLogger(__name__)
-
 class ConfigLoader:
 
     ENV_VAR = "NUKEKIT_CONFIG_PATH"
