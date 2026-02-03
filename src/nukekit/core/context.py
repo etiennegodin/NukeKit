@@ -5,9 +5,6 @@ import logging
 from pathlib import Path
 from datetime import date
 
-from ..utils.config import load_config
-from ..utils.logger import setup_logger
-
 @dataclass
 class Context():
     root: Path
@@ -18,9 +15,7 @@ class Context():
     log_file:str = None
     asset_types: TypeAlias = Literal['gizmos', 'Script']
 
-def init_context(ROOT_FOLDER):
-    base_log_path = f'{ROOT_FOLDER}/nukekit.log'
-    CONFIG = load_config(ROOT_FOLDER)
+def init_context(ROOT_FOLDER, CONFIG):
     REPO_PATH = CONFIG['repository']['root']
     MANIFEST_PATH = Path(REPO_PATH + "/manifest.json")
     

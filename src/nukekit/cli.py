@@ -1,18 +1,23 @@
 import argparse
 import os 
 from pathlib import Path
+from dotenv import load_dotenv
 
-from .utils.paths import init_central_repo
+from .utils.paths import init_central_repo, UserPaths
 from .utils.logger import setup_logger
+from .utils.config import ConfigLoader
+
 from .core.publisher import Publisher
 from .core.versioning import Version
 from .core.assets import asset_factory
 from .core.context import init_context
 
 ROOT_FOLDER = Path(os.getcwd())
+LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
+
 
 def main():
-
+    
     actions = ['publish','load']
     global_parser = argparse.ArgumentParser(add_help = False)
     global_parser.add_argument("action", choices= actions,help = 'Actions to take')
@@ -26,9 +31,21 @@ def main():
                     parents=[global_parser]
     )
     args = parser.parse_args()
-    context = init_context(ROOT_FOLDER)
+    # Load .env 
+    load_dotenv()
+
+    # Init logger
+    logger = setup_logger(LOG_PATH)
+
+    # Config solver
+    CONFIG = ConfigLoader().load()
+
+    #Setup user paths 
+    user_paths = UserPaths()
+    user_paths.ensure()
+
+    context = init_context(ROOT_FOLDER, CONFIG)
     central_repo = init_central_repo(context)
-    logger = setup_logger(context.log_file)
 
     if args.action == 'publish':
         if args.file is None:

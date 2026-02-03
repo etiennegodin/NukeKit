@@ -1,16 +1,35 @@
-import yaml 
-from pathlib import Path
+import os
+import yaml
 import logging
+from pathlib import Path
+from typing import Optional
 
-def load_config(ROOT_FOLDER, Logger:logging.Logger = None):
-    path = Path(f"{ROOT_FOLDER}/config/setting.yaml")
-    try:
+logger = logging.getLogger(__name__)
+
+class ConfigLoader:
+
+    ENV_VAR = "NUKEKIT_CONFIG_PATH"
+
+    @classmethod
+    def resolve(cls)->Path:
+        env_path = os.getenv(cls.ENV_VAR)
+        print(env_path)
+        if env_path and Path(env_path).exists():
+            return Path(env_path)
+        
+        package_root = Path(__file__).parents[3] 
+        adjacent = package_root / "config" / "settings.yaml"
+        if adjacent.exists():
+            return adjacent
+        
+        raise FileNotFoundError(f"NukeKit could not find studio config.\n"
+            f"  → Set the {cls.ENV_VAR} env var to your config path\n"
+            f"  → Or place studio_settings.yaml in {package_root / 'config'}")
+        
+    @classmethod
+    def load(cls)->dict:
+        path = cls.resolve()
         with open(path, 'r') as file:
-            return yaml.load(file, Loader=yaml.FullLoader)
-    except FileNotFoundError as e:
-        #logger
-        if Logger:
-            Logger.error(e)
-            raise(e)
-    
+            return yaml.safe_load(file)
+
         
