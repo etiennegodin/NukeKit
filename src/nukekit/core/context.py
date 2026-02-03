@@ -12,15 +12,18 @@ logger = logging.getLogger(__name__)
 class Context():
     repo: CentralRepo
     user_paths: UserPaths
-    config: Dict[str, Any ] = field(default_factory=dict)
+    config: Dict[str, Any ]
     date: str
     asset_types: TypeAlias = Literal['gizmos', 'Script']
 
 def init_context(REPO:CentralRepo, CONFIG:dict, USER_PATHS:UserPaths):
-
+    try:
+        context = Context(REPO,
+                USER_PATHS,
+                CONFIG,
+                str(date.today())
+                )
+    except Exception as e:
+        raise e 
     
-    return Context(REPO,
-                   USER_PATHS,
-                   CONFIG,
-                    str(date.today())
-                    )
+    return context

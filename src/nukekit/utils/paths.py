@@ -1,5 +1,4 @@
 from __future__ import annotations
-from ..core.context import Context
 from pathlib import Path
 from typing import Literal, List
 import logging
@@ -27,19 +26,18 @@ class UserPaths:
 class CentralRepo:
     def __init__(self, repo_dict:dict):
         self.ROOT = Path(repo_dict['root'])
-        self.SUBFOLDERS = Path(repo_dict['subfolder'])
-        self.MANIFEST = Path(self.ROOT + "/manifest.json")
+        self.SUBFOLDERS = repo_dict['subfolder']
+        self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
     
-    @classmethod
-    def ensure(self):
+    def ensure(self)->bool:
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok= True)
-
-        logger.info(f'Created central repo at {self.ROOT}')
-        for s in self.SUBFOLDERS:
-            Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
-        return True
+            logger.info(f'Created central repo at {self.ROOT}')
+            for s in self.SUBFOLDERS:
+                Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
+            return True
+        return False
 
 
 def get_repo_subdir_path(context:Context, asset_type:Context.asset_types)->Path:
