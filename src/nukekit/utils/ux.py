@@ -28,16 +28,3 @@ def user_input_choice(question:str, options:list = ['y','n'], type:return_type =
     if type == 'bool':
         return user_input_choice == 'y'
     return user_input_choice
-
-
-def user_input_str(question:str)-> bool | str:
-    question = add_question_mark(question)
-    answer = """"""
-    while len(answer) <= 0 :
-        
-        answer = input(f"{question}  ")
-        #print("\033[1A\033[K", end="") 
-
-    if type == 'bool':
-        return user_input_choice == 'y'
-    return user_input_choice
