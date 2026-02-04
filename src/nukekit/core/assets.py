@@ -6,6 +6,8 @@ from typing import Self
 from .versioning import Version
 import logging
 import getpass
+import uuid
+
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +20,7 @@ class Asset():
     author: str = None
     destination_path: Path = None
     time:str = None
+    id:str = None
     type:str = 'Asset'
 
     def __post_init__(self):
@@ -31,10 +34,16 @@ class Asset():
     def _set_author(self)->Self:
         if self.author is None:
             self.author = getpass.getuser()
+    
+    def _set_uuid(self)-> Self:
+        unique_id = uuid.uuid4()
+        self.id = str(unique_id)
+
 
     def ensure_metadata(self)-> Self:
         self._set_time()
         self._set_author()
+        self._set_uuid()
         return self
 
     def update_destination_path(self, repo:CentralRepo)->Self:
