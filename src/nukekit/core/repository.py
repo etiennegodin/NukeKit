@@ -8,8 +8,7 @@ path_types = Literal['str', 'Path']
 
 logger = logging.getLogger(__name__)
 
-
-class CentralRepo:
+class Repository:
     def __init__(self, repo_dict:dict):
         self.ROOT = Path(repo_dict['root'])
         self.SUBFOLDERS = repo_dict['subfolder']

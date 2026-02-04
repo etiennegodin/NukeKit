@@ -4,7 +4,7 @@ import os
 from nukekit.core.publisher import Publisher
 from nukekit.core.assets import asset_factory
 from nukekit.core.context import init_context
-from nukekit.core.repo import CentralRepo
+from nukekit.core.repository import Repository
 from nukekit.utils.logger import setup_logger
 from nukekit.utils.config import ConfigLoader
 from nukekit.utils.paths import UserPaths
@@ -29,7 +29,7 @@ def test_publisher_none_type():
     CONFIG = ConfigLoader().load()
 
     # Init Central Repo
-    REPO = CentralRepo(CONFIG['repository'])
+    REPO = Repository(CONFIG['repository'])
 
     # Setup Context dataclass
     CONTEXT = init_context(REPO, CONFIG, USER_PATHS)

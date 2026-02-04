@@ -13,7 +13,7 @@ from .utils.paths import UserPaths
 
 from .core.manifest import Manifest
 from .core.context import Context
-from .core.repo import CentralRepo
+from .core.repository import Repository
 from .core.publisher import Publisher
 from .core.assets import asset_factory
 
@@ -38,7 +38,7 @@ def init()->Context:
     CONFIG = ConfigLoader().load()
 
     # Init Central Repo
-    REPO = CentralRepo(CONFIG['repository'])
+    REPO = Repository(CONFIG['repository'])
 
     #Read remote and local manifest
     REPO_MANIFEST = Manifest(REPO.MANIFEST)

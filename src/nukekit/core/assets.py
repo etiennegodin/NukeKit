@@ -46,7 +46,7 @@ class Asset():
         self._set_uuid()
         return self
 
-    def update_destination_path(self, repo:CentralRepo)->Self:
+    def update_destination_path(self, repo:Repository)->Self:
         asset_type_root = repo.get_subdir('gizmo')
         assets_list = repo.list_assets('gizmo')
 
