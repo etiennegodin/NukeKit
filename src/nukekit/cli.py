@@ -4,7 +4,6 @@ import sys
 from pprint import pprint
 from pathlib import Path
 from dotenv import load_dotenv
-from PyQt5.QtWidgets import QApplication
 from datetime import date
 
 
@@ -13,16 +12,15 @@ from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 
 from .core.manifest import Manifest
-from .core.context import Context
+from .core.context import Context, AppContext
 from .core.repo import CentralRepo
 from .core.publisher import Publisher
 from .core.assets import asset_factory
 
-from .ui.main_window import Ui
+from . import ui
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
-
 
 def init()->Context:
 
@@ -41,6 +39,8 @@ def init()->Context:
 
     # Init Central Repo
     REPO = CentralRepo(CONFIG['repository'])
+
+
     
     #Read remote and local manifest
     REPO_MANIFEST = Manifest(REPO.MANIFEST).read_manifest()
@@ -50,9 +50,9 @@ def init()->Context:
         context = Context(REPO,
                 USER_PATHS,
                 CONFIG,
+                str(date.today()),
                 REPO_MANIFEST,
-                LOCAL_MANIFEST,
-                str(date.today())
+                LOCAL_MANIFEST
                 )
     except Exception as e:
         raise e 
@@ -76,7 +76,8 @@ def main():
     args = parser.parse_args()
 
     context = init()
-
+    #pprint(context)
+    test = AppContext(context.repo_manifest)
     # Ui 
     if args.no_gui:
         if args.action is None:
@@ -85,10 +86,9 @@ def main():
             print('publish ') 
         pass
     else:
-        app = QApplication(sys.argv)
-        window = Ui(context)
-        pprint(window.__dict__)
-        sys.exit(app.exec_())
+        ui.launchUi(context)
+
+
 
 
 

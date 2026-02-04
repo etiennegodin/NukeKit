@@ -16,3 +16,15 @@ class Context():
     repo_manifest: Dict[str, Any] = field(default_factory=dict)
     local_manifest: Dict[str, Any] = field(default_factory=dict)
     asset_types: TypeAlias = Literal['gizmo', 'script']
+
+@dataclass
+class AppContext():
+    remote_repo: dict[str,Any] = field(default_factory=dict)
+    local_repo: dict[str,Any] = field(default_factory=dict)
+
+    def __post_init__(self):
+        #print(self.remote_repo)
+        gizmos = self.remote_repo['Gizmo'].keys()
+        print(gizmos)
+
+

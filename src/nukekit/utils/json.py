@@ -1,0 +1,35 @@
+from __future__ import annotations
+from ..core.assets import Asset, ASSET_REGISTRY
+from ..core.versioning import Version
+from dataclasses import asdict
+import json
+from pathlib import Path
+
+
+class UniversalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, "__dataclass_fields__"):
+            # asdict() recursively converts nested dataclasses to dicts
+            d = asdict(obj)
+            d["__type__"] = type(obj).__name__
+            return d
+        if isinstance(obj, Path):
+            return str(obj)
+        elif isinstance(obj, Version):
+            return str(obj)
+        return super().default(obj)
+
+
+def universal_decoder(dct):
+    # Dynamic: Convert any key that ends with '_path' into a Path object
+    for k, v in dct.items():
+        if isinstance(v, str) and k.endswith('_path'):
+            dct[k] = Path(v)
+
+    # After fixing paths, handle dataclass reconstruction
+    if "__type__" in dct:
+        type_name = dct.pop("__type__")
+        cls = ASSET_REGISTRY.get(type_name)
+        if cls:
+            return cls(**dct)
+    return dct
