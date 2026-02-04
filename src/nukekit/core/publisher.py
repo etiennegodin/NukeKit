@@ -23,7 +23,6 @@ class Publisher():
 
     def publish_asset(self, asset:Asset)-> bool:
 
-
         if not isinstance(asset, Asset):
             error = 'Provided object is not at Asset'
             logger.error(error)
@@ -33,12 +32,15 @@ class Publisher():
             raise NotImplementedError
         
         asset_resolved = self._resolve_version(asset)
-        asset_with_changelog = self._check_changelog(asset_resolved)
+        asset_with_changelog = self._ensure_changelog(asset_resolved)
+        asset_with_metadata = asset.ensure_metadata()
 
-        self._publish_to_repo(asset_with_changelog)
+        self._publish_to_repo(asset_with_metadata)
         return self.context
     
-    def _check_changelog(self, asset:Asset):
+
+    
+    def _ensure_changelog(self, asset:Asset):
         if asset.changelog is None:
             while True:
                 changelog = input(f'No changelog found for {asset.name}, please enter a message: \n')
@@ -50,7 +52,7 @@ class Publisher():
             asset.changelog = changelog
             return asset
 
-    def _resolve_version(self,asset)->Asset:
+    def _resolve_version(self,asset)-> Asset:
 
         while True:
             asset.update_destination_path(self.context.repo)

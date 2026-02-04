@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Self
 from .versioning import Version
 import logging
+import getpass
 
 logger = logging.getLogger(__name__)
 
@@ -16,13 +17,25 @@ class Asset():
     changelog:str = None
     author: str = None
     destination_path: Path = None
-    time:str = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
+    time:str = None
     type:str = 'Asset'
 
     def __post_init__(self):
         #Convert to path if string
         if isinstance(self.source_path, str):
             self.source_path  = Path(self.source_path)
+
+    def _set_time(self)->Self:
+        self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
+
+    def _set_author(self)->Self:
+        if self.author is None:
+            self.author = getpass.getuser()
+
+    def ensure_metadata(self)-> Self:
+        self._set_time()
+        self._set_author()
+        return self
 
     def update_destination_path(self, repo:CentralRepo)->Self:
         asset_type_root = repo.get_subdir('gizmo')
