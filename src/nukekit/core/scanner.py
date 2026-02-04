@@ -28,24 +28,44 @@ class Scanner:
         outdated_assets = {}
         latest_assets = {}
         print(local_state)
-        for asset, asset_list in assets.items():
-            if asset not in unpublished_assets.keys(): unpublished_assets[asset] = []
-            if asset not in outdated_assets.keys(): outdated_assets[asset] = []
-            if asset not in latest_assets.keys(): latest_assets[asset] = []
+        for asset_category, asset_list in assets.items():
 
+            if asset_category not in unpublished_assets.keys(): unpublished_assets[asset_category] = []
+            if asset_category not in outdated_assets.keys(): outdated_assets[asset_category] = []
+            if asset_category not in latest_assets.keys(): latest_assets[asset_category] = []
+            local_repo_asset_type = local_state[asset_category]
             for a in asset_list:
-                if a not in local_state[asset]:
-                    unpublished_assets[asset].append(a)
+                asset_name = a.name
+                if asset_name not in local_repo_asset_type.keys():
+                    unpublished_assets[asset_category].append(a)
+                    continue
 
-                local_asset = local_state[asset]
+                asset_versions_dict = local_repo_asset_type[asset_name]['versions']
+                x= asset_versions_dict.keys()
+                latest_version = self.context.local_manifest.get_latest_asset_version(a)
+                if a.version < latest_version:
+                    outdated_assets[asset_category].append(a)
+                    continue
+                try:
+                    local_repo_asset = asset_versions_dict[str(a.version)]
+                except KeyError:
+                    ValueError('Local tool higher version than local repo, manifest was not uopdated correctly ') 
+                else:
+                    latest_assets[asset_category].append(local_repo_asset)
 
+                    
+        print('unpublished_assets')
+        pprint(unpublished_assets)
+        print('outdated_assets')
+        pprint(outdated_assets)
+        print('latest_assets')
+        pprint(latest_assets)
 
-
-            pass
 
     def scan_local(self)->dict:
 
         assets = self._scan(self.context.user_paths.NUKE_DIR)
+        pprint(assets)
         self._compare_to_local_manifest(assets)
 
     def scan_folder(self, path)->dict:
