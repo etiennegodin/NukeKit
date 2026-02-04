@@ -60,6 +60,3 @@ class Manifest:
         with open(self.ROOT, "w") as json_file:
             json.dump(data, json_file, indent=4, cls=self.encoder)
             logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
-
-    def compare_manifests(self, other:Self):
-        pass
