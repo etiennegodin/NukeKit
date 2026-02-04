@@ -13,18 +13,31 @@ def format_options_list(options:Any):
         options = list(get_args(options))
     return options
 
-def user_input(question:str, options:list = ['y','n'], type:return_type = 'bool')-> bool | str:
+def user_input_choice(question:str, options:list = ['y','n'], type:return_type = 'bool')-> bool | str:
     correct = False
     question = add_question_mark(question)
     options = format_options_list(options)
 
     while not correct:
-        user_input = input(f"{question} {[o for o in options]} ")
-        if user_input in options:
+        user_input_choice = input(f"{question} {[o for o in options]} ")
+        if user_input_choice in options:
             correct = True
         else:
             print("\033[1A\033[K", end="") 
 
     if type == 'bool':
-        return user_input == 'y'
-    return user_input
+        return user_input_choice == 'y'
+    return user_input_choice
+
+
+def user_input_str(question:str)-> bool | str:
+    question = add_question_mark(question)
+    answer = """"""
+    while len(answer) <= 0 :
+        
+        answer = input(f"{question}  ")
+        #print("\033[1A\033[K", end="") 
+
+    if type == 'bool':
+        return user_input_choice == 'y'
+    return user_input_choice

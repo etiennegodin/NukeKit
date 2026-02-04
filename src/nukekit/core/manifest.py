@@ -13,6 +13,7 @@ class Manifest:
         self._ensure_manifest()
         self.decoder = universal_decoder
         self.encoder = UniversalEncoder
+        self.data = self.read_manifest()
 
     def _ensure_manifest(self)->bool:
         if self.ROOT.exists():

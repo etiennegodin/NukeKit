@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Literal, TypeAlias
 import logging 
 from ..core.repo import CentralRepo
+from ..core.manifest import Manifest
 from ..utils.paths import UserPaths 
 
 logger = logging.getLogger(__name__)
@@ -13,18 +14,7 @@ class Context():
     user_paths: UserPaths
     config: Dict[str, Any ]
     date: str
-    repo_manifest: Dict[str, Any] = field(default_factory=dict)
-    local_manifest: Dict[str, Any] = field(default_factory=dict)
+    repo_manifest: Manifest
+    local_manifest: Manifest
     asset_types: TypeAlias = Literal['gizmo', 'script']
-
-@dataclass
-class AppContext():
-    remote_repo: dict[str,Any] = field(default_factory=dict)
-    local_repo: dict[str,Any] = field(default_factory=dict)
-
-    def __post_init__(self):
-        #print(self.remote_repo)
-        gizmos = self.remote_repo['Gizmo'].keys()
-        print(gizmos)
-
 

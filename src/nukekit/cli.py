@@ -12,7 +12,7 @@ from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 
 from .core.manifest import Manifest
-from .core.context import Context, AppContext
+from .core.context import Context
 from .core.repo import CentralRepo
 from .core.publisher import Publisher
 from .core.assets import asset_factory
@@ -40,11 +40,9 @@ def init()->Context:
     # Init Central Repo
     REPO = CentralRepo(CONFIG['repository'])
 
-
-    
     #Read remote and local manifest
-    REPO_MANIFEST = Manifest(REPO.MANIFEST).read_manifest()
-    LOCAL_MANIFEST = Manifest(UserPaths.STATE_FILE).read_manifest()
+    REPO_MANIFEST = Manifest(REPO.MANIFEST)
+    LOCAL_MANIFEST = Manifest(UserPaths.STATE_FILE)
 
     try:
         context = Context(REPO,
@@ -60,10 +58,10 @@ def init()->Context:
         return context
 
 def main():
-    actions = ['publish']
+    actions = ["publish", "sync"]
     global_parser = argparse.ArgumentParser(add_help = False)
-    global_parser.add_argument("-action", choices= actions,help = 'Actions to take')
-    #global_parser.add_argument("--file", "-f", help = "File" )
+    global_parser.add_argument("action", nargs='?', default = None,choices= actions,help = 'Actions to take')
+    global_parser.add_argument("--file", "-f", help = "File" )
     global_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without GUi")
     global_parser.add_argument("--force", action= 'store_true', help = "Ignore last checkpoint")
 
@@ -76,14 +74,20 @@ def main():
     args = parser.parse_args()
 
     context = init()
-    #pprint(context)
-    test = AppContext(context.repo_manifest)
+
     # Ui 
     if args.no_gui:
         if args.action is None:
             print('Please chose an action in non gui mode')
         if args.action == 'publish':
-            print('publish ') 
+            #scanner
+            #choose asset
+            asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
+            asset = asset_factory(asset_path)
+            publisher = Publisher(context)
+            context = publisher.publish_asset(asset)
+
+
         pass
     else:
         ui.launchUi(context)
@@ -95,7 +99,6 @@ def main():
 
 
     #Create asset 
-    #asset = asset_factory(asset_path)
     
     #Init publisher
     #pub = Publisher()
