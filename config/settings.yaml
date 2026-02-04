@@ -1,7 +1,7 @@
 repository:
   root: "/home/etienne/central_repo"
   subfolder:
-    - gizmos
+    - Gizmo
     - Script
 
 user:

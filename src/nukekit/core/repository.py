@@ -23,6 +23,9 @@ class Repository:
                 Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
             return True
         return False
+    
+    def build_from_manifest():
+        pass
 
     def get_subdir(self,asset_type:Context.asset_types)->Path:
         subdir = Path(f"{self.ROOT}/{asset_type}s")
@@ -36,6 +39,7 @@ class Repository:
             return [folder.name for folder in assets_dir]
         else:
             return assets_dir
+
 
 
 

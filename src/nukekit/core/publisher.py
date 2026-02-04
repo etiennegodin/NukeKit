@@ -12,13 +12,6 @@ logger = logging.getLogger(__name__)
 
 class Publisher():
     def __init__(self, context:Context):
-        """
-        Docstring for __init__
-        
-        :param self: Description
-        :param context: Description
-        :type context: Context
-        """
         self.context = context
 
     def publish_asset(self, asset:Asset)-> bool:
