@@ -1,11 +1,9 @@
 from typing import Literal, get_args
 import ast
 
-class MyObject():
-    classes = Literal['yo','ya']
+ASSET_SUFFIXES = {".gizmo": "GIZMO", ".nk": "SCRIPT"}
 
 
-obj = MyObject()
+x = ast.literal_eval(ASSET_SUFFIXES)
 
-my_list = ast.literal_eval(obj.classes)
-print(my_list)
+print(x)

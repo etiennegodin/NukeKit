@@ -16,5 +16,5 @@ class Context():
     date: str
     repo_manifest: Manifest
     local_manifest: Manifest
-    asset_types: TypeAlias = Literal['gizmo', 'script']
+    asset_types: TypeAlias = Literal['Gizmo', 'Script']
 

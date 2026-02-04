@@ -16,6 +16,7 @@ from .core.context import Context
 from .core.repository import Repository
 from .core.publisher import Publisher
 from .core.assets import asset_factory
+from .core.scanner import Scanner
 
 from . import ui
 
@@ -58,12 +59,12 @@ def init()->Context:
         return context
 
 def main():
-    actions = ["publish", "sync"]
+    actions = ["publish", "scan", "sync"]
     global_parser = argparse.ArgumentParser(add_help = False)
     global_parser.add_argument("action", nargs='?', default = None,choices= actions,help = 'Actions to take')
     global_parser.add_argument("--file", "-f", help = "File" )
-    global_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without GUi")
-    global_parser.add_argument("--force", action= 'store_true', help = "Ignore last checkpoint")
+    global_parser.add_argument("--directory", "-dir", help = "Folder to scan" )
+    global_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without gui")
 
     parser = argparse.ArgumentParser(
                     prog='NukeKit',
@@ -74,7 +75,6 @@ def main():
     args = parser.parse_args()
 
     context = init()
-
     # Ui 
     if args.no_gui:
         if args.action is None:
@@ -86,9 +86,13 @@ def main():
             asset = asset_factory(asset_path)
             publisher = Publisher(context)
             context = publisher.publish_asset(asset)
+        elif args.action == 'scan':
+            scanner = Scanner(context)
+            if args.directory is not None:
+                assets = scanner.scan_folder(args.directory)
+            else:
+                assets = scanner.scan_local()
 
-
-        pass
     else:
         ui.launchUi(context)
 

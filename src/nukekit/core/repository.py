@@ -27,18 +27,23 @@ class Repository:
     def build_from_manifest():
         pass
 
-    def get_subdir(self,asset_type:Context.asset_types)->Path:
-        subdir = Path(f"{self.ROOT}/{asset_type}s")
-        if subdir.exists():
+    def get_subdir(self,asset_type:str)->Path:
+        subdir = Path(f"{self.ROOT}/{asset_type}")
+        if subdir.exists() and not None:
             return subdir
-
-    def list_assets(self, asset_type:Context.asset_types, output_type:path_types = 'Path'):
-        subdir = self.get_subdir(asset_type)
-        assets_dir = [p for p in subdir.iterdir() if p.is_dir()]
-        if output_type == 'str':
-            return [folder.name for folder in assets_dir]
         else:
-            return assets_dir
+            raise FileNotFoundError(f"Path {subdir} could not be found")
+
+    def list_assets(self, asset_type:str, output_type:path_types = 'Path'):
+        if asset_type:
+            subdir = self.get_subdir(asset_type)
+            assets_dir = [p for p in subdir.iterdir() if p.is_dir()]
+            if output_type == 'str':
+                return [folder.name for folder in assets_dir]
+            else:
+                return assets_dir
+        else:
+            raise Exception
 
 
 

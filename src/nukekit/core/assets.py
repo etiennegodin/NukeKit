@@ -39,7 +39,6 @@ class Asset():
         unique_id = uuid.uuid4()
         self.id = str(unique_id)
 
-
     def ensure_metadata(self)-> Self:
         self._set_time()
         self._set_author()
@@ -47,8 +46,8 @@ class Asset():
         return self
 
     def update_destination_path(self, repo:Repository)->Self:
-        asset_type_root = repo.get_subdir('gizmo')
-        assets_list = repo.list_assets('gizmo')
+        asset_type_root = repo.get_subdir(self.type)
+        assets_list = repo.list_assets(self.type)
 
         asset_folder = asset_type_root / self.name
         asset_path = asset_folder/ f"{self.name}_v{self.version}.gizmo"
@@ -59,6 +58,10 @@ class Asset():
         self.destination_path = asset_path
         return self 
     
+    def format_metadata(self):
+        output = f"""Version: {self.version}\tAuthor: {self.author}\tTime: {self.time}\tMessage" {self.changelog}"""
+        return output
+
     def __str__(self):
         return f"{self.name}_v{self.version}"
     
@@ -73,7 +76,9 @@ class Script(Asset):
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
 
-def asset_factory(asset_path:Path):
+
+
+def asset_factory(asset_path:Path)->Gizmo|Script:
     #Force Path for stem and suffix methods
     if isinstance(asset_path, str):
         asset_path = Path(asset_path)
