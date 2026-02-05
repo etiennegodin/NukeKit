@@ -5,7 +5,7 @@ from .assets import ASSET_SUFFIXES
 from typing import get_args
 from .assets import asset_factory
 from pprint import pprint
-from .validator import ASSET_STATUS, compare_manifest
+from .validator import compare_manifest
 import logging
 
 logger = logging.getLogger(__name__)

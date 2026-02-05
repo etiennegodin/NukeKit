@@ -1,11 +1,15 @@
+from __future__ import annotations
 from typing import Literal
 from .manifest import Manifest
+from .assets import Asset
 import logging
 from pprint import pprint
-
-ASSET_STATUS = Literal['Latest', 'Outdated', 'Unpublished']
-
 logger = logging.getLogger(__name__)
+
+
+class Validator():
+    def __init__(self):
+        pass
 
 
 def compare_manifest(parent:Manifest|dict, child:Manifest|dict):
@@ -24,20 +28,25 @@ def compare_manifest(parent:Manifest|dict, child:Manifest|dict):
 
     unpublished_assets = {}
     outdated_assets = {}
-    latest_assets = {}
+    synced_assets = {}
+
+    assets = {}
 
     for asset_category, asset_list in child_data.items():
 
         if asset_category not in unpublished_assets.keys(): unpublished_assets[asset_category] = []
         if asset_category not in outdated_assets.keys(): outdated_assets[asset_category] = []
-        if asset_category not in latest_assets.keys(): latest_assets[asset_category] = []
+        if asset_category not in synced_assets.keys(): synced_assets[asset_category] = []
 
         parent_repo_asset_type_dict = parent_data[asset_category]
-
+        
         for a in asset_list:
+            # Manually set a to Asset to get methods 
+            a:Asset
             asset_name = a.name
             if asset_name not in parent_repo_asset_type_dict.keys():
-                unpublished_assets[asset_category].append(a)
+                a.set_status('unpublished')
+                #unpublished_assets[asset_category].append(a)
                 continue
 
             parent_repo_asset_versions_dict = parent_repo_asset_type_dict[asset_name]['versions']
@@ -54,11 +63,18 @@ def compare_manifest(parent:Manifest|dict, child:Manifest|dict):
             except KeyError:
                 ValueError('Local tool higher version than local repo, manifest was not uopdated correctly ') 
             else:
-                latest_assets[asset_category].append(child_repo_asset)
+                synced_assets[asset_category].append(child_repo_asset)
         
     print('unpublished_assets')
     pprint(unpublished_assets)
     print('outdated_assets')
     pprint(outdated_assets)
-    print('latest_assets')
-    pprint(latest_assets)
+    print('synced_assets')
+    pprint(synced_assets)
+
+
+
+def format_metadata(asset:Asset):
+    return f"""Version: {asset.version}\tAuthor: {asset.author}\tTime: {asset.time}\tMessage" {asset.changelog}"""
+
+

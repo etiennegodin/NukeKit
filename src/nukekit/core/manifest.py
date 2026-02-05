@@ -29,7 +29,7 @@ class Manifest:
                 json.dump(data, json_file, indent= 4)
             return True
 
-    def read_manifest(self):
+    def read_manifest(self)->dict:
         try:
             open(self.ROOT, 'r')
         except FileNotFoundError:
@@ -44,7 +44,7 @@ class Manifest:
         if asset.name in data[asset.type]:
             return Version(data[asset.type][asset.name]['latest_version'])
 
-    def update_manifest(self, asset:Asset):
+    def update(self, asset:Asset):
         data = self.read_manifest()
         version = str(asset.version)
         if asset.type not in data:
@@ -60,3 +60,4 @@ class Manifest:
         with open(self.ROOT, "w") as json_file:
             json.dump(data, json_file, indent=4, cls=self.encoder)
             logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
+

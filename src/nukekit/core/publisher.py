@@ -82,7 +82,7 @@ class Publisher():
         try:
             shutil.copy2(asset.source_path, asset.destination_path)
             logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
-            self.context.repo_manifest.update_manifest(asset)
+            self.context.repo_manifest.update(asset)
             return True
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")
