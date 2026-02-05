@@ -32,21 +32,18 @@ def compare_manifest(parent:Manifest|dict, child:Manifest|dict):
 
     assets = {}
 
-    for asset_category, asset_list in child_data.items():
-
-        if asset_category not in unpublished_assets.keys(): unpublished_assets[asset_category] = []
-        if asset_category not in outdated_assets.keys(): outdated_assets[asset_category] = []
-        if asset_category not in synced_assets.keys(): synced_assets[asset_category] = []
-
+    for asset_category, assets[asset_category] in child_data.items():
+        # Create empty list for each category
+        if asset_category not in assets.keys(): assets[asset_category] = []
         parent_repo_asset_type_dict = parent_data[asset_category]
         
-        for a in asset_list:
+        for a in assets[asset_category]:
             # Manually set a to Asset to get methods 
             a:Asset
             asset_name = a.name
             if asset_name not in parent_repo_asset_type_dict.keys():
                 a.set_status('unpublished')
-                #unpublished_assets[asset_category].append(a)
+                assets[asset_category].append(a)
                 continue
 
             parent_repo_asset_versions_dict = parent_repo_asset_type_dict[asset_name]['versions']
@@ -55,22 +52,21 @@ def compare_manifest(parent:Manifest|dict, child:Manifest|dict):
             else:
                 raise NotImplementedError("Cant't find latest version from dict")
             if a.version < latest_version:
-                outdated_assets[asset_category].append(a)
-                logger.warning(f"Found outdated version of {a} in local folder. Local state manifest is detached from current state")
+                a.set_status('outdated')
+                assets[asset_category].append(a)
+                logger.warning(f"Found outdated version of {a} in local folder.")
                 continue
             try:
                 child_repo_asset = parent_repo_asset_versions_dict[str(a.version)]
+                child_repo_asset: Asset
             except KeyError:
                 ValueError('Local tool higher version than local repo, manifest was not uopdated correctly ') 
             else:
-                synced_assets[asset_category].append(child_repo_asset)
-        
-    print('unpublished_assets')
-    pprint(unpublished_assets)
-    print('outdated_assets')
-    pprint(outdated_assets)
-    print('synced_assets')
-    pprint(synced_assets)
+                child_repo_asset.set_status('synced')
+                assets[asset_category].append(child_repo_asset)
+
+           
+    pprint(assets)
 
 
 
