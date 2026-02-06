@@ -10,7 +10,7 @@ from .core.manifest import Manifest
 from .core.context import Context
 from .core.repository import Repository
 from .core.publisher import Publisher
-from .core.assets import asset_factory
+from .core.installer import Installer
 
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
@@ -58,7 +58,7 @@ def init()->Context:
         return context
 
 def main():
-    actions = ["publish", "scan", "sync"]
+    actions = ["publish", 'install', "scan"]
     global_parser = argparse.ArgumentParser(add_help = False)
     global_parser.add_argument("action", nargs='?', default = None,choices= actions,help = 'Actions to take')
     global_parser.add_argument("--file", "-f", help = "File" )
@@ -83,6 +83,9 @@ def main():
     print("*"*100)
     pprint(context.repo_manifest.data)
 
+    publish_asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
+    install_asset_path = "/home/etienne/central_repo/Gizmo/city/city_v2.1.0.gizmo"
+
 
     # Ui 
     if args.no_gui:
@@ -91,9 +94,12 @@ def main():
         if args.action == 'publish':
             #scanner
             #choose asset
-            asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
             publisher = Publisher(context)
-            context = publisher.publish_asset(asset_path)
+            context = publisher.publish_asset(publish_asset_path)
+        elif args.action == 'install':
+            installer = Installer(context)
+            installer.install_asset(install_asset_path)
+
         elif args.action == 'scan':
             scanner = Scanner(context)
             if args.directory is not None:
