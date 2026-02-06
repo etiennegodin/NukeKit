@@ -23,9 +23,23 @@ class Context():
     asset_types: TypeAlias = Literal['Gizmo', 'Script']
 
     def compare_to_remote(self):
-        self.local_manifest.compare(self.repo_manifest)
-        
+        self.repo_manifest.compare(self.local_manifest)
+
     def update_local_state(self):
         scanner = Scanner(self)
-        new_assets = scanner.scan_local()
+        scanned_assets = scanner.scan_local()
+        data = self.local_manifest.data
+
+        for assets_list in scanned_assets.values():
+            for asset in assets_list:
+                # New asset
+                if asset.name not in data[asset.type].keys():
+                            data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
+                # Version already in manifest, skip
+                elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
+                    continue
+                # New version not in local state 
+                data[asset.type][asset.name]['versions'][str(asset.version)] = asset
+
+
 

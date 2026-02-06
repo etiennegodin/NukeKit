@@ -82,6 +82,8 @@ def main():
     # Compare local state against remote 
     context.compare_to_remote()
 
+    #pprint(context.local_manifest.data)
+
     # Ui 
     if args.no_gui:
         if args.action is None:
@@ -99,6 +101,7 @@ def main():
                 assets = scanner.scan_folder(args.directory)
             else:
                 assets = scanner.scan_local()
+            #pprint(assets)
 
     else:
         ui.launchUi(context)
