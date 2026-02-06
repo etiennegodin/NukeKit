@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class Manifest:
-    def __init__(self, path:Path = None):
+    def __init__(self, path:Path):
         self.ROOT = path 
         self._ensure_manifest()
         self.decoder = universal_decoder
@@ -23,15 +23,7 @@ class Manifest:
         self.data = self.read_manifest()
 
     def _ensure_manifest(self)->bool:
-        if self.ROOT is None:
-            with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix=".txt") as tmp_file:
-                tmp_path = Path(tmp_file.name)
-                tmp_file.write("Temporary content")
-                # Content is written, but the file is still open.
-                # We can now use 'tmp_path' as a pathlib object.
-
-
-        elif self.ROOT.exists():
+        if self.ROOT.exists():
             #to-do check if empty
             return False
         else:
