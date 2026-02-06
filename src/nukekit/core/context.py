@@ -27,5 +27,5 @@ class Context():
         
     def update_local_state(self):
         scanner = Scanner(self)
-        self.local_manifest = scanner.scan_local(self.local_manifest)
+        new_assets = scanner.scan_local()
 

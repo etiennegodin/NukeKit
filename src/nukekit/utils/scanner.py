@@ -23,13 +23,18 @@ class Scanner:
         :rtype: Manifest
         """
         data = manifest.data
-        path = manifest.ROOT
+        path = self.context.user_paths.NUKE_DIR
+        assets = {}
         
         for suffix, obj in ASSET_SUFFIXES.items():
             asset_paths = list(path.rglob(f"*{suffix}"))
             for path in asset_paths:
                 asset = asset_factory(path)
-                data[obj.type][asset.name]['versions'][asset.version] = asset
+                if asset.name not in data[obj.type].keys():
+                    data[obj.type][asset.name] = {'versions': {str(asset.version) : asset}}
+                elif str(asset.version) in data[obj.type][asset.name]['versions'].keys():
+                    continue
+                data[obj.type][asset.name]['versions'][str(asset.version)] = asset
 
         manifest.data = data
         return manifest

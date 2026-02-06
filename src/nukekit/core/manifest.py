@@ -118,7 +118,7 @@ class Manifest:
                 # Edge case, unpublished asset, default version to 0.1.0
                 if asset_name not in against_assets_dict.keys():
                     asset = assets_dict[asset_name]['versions']['0.1.0']
-                    asset.setstatus('unpublished')
+                    asset.set_status('unpublished')
                     asset_category_updated.append(asset)
                     continue
 
@@ -128,9 +128,7 @@ class Manifest:
 
                 latest_against_version = against.get_latest_asset_version(asset_name)
 
-                for versions, asset in versions.items():
-                    asset:Asset
-
+                for versions, asset in versions.items():            
                     if str(asset.version) in local_versions:
                         asset.set_status('local')
                     if str(asset.version) in non_local_versions:
