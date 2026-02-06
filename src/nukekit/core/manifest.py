@@ -4,7 +4,7 @@ import logging
 import tempfile
 from typing import Self
 from pathlib import Path
-from .assets import Asset, ASSET_REGISTRY
+from .assets import Asset, ASSET_REGISTRY, AssetStatus
 from .versioning import Version
 from ..utils.json import universal_decoder, UniversalEncoder
 
@@ -53,10 +53,33 @@ class Manifest:
             with open(self.ROOT, 'r') as file:
                 return json.load(file, object_hook=self.decoder)
 
-    def get_latest_asset_version(self, asset:Asset):
+    def get_latest_asset_version(self, asset:Asset|str):
         data = self.read_manifest()
-        if asset.name in data[asset.type]:
+        
+        if isinstance(asset,Asset):
+            try:
+                asset.name in data[asset.type]
+            except KeyError:
+                logger.error(f"Asset {asset.name} not found in manifest")
+                raise KeyError
+            
             return Version(data[asset.type][asset.name]['latest_version'])
+            
+        elif isinstance(asset, str):
+            asset_name = asset
+            for asset_category, asset_names in data.items():
+                try: 
+                    asset_name in asset_names.keys()
+                except KeyError:
+                    logger.error(f"Asset {asset.name} not found in manifest")
+                    raise KeyError
+                
+                return Version(data[asset_category][asset_name]['latest_version'])
+        else:
+            msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
+            logger.error(msg)
+            raise NotImplementedError(msg)
+                
 
     def update(self, asset:Asset):
         data = self.read_manifest()
@@ -99,19 +122,29 @@ class Manifest:
             # Create empty list for each category
             if asset_category not in updated_assets.keys(): updated_assets[asset_category] = []
 
-            against_assets_dict = against_data[asset_category].keys()
+            against_assets_dict = against_data[asset_category]
+
             for asset_name in assets_dict.keys():
-                print(asset_name)
+
+                # Edge case, unpublished asset, default version to 0.1.0
+                if asset_name not in against_assets_dict.keys():
+                    asset = assets_dict[asset_name]['versions']['0.1.0']
+                    asset.setstatus('unpublished')
+                    updated_assets[asset_category].append(asset)
+                    continue
+
+                # Define latest version of this asset in the against manifest 
+        
+                latest_version = against.get_latest_asset_version(asset_name)
+                print(latest_version)
+
+                        
                 versions = assets_dict[asset_name]['versions']
                 for asset in versions.values():
-                    print(asset)
                     asset:Asset
 
-                    if asset.name not in against_asset_dicts.values():
-                        asset.set_status('unpublished')
-                        updated_assets[asset_category].append(against_asset)
-                        continue
-                        
+                    
+
 
 
 
