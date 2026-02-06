@@ -32,6 +32,9 @@ class Context():
         # Set install status for remote assets 
         self._set_install_status()
 
+        self.local_manifest.write_manifest(verbose=True)
+
+
 
     def _set_install_status(self):
 
@@ -86,8 +89,6 @@ class Context():
         scanned_assets = scanner.scan_local()
         data = self.local_manifest.data
 
-        #pprint(scanned_assets)
-
         for assets_list in scanned_assets.values():
             for asset in assets_list:
                 try:
@@ -106,7 +107,8 @@ class Context():
                     # New version not in local state 
                     data[asset.type.name][asset.name]['versions'][str(asset.version)] = asset
 
-        self.local_manifest.write_manifest(verbose=True)
+        self.local_manifest.data = data
+
 
 
 

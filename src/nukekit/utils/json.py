@@ -1,6 +1,7 @@
 from __future__ import annotations
 from ..core.assets import Asset, ASSET_REGISTRY
 from ..core.versioning import Version
+from ..core.assets import AssetStatus
 from dataclasses import asdict
 import json
 from pathlib import Path
@@ -17,6 +18,8 @@ class UniversalEncoder(json.JSONEncoder):
             return str(obj)
         elif isinstance(obj, Version):
             return str(obj)
+        elif isinstance(obj, AssetStatus):
+            return str(obj.name)
         return super().default(obj)
 
 

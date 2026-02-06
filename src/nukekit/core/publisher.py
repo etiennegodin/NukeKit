@@ -75,7 +75,7 @@ class Publisher():
         return asset 
 
     def _publish_to_repo(self, asset_path, asset:Asset)-> bool:
-        destination_path = asset.update_remote_path(self.context.repo)
+        destination_path = asset.get_remote_path(self.context.repo)
 
         logger.debug(asset_path)
         logger.debug(asset_path)
@@ -83,7 +83,7 @@ class Publisher():
             shutil.copy2(asset_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")
             self.context.repo_manifest.update(asset)
-            
+
             return True
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")

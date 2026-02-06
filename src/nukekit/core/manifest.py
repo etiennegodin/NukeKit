@@ -81,7 +81,8 @@ class Manifest:
     def write_manifest(self, data: dict = None, verbose: bool = False):
         if data is None:
             data = self.data
-            
+        logger.debug(data)
+        logger.debug(self.ROOT)
         with open(self.ROOT, "w") as json_file:
             json.dump(data, json_file, indent=4, cls=self.encoder)
         
