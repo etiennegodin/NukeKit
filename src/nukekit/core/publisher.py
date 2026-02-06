@@ -82,6 +82,7 @@ class Publisher():
         try:
             shutil.copy2(asset_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")
+            asset.set_publish_status('published')
             self.context.repo_manifest.update(asset)
 
             return True

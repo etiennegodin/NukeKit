@@ -25,8 +25,9 @@ class AssetStatus(str, Enum):
     PUBLISHED = 'published'
 
 
+
 INSTALL_STATUS = Literal['non_local', 'local']
-PUBLISH_STATUS = Literal["unpublished", 'synced']
+PUBLISH_STATUS = Literal["unpublished", 'synced', 'published']
 
 
 logger = logging.getLogger(__name__)
