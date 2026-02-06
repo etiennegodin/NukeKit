@@ -6,17 +6,16 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import date
 
-
-from .utils.logger import setup_logger
-from .utils.config import ConfigLoader
-from .utils.paths import UserPaths
-
 from .core.manifest import Manifest
 from .core.context import Context
 from .core.repository import Repository
 from .core.publisher import Publisher
 from .core.assets import asset_factory
-from .core.scanner import Scanner
+
+from .utils.logger import setup_logger
+from .utils.config import ConfigLoader
+from .utils.paths import UserPaths
+from .utils.scanner import Scanner
 
 from . import ui
 
@@ -78,7 +77,7 @@ def main():
     context = init()
     
     # Scan for local files and update local manifest
-    scanner = Scanner(context)
+    context.update_local_state()
     
     # Compare local state against remote 
     context.compare_to_remote()

@@ -5,6 +5,10 @@ import logging
 from .repository import Repository
 from ..core.manifest import Manifest
 from ..utils.paths import UserPaths 
+from ..utils.scanner import Scanner
+
+from pprint import pprint
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,3 +24,8 @@ class Context():
 
     def compare_to_remote(self):
         self.local_manifest.compare(self.repo_manifest)
+        
+    def update_local_state(self):
+        scanner = Scanner(self)
+        self.local_manifest = scanner.scan_local(self.local_manifest)
+
