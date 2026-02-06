@@ -12,8 +12,3 @@ class Validator():
 
 
 
-
-def format_metadata(asset:Asset):
-    return f"""Version: {asset.version}\tAuthor: {asset.author}\tTime: {asset.time}\tMessage" {asset.changelog}"""
-
-

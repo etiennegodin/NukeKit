@@ -17,23 +17,32 @@ logger = logging.getLogger(__name__)
 class Manifest:
     def __init__(self, path:Path):
         self.ROOT = path 
-        self._ensure_manifest()
         self.decoder = universal_decoder
         self.encoder = UniversalEncoder
+        self._ensure_manifest()
         self.data = self.read_manifest()
 
+    
+
     def _ensure_manifest(self)->bool:
-        if self.ROOT.exists():
-            #to-do check if empty
-            return False
-        else:
-            # Create empty manifest 
+
+        def new_manifest():
             data = {}
             for type in ASSET_REGISTRY.keys():
                 data[type] = {}
             with open(self.ROOT, "w") as json_file:
                 json.dump(data, json_file, indent= 4)
             return True
+
+        try:
+            with open(self.ROOT, 'r') as file:
+                data = json.load(file, object_hook=self.decoder)
+        except FileNotFoundError:
+            return new_manifest()
+        except json.decoder.JSONDecodeError:
+            return new_manifest()
+        else:
+            return False
 
     def read_manifest(self)->dict:
         try:
@@ -47,24 +56,22 @@ class Manifest:
 
     def get_latest_asset_version(self, asset:Asset|str)->Version:
         data = self.read_manifest()
-        
+        logger.debug(asset.name)
+        logger.debug(data[asset.type.name].keys())
+        logger.debug(asset.name in data[asset.type.name].keys())
         if isinstance(asset,Asset):
-            try:
-                asset.name in data[asset.type.name]
-            except KeyError:
-                logger.error(f"Asset {asset.name} not found in manifest")
-                raise KeyError
-            return Version(data[asset.type.name][asset.name]['latest_version'])
+            if asset.name in data[asset.type.name].keys():
+                return Version(data[asset.type.name][asset.name]['latest_version'])
+            logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
+            return None
             
         elif isinstance(asset, str):
             # Asset type undefined, looping through options
             for asset_category, asset_names in data.items():
-                try: 
-                    asset in asset_names.keys()
-                except KeyError:
-                    logger.error(f"Asset {asset} not found in manifest")
-                    raise KeyError
-                return Version(data[asset_category][asset]['latest_version'])
+                if asset in asset_names.keys():
+                    return Version(data[asset_category][asset]['latest_version'])
+
+                logger.error(f"Asset '{asset}' not found in {self.ROOT} manifest")
         else:
             # Handle unexpected type 
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"

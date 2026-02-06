@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Self, Literal
+from typing import Literal
 from .versioning import Version
 import logging
 import getpass
@@ -13,6 +13,9 @@ ASSET_TYPES = Literal['Gizmo', 'Script']
 class AssetType(str, Enum):
     Gizmo = 'Gizmo'
     Script = 'Script'
+
+    def __repr__(self):
+        return self.name
 
 class AssetStatus(str, Enum):
     LOCAL = 'local'
@@ -31,21 +34,13 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Asset():
     name:str 
-    source_path:str|Path
     version: Version = None
     changelog:str = None
     author: str = None
-    remote_path: Path = None
     time:str = None
     id:str = None
     type:AssetType = None
     status:AssetStatus = None
-
-
-    def __post_init__(self):
-        #Convert to path if string
-        if isinstance(self.source_path, str):
-            self.source_path  = Path(self.source_path)
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -63,9 +58,13 @@ class Asset():
         self._set_author()
         self._set_uuid()
 
-    def update_remote_path(self, repo:Repository):
-        asset_path = repo.get_subdir(self.type) / self.name / f"{self.name}_v{self.version}.gizmo"
-        self.remote_path = asset_path
+    def get_remote_path(self, repo:Repository):
+        repo_path = repo.get_subdir(self.type.name) / self.name
+        # Create asset folder if first publish 
+        if not repo_path.exists():
+            repo_path.mkdir(exist_ok=True)
+
+        return repo_path / f"{self.name}_v{self.version}.gizmo"
 
     def set_publish_status(self, status: PUBLISH_STATUS):
         self.status = AssetStatus(status)
@@ -116,7 +115,7 @@ def asset_factory(asset_path:Path)->Gizmo|Script:
     cls = ASSET_SUFFIXES.get(asset_suffix) 
     logger.debug(cls)
     if cls:
-        return cls(asset_name, asset_path, asset_version)
+        return cls(asset_name, asset_version)
     else: 
         raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 

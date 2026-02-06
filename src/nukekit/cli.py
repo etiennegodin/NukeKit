@@ -92,9 +92,8 @@ def main():
             #scanner
             #choose asset
             asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
-            asset = asset_factory(asset_path)
             publisher = Publisher(context)
-            context = publisher.publish_asset(asset)
+            context = publisher.publish_asset(asset_path)
         elif args.action == 'scan':
             scanner = Scanner(context)
             if args.directory is not None:
