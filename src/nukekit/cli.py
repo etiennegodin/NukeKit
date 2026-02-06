@@ -77,12 +77,12 @@ def main():
     context = init()
     
     # Scan for local files and update local manifest
-    context.update_local_state()
-    
-    # Compare local state against remote 
-    context.set_publish_status()
 
-    #pprint(context.local_manifest.data)
+
+    pprint(context.local_manifest.data)
+    print("*"*100)
+    pprint(context.repo_manifest.data)
+
 
     # Ui 
     if args.no_gui:

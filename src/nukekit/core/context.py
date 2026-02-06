@@ -23,14 +23,46 @@ class Context():
     local_manifest: Manifest
     asset_types: TypeAlias = Literal['Gizmo', 'Script']
 
-    def set_publish_status(self):
 
+    def __post_init__(self):
+        # Updated local state
+        self._update_local_state()
+    
+        # Set publish status for local assets 
+        self._set_publish_status()
+
+        # Set install status for remote assets 
+        self._set_install_status()
+
+
+    def _set_install_status(self):
+
+        data = self.repo_manifest.data
+        for asset_category, assets_dict in data.items():
+            #Remote data for this category
+            local_assets_dict = self.local_manifest.data[asset_category]
+            for asset_name in assets_dict.keys():
+                # Edge case, unpublished asset, default version to 0.1.0
+                if asset_name not in local_assets_dict.keys():
+                    assets_dict[asset_name]['versions']['0.1.0'].set_install_status('non_local')
+                    continue
+
+                versions = assets_dict[asset_name]['versions']
+                local_versions = list(assets_dict[asset_name]['versions'].keys() & local_assets_dict[asset_name]['versions'].keys())
+
+                for versions, asset in versions.items():     
+                    if str(asset.version) in local_versions:
+                        assets_dict[asset.name]['versions'][str(asset.version)].set_install_status('local')
+                    else:
+                        assets_dict[asset.name]['versions'][str(asset.version)].set_install_status('non_local')
+            data[asset_category] = assets_dict
+
+        self.repo_manifest.data = data
+
+        
+    def _set_publish_status(self):
 
         data = self.local_manifest.data
-
-        pprint(data)
-        print("*"*100)
-        
         for asset_category, assets_dict in data.items():
             #Remote data for this category
             remote_assets_dict = self.repo_manifest.data[asset_category]
@@ -46,14 +78,12 @@ class Context():
                 for versions, asset in versions.items():     
                     if str(asset.version) in local_versions:
                         assets_dict[asset.name]['versions'][str(asset.version)].set_publish_status('synced')
-            print(assets_dict)
             data[asset_category] = assets_dict
 
-        pprint(data)
         self.local_manifest.data = data
 
         
-    def update_local_state(self):
+    def _update_local_state(self):
         scanner = Scanner(self)
         scanned_assets = scanner.scan_local()
         data = self.local_manifest.data
