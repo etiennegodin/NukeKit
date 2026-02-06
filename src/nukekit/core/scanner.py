@@ -5,7 +5,6 @@ from .assets import ASSET_SUFFIXES
 from typing import get_args
 from .assets import asset_factory
 from pprint import pprint
-from .validator import compare_manifest
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,7 +28,8 @@ class Scanner:
     
     def scan_local(self)->dict:
         assets = self._scan(self.context.user_paths.NUKE_DIR)
-        compare_manifest(self.context.local_manifest, assets)
+
+        self.context.local_manifest.compare(self.context.repo_manifest)
 
     def scan_folder(self, path)->dict:
         if path is not None:
