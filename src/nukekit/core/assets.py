@@ -9,6 +9,10 @@ import getpass
 import uuid
 from enum import Enum
 
+ASSET_TYPES = Literal['Gizmo', 'Script']
+class AssetType(str, Enum):
+    Gizmo = 'Gizmo'
+    Script = 'Script'
 
 class AssetStatus(str, Enum):
     LOCAL = 'local'
@@ -16,7 +20,6 @@ class AssetStatus(str, Enum):
     UNPUBLISHED = 'unpublished'
     SYNCED = 'synced'
     PUBLISHED = 'published'
-
 
 
 INSTALL_STATUS = Literal['non_local', 'local']
@@ -32,10 +35,10 @@ class Asset():
     version: Version = None
     changelog:str = None
     author: str = None
-    destination_path: Path = None
+    remote_path: Path = None
     time:str = None
     id:str = None
-    type:str = 'Asset'
+    type:AssetType = None
     status:AssetStatus = None
 
 
@@ -60,17 +63,9 @@ class Asset():
         self._set_author()
         self._set_uuid()
 
-    def update_destination_path(self, repo:Repository):
-        asset_type_root = repo.get_subdir(self.type)
-        assets_list = repo.list_assets(self.type)
-
-        asset_folder = asset_type_root / self.name
-        asset_path = asset_folder/ f"{self.name}_v{self.version}.gizmo"
-
-        # Create folder if not existing 
-        if asset_folder not in assets_list:
-            asset_folder.mkdir()
-        self.destination_path = asset_path
+    def update_remote_path(self, repo:Repository):
+        asset_path = repo.get_subdir(self.type) / self.name / f"{self.name}_v{self.version}.gizmo"
+        self.remote_path = asset_path
 
     def set_publish_status(self, status: PUBLISH_STATUS):
         self.status = AssetStatus(status)
@@ -83,15 +78,15 @@ class Asset():
     
 @dataclass
 class Gizmo(Asset):
-    type:str = 'Gizmo'
+    type:AssetType = AssetType('Gizmo')
 
 @dataclass
 class Script(Asset):
-    type:str = 'Script'
+    type:AssetType = AssetType('Script')
+
 
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
-
 
 
 def asset_factory(asset_path:Path)->Gizmo|Script:
@@ -102,6 +97,9 @@ def asset_factory(asset_path:Path)->Gizmo|Script:
     # Get stem & suffix 
     asset_stem = asset_path.stem
     asset_suffix = asset_path.suffix
+
+    logger.debug(asset_stem)
+    logger.debug(asset_suffix)
 
     # Check if naming matches with enforced versionning
     if "_v" in asset_stem:
@@ -116,6 +114,7 @@ def asset_factory(asset_path:Path)->Gizmo|Script:
 
 
     cls = ASSET_SUFFIXES.get(asset_suffix) 
+    logger.debug(cls)
     if cls:
         return cls(asset_name, asset_path, asset_version)
     else: 

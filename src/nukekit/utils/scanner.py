@@ -19,6 +19,7 @@ class Scanner:
             asset_subtype = []
             for path in asset_paths:
                 asset = asset_factory(path)
+                logger.debug(asset.type)
                 asset_subtype.append(asset)
             assets[obj.type] = asset_subtype
         return assets

@@ -21,7 +21,7 @@ class Publisher():
             logger.error(error)
             raise TypeError(error)
         
-        if asset.type == 'script':
+        if asset.type.name == 'script':
             raise NotImplementedError
         
         asset_resolved = self._resolve_version(asset)
@@ -48,7 +48,7 @@ class Publisher():
     def _resolve_version(self,asset)-> Asset:
 
         while True:
-            asset.update_destination_path(self.context.repo)
+            asset.update_remote_path(self.context.repo)
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
 
             #New asset or newer than repo
@@ -80,8 +80,8 @@ class Publisher():
 
     def _publish_to_repo(self, asset:Asset)-> bool:
         try:
-            shutil.copy2(asset.source_path, asset.destination_path)
-            logger.info(f"Successfully saved {asset} to {asset.destination_path} ")
+            shutil.copy2(asset.source_path, asset.remote_path)
+            logger.info(f"Successfully saved {asset} to {asset.remote_path} ")
             self.context.repo_manifest.update(asset)
             return True
         except shutil.SameFileError as e :

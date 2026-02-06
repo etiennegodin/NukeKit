@@ -21,8 +21,6 @@ class Context():
     date: str
     repo_manifest: Manifest
     local_manifest: Manifest
-    asset_types: TypeAlias = Literal['Gizmo', 'Script']
-
 
     def __post_init__(self):
         # Updated local state
@@ -88,16 +86,25 @@ class Context():
         scanned_assets = scanner.scan_local()
         data = self.local_manifest.data
 
+        #pprint(scanned_assets)
+
         for assets_list in scanned_assets.values():
             for asset in assets_list:
-                # New asset
-                if asset.name not in data[asset.type].keys():
-                            data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
-                # Version already in manifest, skip
-                elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
-                    continue
-                # New version not in local state 
-                data[asset.type][asset.name]['versions'][str(asset.version)] = asset
+                try:
+                    asset.name in data[asset.type.name]
+                except KeyError:
+                    # Catch Asset
+                    msg = f"Error adding {asset.name} to local manifest. Type {asset.type.name} not supported"
+                    logger.error(msg)
+                else:
+                    # New asset
+                    if asset.name not in data[asset.type.name].keys():
+                                data[asset.type.name][asset.name] = {'versions': {str(asset.version) : asset}}
+                    # Version already in manifest, skip
+                    elif str(asset.version) in data[asset.type.name][asset.name]['versions'].keys():
+                        continue
+                    # New version not in local state 
+                    data[asset.type.name][asset.name]['versions'][str(asset.version)] = asset
 
         self.local_manifest.write_manifest(verbose=True)
 

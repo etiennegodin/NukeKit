@@ -2,9 +2,9 @@ import logging
 from pathlib import Path
 
 def init_logger():
-    logging.basicConfig(level= logging.INFO, )
+    logging.basicConfig(level= logging.DEBUG)
 
-def setup_logger(log_file: Path = None, level=logging.INFO):
+def setup_logger(log_file: Path = None, level=logging.DEBUG):
     """Configure logger with file and console handlers."""
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(

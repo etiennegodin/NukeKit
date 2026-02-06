@@ -50,11 +50,11 @@ class Manifest:
         
         if isinstance(asset,Asset):
             try:
-                asset.name in data[asset.type]
+                asset.name in data[asset.type.name]
             except KeyError:
                 logger.error(f"Asset {asset.name} not found in manifest")
                 raise KeyError
-            return Version(data[asset.type][asset.name]['latest_version'])
+            return Version(data[asset.type.name][asset.name]['latest_version'])
             
         elif isinstance(asset, str):
             # Asset type undefined, looping through options
@@ -84,15 +84,15 @@ class Manifest:
     def update(self, asset:Asset):
         data = self.read_manifest()
         version = str(asset.version)
-        if asset.type not in data:
+        if asset.type.name not in data:
             raise Exception('manifest')
 
-        if asset.name not in data[asset.type]:
-            data[asset.type][asset.name] = {"versions" : {version: asset},
+        if asset.name not in data[asset.type.name]:
+            data[asset.type.name][asset.name] = {"versions" : {version: asset},
                                         "latest_version" : version}
         else:
-            data[asset.type][asset.name]['versions'][version] = asset  
-            data[asset.type][asset.name]['latest_version'] = version
+            data[asset.type.name][asset.name]['versions'][version] = asset  
+            data[asset.type.name][asset.name]['latest_version'] = version
 
         self.write_manifest(data)
         logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
