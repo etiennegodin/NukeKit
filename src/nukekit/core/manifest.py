@@ -4,7 +4,7 @@ import logging
 import tempfile
 from typing import Self
 from pathlib import Path
-from .assets import Asset, ASSET_REGISTRY, AssetStatus
+from .assets import Asset, ASSET_REGISTRY
 from .versioning import Version
 from ..utils.json import universal_decoder, UniversalEncoder
 
@@ -78,8 +78,17 @@ class Manifest:
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
             logger.error(msg)
             raise NotImplementedError(msg)
-                
-
+    
+    def write_manifest(self, data: dict = None, verbose: bool = False):
+        if data is None:
+            data = self.data
+            
+        with open(self.ROOT, "w") as json_file:
+            json.dump(data, json_file, indent=4, cls=self.encoder)
+        
+        if verbose:
+            logger.info(f"Successfully wrote {self.ROOT}")
+            
     def update(self, asset:Asset):
         data = self.read_manifest()
         version = str(asset.version)
@@ -92,54 +101,9 @@ class Manifest:
         else:
             data[asset.type][asset.name]['versions'][version] = asset  
             data[asset.type][asset.name]['latest_version'] = version
-        
-        with open(self.ROOT, "w") as json_file:
-            json.dump(data, json_file, indent=4, cls=self.encoder)
-            logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
 
-
-    def compare(self, against:Manifest|dict):
-        updated_assets = {}
-
-        if isinstance(against, Manifest):
-            against_data = against.data
-        elif isinstance(against, dict):
-            #against = Manifest()
-            against_data = against
-        else:
-            raise ValueError(f"Child manifest type {type(against)} not accepted")
-        
-        for asset_category, assets_dict in self.data.items():
-            # Create empty list for each category
-            asset_category_updated = []
-            against_assets_dict = against_data[asset_category]
-
-            for asset_name in assets_dict.keys():
-                # Edge case, unpublished asset, default version to 0.1.0
-                if asset_name not in against_assets_dict.keys():
-                    asset = assets_dict[asset_name]['versions']['0.1.0']
-                    asset.set_status('unpublished')
-                    asset_category_updated.append(asset)
-                    continue
-
-                versions = assets_dict[asset_name]['versions']
-                local_versions = list(assets_dict[asset_name]['versions'].keys() & against_assets_dict[asset_name]['versions'].keys())
-                non_local_versions =  list(against_assets_dict[asset_name]['versions'].keys() - assets_dict[asset_name]['versions'].keys())
-
-                latest_against_version = against.get_latest_asset_version(asset_name)
-
-                for versions, asset in versions.items():            
-                    if str(asset.version) in local_versions:
-                        asset.set_status('local')
-                    if str(asset.version) in non_local_versions:
-                        asset.set_status('non_local')
-
-                    asset_category_updated.append(asset)
-                        
-            updated_assets[asset_category] =  asset_category_updated
-        
-        pprint(updated_assets)
-
+        self.write_manifest(data)
+        logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
 
 
 

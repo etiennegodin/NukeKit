@@ -80,7 +80,7 @@ def main():
     context.update_local_state()
     
     # Compare local state against remote 
-    context.compare_to_remote()
+    context.set_publish_status()
 
     #pprint(context.local_manifest.data)
 

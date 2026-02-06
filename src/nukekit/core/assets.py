@@ -8,16 +8,20 @@ import logging
 import getpass
 import uuid
 from enum import Enum
-class AssetStatus(str, Enum):
 
+
+class AssetStatus(str, Enum):
     LOCAL = 'local'
     NON_LOCAL = 'non_local'
     UNPUBLISHED = 'unpublished'
-    NEW = 'new'
-    LATEST = 'latest'
+    SYNCED = 'synced'
+    PUBLISHED = 'published'
 
 
-ASSET_STATUS = Literal['local', 'non_local', 'unpublished', 'new', 'latest']
+
+INSTALL_STATUS = Literal['non_local', 'local']
+PUBLISH_STATUS = Literal["unpublished", 'synced']
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +35,8 @@ class Asset():
     destination_path: Path = None
     time:str = None
     id:str = None
-    status: AssetStatus = None
     type:str = 'Asset'
+    status:AssetStatus = None
 
 
     def __post_init__(self):
@@ -68,7 +72,10 @@ class Asset():
             asset_folder.mkdir()
         self.destination_path = asset_path
 
-    def set_status(self, status: ASSET_STATUS):
+    def set_publish_status(self, status: PUBLISH_STATUS):
+        self.status = AssetStatus(status)
+
+    def set_install_status(self,status: INSTALL_STATUS):
         self.status = AssetStatus(status)
 
     def __str__(self):
