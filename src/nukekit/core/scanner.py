@@ -29,8 +29,6 @@ class Scanner:
     def scan_local(self)->dict:
         assets = self._scan(self.context.user_paths.NUKE_DIR)
 
-        self.context.local_manifest.compare(self.context.repo_manifest)
-
     def scan_folder(self, path)->dict:
         if path is not None:
             return self._scan(path)

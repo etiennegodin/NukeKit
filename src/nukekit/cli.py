@@ -74,7 +74,15 @@ def main():
     )
     args = parser.parse_args()
 
+    # Create context 
     context = init()
+    
+    # Scan for local files and update local manifest
+    scanner = Scanner(context)
+    
+    # Compare local state against remote 
+    context.compare_to_remote()
+
     # Ui 
     if args.no_gui:
         if args.action is None:

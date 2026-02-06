@@ -8,15 +8,16 @@ import logging
 import getpass
 import uuid
 from enum import Enum
-
 class AssetStatus(str, Enum):
 
-    SYNCED = 'synced'
-    OUTDATED = 'outdated'
+    LOCAL = 'local'
+    NON_LOCAL = 'non_local'
     UNPUBLISHED = 'unpublished'
+    NEW = 'new'
+    LATEST = 'latest'
 
 
-ASSET_STATUS = Literal['synced', 'outdated', 'unpublished']
+ASSET_STATUS = Literal['local', 'non_local', 'unpublished', 'new', 'latest']
 
 logger = logging.getLogger(__name__)
 

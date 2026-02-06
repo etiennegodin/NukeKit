@@ -18,3 +18,5 @@ class Context():
     local_manifest: Manifest
     asset_types: TypeAlias = Literal['Gizmo', 'Script']
 
+    def compare_to_remote(self):
+        self.local_manifest.compare(self.repo_manifest)
