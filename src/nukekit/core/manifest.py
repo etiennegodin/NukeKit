@@ -125,7 +125,18 @@ class Manifest:
         self.write_manifest(data)
         logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
 
-    
+    def get_asset(self, id:str):
+
+        def recursive_dict_loop(d):
+            for key, value in d.items():
+                if isinstance(value, dict):
+                    # If the value is a dictionary, recurse into it
+                    recursive_dict_loop(value)
+                else:
+                    # Otherwise, process the key-value pair
+                    print(f"Key: {key}, Value: {value}")
+                    
+        recursive_dict_loop(self.data)
 
 
 

@@ -2,11 +2,8 @@ from __future__ import annotations
 import shutil
 import logging
 from pathlib import Path
-
 from ..core.assets import Asset
 from .context import Context
-from ..core.versioning import Version
-from .manifest import Manifest 
 from pprint import pprint 
 
 logger = logging.getLogger(__name__)
@@ -20,8 +17,11 @@ class Installer():
 
     def install_from_repo(self):
         assets = self.context.repo_manifest.read_manifest()
+
         print('installer')
-        self._format_for_console(assets)
+        #print(assets)
+        #print_json(json.dumps(assets,cls=UniversalEncoder))
+        
         asset = assets['Gizmo']['city']['versions']['0.1.0']
         self.install_asset(asset)
 
@@ -45,10 +45,3 @@ class Installer():
             self.context.local_manifest.update(asset)
             return True
         
-
-    def _format_for_console(self,assets:dict):
-
-        """"""
-
-
-    

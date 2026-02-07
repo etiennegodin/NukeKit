@@ -15,5 +15,6 @@ dependencies:
       - python-dotenv
       - PyQt5
       - shortuuid
+      - rich
 
 

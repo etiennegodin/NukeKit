@@ -23,6 +23,8 @@ class Publisher():
             raise NotImplementedError
         
         asset = self._resolve_version(asset)
+        if asset == False:
+            return 
         asset = self._ensure_changelog(asset)
         asset.ensure_metadata()
             
@@ -59,14 +61,13 @@ class Publisher():
                 if user_input_choice(f'A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?'):
                     asset.version = latest_version
                     to_update = True
-
+                else:
+                    return False
             # Handle the Decision
             if to_update:
                 asset = self._version_up(asset)
                 continue
-            logger.info(f'Aborted publish of {asset}')
-            return False
-        
+            logger.info(f'Aborted publish of {asset}')        
         return asset
         
     def _version_up(self,asset:Asset):
