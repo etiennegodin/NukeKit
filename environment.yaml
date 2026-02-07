@@ -14,5 +14,6 @@ dependencies:
       - PyYAML
       - python-dotenv
       - PyQt5
+      - shortuuid
 
 

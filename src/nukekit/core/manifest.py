@@ -32,7 +32,7 @@ class Manifest:
             open(root, 'r')
         except FileNotFoundError:
             logger.error(f"Manifest file {root} not found")
-            data = None
+            data = {}
         else:
             with open(root, 'r') as file:
                 data = json.load(file, object_hook=universal_decoder) 
@@ -47,7 +47,6 @@ class Manifest:
         return cls(data=data, root = userPaths.STATE_FILE)
 
     def _ensure_manifest(self)->bool:
-
         def new_manifest():
             data = {}
             for type in ASSET_REGISTRY.keys():
@@ -55,7 +54,6 @@ class Manifest:
             with open(self.ROOT, "w") as json_file:
                 json.dump(data, json_file, indent= 4)
             return True
-
         try:
             with open(self.ROOT, 'r') as file:
                 data = json.load(file, object_hook=self.decoder)
@@ -79,11 +77,11 @@ class Manifest:
     def get_latest_asset_version(self, asset:Asset|str)->Version:
         data = self.read_manifest()
         logger.debug(asset.name)
-        logger.debug(data[asset.type.name].keys())
-        logger.debug(asset.name in data[asset.type.name].keys())
+        logger.debug(data[asset.type].keys())
+        logger.debug(asset.name in data[asset.type].keys())
         if isinstance(asset,Asset):
-            if asset.name in data[asset.type.name].keys():
-                return Version(data[asset.type.name][asset.name]['latest_version'])
+            if asset.name in data[asset.type].keys():
+                return Version(data[asset.type][asset.name]['latest_version'])
             logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
             return None
             
@@ -114,15 +112,15 @@ class Manifest:
     def update(self, asset:Asset):
         data = self.read_manifest()
         version = str(asset.version)
-        if asset.type.name not in data:
+        if asset.type not in data:
             raise Exception('manifest')
 
-        if asset.name not in data[asset.type.name]:
-            data[asset.type.name][asset.name] = {"versions" : {version: asset},
+        if asset.name not in data[asset.type]:
+            data[asset.type][asset.name] = {"versions" : {version: asset},
                                         "latest_version" : version}
         else:
-            data[asset.type.name][asset.name]['versions'][version] = asset  
-            data[asset.type.name][asset.name]['latest_version'] = version
+            data[asset.type][asset.name]['versions'][version] = asset  
+            data[asset.type][asset.name]['latest_version'] = version
 
         self.write_manifest(data)
         logger.info(f"Successfully added {asset.name} v{version} to repo manifest")

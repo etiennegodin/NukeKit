@@ -7,8 +7,8 @@ from ..core.assets import Asset
 from .context import Context
 from ..core.versioning import Version
 from .manifest import Manifest 
-from ..utils.ux import user_input_choice
-from .assets import asset_factory
+from pprint import pprint 
+
 logger = logging.getLogger(__name__)
 
 class Installer():
@@ -18,19 +18,19 @@ class Installer():
     def install_all(self):
         pass
 
-    def install_asset(self, asset_path:Path):
+    def install_from_repo(self):
+        assets = self.context.repo_manifest.read_manifest()
+        print('installer')
+        self._format_for_console(assets)
+        asset = assets['Gizmo']['city']['versions']['0.1.0']
+        self.install_asset(asset)
 
-        asset = asset_factory(asset_path)
+    def install_asset(self, asset:Asset):
+        #Force back type if read from string 
         source_path = asset.get_remote_path(self.context.repo)
         destination_path = self.context.user_paths.NUKE_KIT_DIR
-
         try:
-            shutil.copy2(source_path, destination_path )
-            logger.info(f"Successfully saved {asset} to {destination_path} ")
-            asset.set_install_status('local')
-            self.context.local_manifest.update(asset)
-
-            return True
+            shutil.copy2(source_path, destination_path)
         except shutil.SameFileError as e :
             print("Source and destination represent the same file.")
         except PermissionError:
@@ -39,8 +39,16 @@ class Installer():
             print("The source file or destination directory was not found.")
         except Exception as e:
             print(f"An error occurred: {e}")
+        else:
+            logger.info(f"Successfully saved {asset} to {destination_path} ")
+            asset.set_install_status('local')
+            self.context.local_manifest.update(asset)
+            return True
+        
 
-        pass
+    def _format_for_console(self,assets:dict):
+
+        """"""
 
 
     

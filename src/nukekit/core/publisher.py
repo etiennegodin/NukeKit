@@ -19,7 +19,7 @@ class Publisher():
 
         asset = asset_factory(asset_path)
         
-        if asset.type.name == 'script':
+        if asset.type == 'script':
             raise NotImplementedError
         
         asset = self._resolve_version(asset)

@@ -7,6 +7,7 @@ from .versioning import Version
 import logging
 import getpass
 import uuid
+import shortuuid
 from enum import Enum
 
 ASSET_TYPES = Literal['Gizmo', 'Script']
@@ -23,6 +24,7 @@ class AssetStatus(str, Enum):
     UNPUBLISHED = 'unpublished'
     SYNCED = 'synced'
     PUBLISHED = 'published'
+    CACHED = 'cached'
 
 
 
@@ -40,7 +42,7 @@ class Asset():
     author: str = None
     time:str = None
     id:str = None
-    type:AssetType = None
+    type:str = None
     status:AssetStatus = None
 
     def _set_time(self):
@@ -51,7 +53,7 @@ class Asset():
             self.author = getpass.getuser()
     
     def _set_uuid(self):
-        unique_id = uuid.uuid4()
+        unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
 
     def ensure_metadata(self):
@@ -60,7 +62,7 @@ class Asset():
         self._set_uuid()
 
     def get_remote_path(self, repo:Repository):
-        repo_path = repo.get_subdir(self.type.name) / self.name
+        repo_path = repo.get_subdir(self.type) / self.name
         # Create asset folder if first publish 
         if not repo_path.exists():
             repo_path.mkdir(exist_ok=True)
@@ -78,11 +80,11 @@ class Asset():
     
 @dataclass
 class Gizmo(Asset):
-    type:AssetType = AssetType('Gizmo')
+    type:str = "Gizmo"
 
 @dataclass
 class Script(Asset):
-    type:AssetType = AssetType('Script')
+    type:str = "Script"
 
 
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}

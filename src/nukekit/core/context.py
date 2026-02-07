@@ -92,22 +92,22 @@ class Context():
         for assets_list in scanned_assets.values():
             for asset in assets_list:
                 try:
-                    asset.name in data[asset.type.name]
+                    asset.name in data[asset.type]
                 except KeyError:
                     # Catch Asset
-                    msg = f"Error adding {asset.name} to local manifest. Type {asset.type.name} not supported"
+                    msg = f"Error adding {asset.name} to local manifest. Type {asset.type} not supported"
                     logger.error(msg)
                 else:
                     # New asset
-                    if asset.name not in data[asset.type.name].keys():
-                                data[asset.type.name][asset.name] = {'versions': {str(asset.version) : asset}}
+                    if asset.name not in data[asset.type].keys():
+                                data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
 
                     # Version already in manifest, skip
-                    elif str(asset.version) in data[asset.type.name][asset.name]['versions'].keys():
+                    elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
 
                         continue
                     # New version not in local state 
-                    data[asset.type.name][asset.name]['versions'][str(asset.version)] = asset
+                    data[asset.type][asset.name]['versions'][str(asset.version)] = asset
 
         self.local_manifest.data = data
 

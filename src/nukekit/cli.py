@@ -43,9 +43,8 @@ def init()->Context:
     #Read remote and local manifest
     REPO_MANIFEST = Manifest.from_file(REPO.MANIFEST)
     LOCAL_MANIFEST = Manifest.from_file(USER_PATHS.CACHED_MANIFEST)
-
     LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
-    
+
     try:
         context = Context(REPO,
                 USER_PATHS,
@@ -96,7 +95,6 @@ def main():
     pprint(context.repo_manifest.data)
 
     publish_asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
-    install_asset_path = "/home/etienne/central_repo/Gizmo/city/city_v0.1.0.gizmo"
 
 
     # Ui 
@@ -109,8 +107,9 @@ def main():
             publisher = Publisher(context)
             context = publisher.publish_asset(publish_asset_path)
         elif args.action == 'install':
+            
             installer = Installer(context)
-            installer.install_asset(install_asset_path)
+            installer.install_from_repo()
 
         elif args.action == 'scan':
             scanner = Scanner(context)
