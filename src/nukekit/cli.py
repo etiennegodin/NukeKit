@@ -44,7 +44,7 @@ def init()->Context:
     REPO_MANIFEST = Manifest.from_file(REPO.MANIFEST)
     LOCAL_MANIFEST = Manifest.from_file(USER_PATHS.CACHED_MANIFEST)
     LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
-
+    
     try:
         context = Context(REPO,
                 USER_PATHS,

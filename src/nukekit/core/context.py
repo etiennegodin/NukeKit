@@ -31,7 +31,7 @@ class Context():
         self._set_publish_status()
 
         # Set install status for remote assets 
-        #self._set_install_status()
+        self._set_install_status()
 
         #self.local_manifest.write_manifest(verbose=True)
         pass
@@ -41,7 +41,7 @@ class Context():
         data = self.repo_manifest.data
         for asset_category, assets_dict in data.items():
             #Remote data for this category
-            local_assets_dict = self.local_manifest.data[asset_category]
+            local_assets_dict = self.local_state.data[asset_category]
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.1.0
                 if asset_name not in local_assets_dict.keys():
@@ -63,7 +63,7 @@ class Context():
         
     def _set_publish_status(self):
 
-        data = self.local_manifest.data
+        data = self.local_state.data
         for asset_category, assets_dict in data.items():
             #Remote data for this category
             remote_assets_dict = self.repo_manifest.data[asset_category]
@@ -81,36 +81,36 @@ class Context():
                         assets_dict[asset.name]['versions'][str(asset.version)].set_publish_status('synced')
             data[asset_category] = assets_dict
 
-        self.local_manifest.data = data
+        self.local_state.data = data
 
-        
+
     def _update_local_state(self):
-        data = self.local_manifest.data
-        scanned_assets = self.local_state.data
-        #pprint(scanned_assets)
+        scanned_data = self.local_state.data
+        local_data = self.local_manifest.data
 
-        for assets_dict in scanned_assets.values():
+
+        for assets_dict in scanned_data.values():
             for asset_name in assets_dict.keys():
                 for asset in assets_dict[asset_name]['versions'].values():
                     try:
-                        asset.name in data[asset.type]
+                        asset.name in local_data[asset.type]
                     except KeyError:
                         # Catch Asset
                         msg = f"Error adding {asset.name} to local manifest. Type {asset.type} not supported"
                         logger.error(msg)
                     else:
                         # New asset
-                        if asset.name not in data[asset.type].keys():
-                            data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
+                        if asset.name not in local_data[asset.type].keys():
+                            scanned_data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
 
-                        # Version already in manifest, skip
-                        elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
-
+                        # Version already in manifest, read from cached
+                        elif str(asset.version) in scanned_data[asset.type][asset.name]['versions'].keys():
+                            scanned_data[asset.type][asset.name]['versions'][str(asset.version)] = local_data[asset.type][asset.name]['versions'][str(asset.version)]
                             continue
                         # New version not in local state 
-                        data[asset.type][asset.name]['versions'][str(asset.version)] = asset
+                        scanned_data[asset.type][asset.name]['versions'][str(asset.version)] = asset
 
-        self.local_state.data = data
+        self.local_state.data = scanned_data
         self.local_state.write_manifest()
 
 
