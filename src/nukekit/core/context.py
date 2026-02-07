@@ -25,7 +25,7 @@ class Context():
 
     def __post_init__(self):
         # Updated local state
-        #self._update_local_state()
+        self._update_local_state()
     
         # Set publish status for local assets 
         self._set_publish_status()
@@ -85,31 +85,33 @@ class Context():
 
         
     def _update_local_state(self):
-        scanner = Scanner(self)
-        scanned_assets = scanner.scan_local()
         data = self.local_manifest.data
+        scanned_assets = self.local_state.data
+        #pprint(scanned_assets)
 
-        for assets_list in scanned_assets.values():
-            for asset in assets_list:
-                try:
-                    asset.name in data[asset.type]
-                except KeyError:
-                    # Catch Asset
-                    msg = f"Error adding {asset.name} to local manifest. Type {asset.type} not supported"
-                    logger.error(msg)
-                else:
-                    # New asset
-                    if asset.name not in data[asset.type].keys():
-                                data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
+        for assets_dict in scanned_assets.values():
+            for asset_name in assets_dict.keys():
+                for asset in assets_dict[asset_name]['versions'].values():
+                    try:
+                        asset.name in data[asset.type]
+                    except KeyError:
+                        # Catch Asset
+                        msg = f"Error adding {asset.name} to local manifest. Type {asset.type} not supported"
+                        logger.error(msg)
+                    else:
+                        # New asset
+                        if asset.name not in data[asset.type].keys():
+                            data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
 
-                    # Version already in manifest, skip
-                    elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
+                        # Version already in manifest, skip
+                        elif str(asset.version) in data[asset.type][asset.name]['versions'].keys():
 
-                        continue
-                    # New version not in local state 
-                    data[asset.type][asset.name]['versions'][str(asset.version)] = asset
+                            continue
+                        # New version not in local state 
+                        data[asset.type][asset.name]['versions'][str(asset.version)] = asset
 
-        self.local_manifest.data = data
+        self.local_state.data = data
+        self.local_state.write_manifest()
 
 
 

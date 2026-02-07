@@ -19,9 +19,9 @@ class Scanner:
             for path in asset_paths:
                 asset = asset_factory(path)
                 if asset.name not in asset_subtype:
-                    asset_subtype['asset.name'] = {"versions" : {str(asset.version) : asset}}
+                    asset_subtype[asset.name] = {"versions" : {str(asset.version) : asset}}
                 elif str(asset.version) not in asset_subtype['versions']:
-                    asset_subtype['asset.name']['versions'] = {str(asset.version) : asset}
+                    asset_subtype[asset.name]['versions'] = {str(asset.version) : asset}
                 logger.debug(asset.type)
             assets[obj.type] = asset_subtype
         return assets

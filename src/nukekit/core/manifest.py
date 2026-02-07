@@ -43,7 +43,7 @@ class Manifest:
         """Create Manifest from scanner results"""
         scanner = Scanner(userPaths)
         scanner.scan_local()
-        data = scanner.scan_local()
+        data = scanner.data
         return cls(data=data, root = userPaths.STATE_FILE)
 
     def _ensure_manifest(self)->bool:
