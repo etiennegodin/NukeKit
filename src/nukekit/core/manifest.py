@@ -7,6 +7,8 @@ from pathlib import Path
 from .assets import Asset, ASSET_REGISTRY
 from .versioning import Version
 from ..utils.json import universal_decoder, UniversalEncoder
+from ..utils.scanner import Scanner
+from ..utils.paths import UserPaths
 
 from pprint import pprint
 
@@ -15,14 +17,34 @@ logger = logging.getLogger(__name__)
 
 
 class Manifest:
-    def __init__(self, path:Path):
-        self.ROOT = path 
+    def __init__(self, data:dict = None, root:Path = None):
+        self.ROOT = root 
         self.decoder = universal_decoder
         self.encoder = UniversalEncoder
         self._ensure_manifest()
-        self.data = self.read_manifest()
-
+        self.data = data
+        
+    @classmethod
+    def from_file(cls, path:Path):
+        """Create Manifest from a file path"""
+        root = path
+        try:
+            open(root, 'r')
+        except FileNotFoundError:
+            logger.error(f"Manifest file {root} not found")
+            data = None
+        else:
+            with open(root, 'r') as file:
+                data = json.load(file, object_hook=universal_decoder) 
+        return cls(data=data, root=root)
     
+    @classmethod
+    def from_scanner(cls, userPaths:UserPaths):
+        """Create Manifest from scanner results"""
+        scanner = Scanner(userPaths)
+        scanner.scan_local()
+        data = scanner.scan_local()
+        return cls(data=data, root = userPaths.STATE_FILE)
 
     def _ensure_manifest(self)->bool:
 
@@ -104,6 +126,8 @@ class Manifest:
 
         self.write_manifest(data)
         logger.info(f"Successfully added {asset.name} v{version} to repo manifest")
+
+    
 
 
 

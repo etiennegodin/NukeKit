@@ -41,16 +41,19 @@ def init()->Context:
     REPO = Repository(CONFIG['repository'])
 
     #Read remote and local manifest
-    REPO_MANIFEST = Manifest(REPO.MANIFEST)
-    LOCAL_MANIFEST = Manifest(UserPaths.STATE_FILE)
+    REPO_MANIFEST = Manifest.from_file(REPO.MANIFEST)
+    LOCAL_MANIFEST = Manifest.from_file(USER_PATHS.CACHED_MANIFEST)
 
+    LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
+    
     try:
         context = Context(REPO,
                 USER_PATHS,
                 CONFIG,
                 str(date.today()),
                 REPO_MANIFEST,
-                LOCAL_MANIFEST
+                LOCAL_MANIFEST,
+                LOCAL_STATE
                 )
     except Exception as e:
         raise e 
@@ -64,6 +67,7 @@ def main():
     global_parser.add_argument("--file", "-f", help = "File" )
     global_parser.add_argument("--directory", "-dir", help = "Folder to scan" )
     global_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without gui")
+    global_parser.add_argument("--force", action = 'store_true', help = "Launch without gui")
 
     parser = argparse.ArgumentParser(
                     prog='NukeKit',
@@ -71,20 +75,28 @@ def main():
                     epilog='Text at the bottom of help',
                     parents=[global_parser]
     )
-    args = parser.parse_args()
+    args = parser.parse_args()        
+
+    # Dev force clean state 
+    if args.force:
+        UserPaths.clean()
 
     # Create context 
     context = init()
     
     # Scan for local files and update local manifest
 
-
+    print('local_manifest')
     pprint(context.local_manifest.data)
     print("*"*100)
+    print('local_state')
+    pprint(context.local_state.data)
+    print("*"*100)
+    print('remote')
     pprint(context.repo_manifest.data)
 
     publish_asset_path = "/home/etienne/projects/pipetd/NukeKit/examples/city.gizmo"
-    install_asset_path = "/home/etienne/central_repo/Gizmo/city/city_v2.1.0.gizmo"
+    install_asset_path = "/home/etienne/central_repo/Gizmo/city/city_v0.1.0.gizmo"
 
 
     # Ui 
@@ -109,7 +121,8 @@ def main():
             #pprint(assets)
 
     else:
-        ui.launchUi(context)
+        pass
+        #ui.launchUi(context)
 
 
 

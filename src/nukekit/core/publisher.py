@@ -75,6 +75,7 @@ class Publisher():
         return asset 
 
     def _publish_to_repo(self, asset_path, asset:Asset)-> bool:
+        
         destination_path = asset.get_remote_path(self.context.repo)
 
         logger.debug(asset_path)

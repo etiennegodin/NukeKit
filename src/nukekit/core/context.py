@@ -21,20 +21,20 @@ class Context():
     date: str
     repo_manifest: Manifest
     local_manifest: Manifest
+    local_state: Manifest
 
     def __post_init__(self):
         # Updated local state
-        self._update_local_state()
+        #self._update_local_state()
     
         # Set publish status for local assets 
         self._set_publish_status()
 
         # Set install status for remote assets 
-        self._set_install_status()
+        #self._set_install_status()
 
-        self.local_manifest.write_manifest(verbose=True)
-
-
+        #self.local_manifest.write_manifest(verbose=True)
+        pass
 
     def _set_install_status(self):
 
@@ -101,8 +101,10 @@ class Context():
                     # New asset
                     if asset.name not in data[asset.type.name].keys():
                                 data[asset.type.name][asset.name] = {'versions': {str(asset.version) : asset}}
+
                     # Version already in manifest, skip
                     elif str(asset.version) in data[asset.type.name][asset.name]['versions'].keys():
+
                         continue
                     # New version not in local state 
                     data[asset.type.name][asset.name]['versions'][str(asset.version)] = asset
