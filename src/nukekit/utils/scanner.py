@@ -2,9 +2,8 @@ from __future__ import annotations
 from pathlib import Path
 from ..core.assets import ASSET_SUFFIXES
 from ..core.assets import Asset
-from ..utils.paths import UserPaths
-from ..utils.console import print_manifest
 import logging
+from pprint import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +21,10 @@ class Scanner:
                 asset = Asset.from_path(self.context,path)
                 logger.debug(type(asset.version))
                 logger.debug(asset.version)
-                if asset.name not in asset_subtype:
-                    asset_subtype[asset.name] = {"versions" : {str(asset.version) : asset}}
-                elif str(asset.version) not in asset_subtype['versions']:
-                    asset_subtype[asset.name]['versions'] = {str(asset.version) : asset}
+                if asset.name not in asset_subtype.keys():
+                    asset_subtype[asset.name] = {"versions" : {}}
+                if str(asset.version) not in asset_subtype[asset.name]['versions'].keys():
+                    asset_subtype[asset.name]['versions'][str(asset.version)] = asset
             assets[obj.type] = asset_subtype
         return assets
     

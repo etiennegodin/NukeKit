@@ -91,9 +91,6 @@ class Asset():
         asset_stem = asset_path.stem
         asset_suffix = asset_path.suffix
 
-        logger.debug(asset_stem)
-        logger.debug(asset_suffix)
-
         # Check if naming matches with enforced versionning
         if "_v" in asset_stem:
             asset_name = asset_stem.split(sep='_v')[0]
@@ -101,16 +98,15 @@ class Asset():
         else:
             # No specified version
             asset_name = asset_stem
-            asset_version = Version('0.1.0')
+            asset_version = Version('0.0.0')
             logger.warning(f'No specified version for {asset_name}')
 
         # Get object class from suffix 
         cls = ASSET_SUFFIXES.get(asset_suffix) 
-
         if cls:
             # Check if asset is a copy from repo
             try: 
-                obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
+                obj = context.repo_manifest.data[cls.type][asset_name]['versions'].get([str(asset_version)])
             except Exception as e:
                 # New asset 
                 return cls(asset_name, asset_version, asset_path, AssetStatus.UNPUBLISHED)

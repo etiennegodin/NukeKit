@@ -27,17 +27,13 @@ class Publisher():
 
         if asset == False:
             return 
+        
         asset = self._ensure_changelog(asset)
         asset.ensure_metadata()
             
         self._publish_to_repo(asset)
 
-        delete = user_input_choice(f'Do you want to remove published asset {asset} from local repo')
-
         self._sync_after_publish(asset)
-
-        # Sync local state to reflect newly published gizmo
-        #  
 
         return self.context
     
@@ -55,7 +51,7 @@ class Publisher():
                     print("\033[1A\033[K", end="") 
 
             asset.changelog = changelog
-            return asset
+        return asset
 
     def _resolve_version(self,asset)-> Asset:
 
@@ -65,7 +61,6 @@ class Publisher():
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
                 break
-
             # Version Logic: Conflict/Exists 
             to_update = False
             if latest_version == asset.version:
@@ -80,7 +75,7 @@ class Publisher():
             if to_update:
                 asset = self._version_up(asset)
                 continue
-            logger.info(f'Aborted publish of {asset}')        
+            logger.info(f'Aborted publish of {asset}') 
         return asset
         
     def _version_up(self,asset:Asset):

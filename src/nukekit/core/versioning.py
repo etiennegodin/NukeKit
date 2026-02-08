@@ -1,6 +1,7 @@
 from __future__ import annotations
 import semver
 from typing import Self, Literal
+import logging
 
 
 """
@@ -8,6 +9,8 @@ Major: Breaking changes (different inputs/outputs)
 Minor: New features, backward compatible
 Patch: Bug fixes
 """
+
+logger = logging.getLogger(__name__)
 
 class Version():
     
@@ -42,7 +45,6 @@ class Version():
             self.patch = 0
         elif type_name == 'minor':
             self.patch = 0 
-        return self
 
     def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \
