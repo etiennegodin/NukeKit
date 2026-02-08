@@ -17,9 +17,8 @@ from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 from .utils.scanner import Scanner
-from .utils.console import print_manifest, menu, menu2
+from .utils.console import print_manifest, choose_menu
 
-from . import ui
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
@@ -45,7 +44,7 @@ def init()->Context:
     #Read remote and local manifest
     REPO_MANIFEST = Manifest.from_file(REPO.MANIFEST)
     LOCAL_MANIFEST = Manifest.from_file(USER_PATHS.CACHED_MANIFEST)
-    LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
+    #LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
     
     try:
         context = Context(REPO,
@@ -54,7 +53,6 @@ def init()->Context:
                 str(date.today()),
                 REPO_MANIFEST,
                 LOCAL_MANIFEST,
-                LOCAL_STATE
                 )
     except Exception as e:
         raise e 
@@ -66,8 +64,9 @@ def publish(args, context:Context):
     if args.file:
         context = publisher.publish_asset(args.file)
     else:
-        menu2()
+        #pprint(context.local_state.data)
         #print_manifest(context.local_state.data, status_filter=AssetStatus('unpublished'))
+        menu()
         #uuid = input('Enter uuid for asset to publish')
         
     pass

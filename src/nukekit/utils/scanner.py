@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from ..core.assets import ASSET_SUFFIXES
-from ..core.assets import asset_factory
+from ..core.assets import asset_factory, Asset
 from ..utils.paths import UserPaths
 from ..utils.console import print_manifest
 import logging
@@ -9,8 +9,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Scanner:
-    def __init__(self, user_paths:UserPaths):
-        self.user_paths = user_paths
+    def __init__(self, context:Context):
+        self.context = context
+        self.user_paths = context.user_paths
 
     def _scan(self,path:Path)->dict:
         assets = {}
@@ -18,7 +19,9 @@ class Scanner:
             asset_paths = list(path.rglob(f"*{suffix}"))
             asset_subtype = {}
             for path in asset_paths:
-                asset = asset_factory(path)
+                #asset = asset_factory(path)
+                asset = Asset.from_path(self.context,path)
+                quit()
                 if asset.name not in asset_subtype:
                     asset_subtype[asset.name] = {"versions" : {str(asset.version) : asset}}
                 elif str(asset.version) not in asset_subtype['versions']:

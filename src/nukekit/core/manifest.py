@@ -39,9 +39,10 @@ class Manifest:
         return cls(data=data, root=root)
     
     @classmethod
-    def from_scanner(cls, userPaths:UserPaths):
+    def from_scanner(cls, context:Context):
+        userPaths = context.user_paths
         """Create Manifest from scanner results"""
-        scanner = Scanner(userPaths)
+        scanner = Scanner(context)
         scanner.scan_local()
         data = scanner.data
         return cls(data=data, root = userPaths.STATE_FILE)
@@ -135,7 +136,7 @@ class Manifest:
                 else:
                     # Otherwise, process the key-value pair
                     print(f"Key: {key}, Value: {value}")
-                    
+
         recursive_dict_loop(self.data)
 
 

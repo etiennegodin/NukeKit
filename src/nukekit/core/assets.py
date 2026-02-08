@@ -6,7 +6,6 @@ from typing import Literal
 from .versioning import Version
 import logging
 import getpass
-import uuid
 import shortuuid
 from enum import Enum
 
@@ -44,6 +43,7 @@ class Asset():
     id:str = None
     type:str = None
     status:AssetStatus = None
+    source_path:Path = None
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -78,6 +78,48 @@ class Asset():
     def __str__(self):
         return f"{self.name}_v{self.version}"
     
+    @classmethod
+    def from_path(cls, context:Context, asset_path:Path):
+    #Force Path for stem and suffix methods
+        if isinstance(asset_path, str):
+            asset_path = Path(asset_path)
+
+        # Get stem & suffix 
+        asset_stem = asset_path.stem
+        asset_suffix = asset_path.suffix
+
+        logger.debug(asset_stem)
+        logger.debug(asset_suffix)
+
+        # Check if naming matches with enforced versionning
+        if "_v" in asset_stem:
+            asset_name = asset_stem.split(sep='_v')[0]
+            asset_version = Version(asset_stem.split(sep='_v')[1])
+        else:
+            # No specified version
+            asset_name = asset_stem
+            asset_version = None #assumes init version
+            logger.warning(f'No specified version for {asset_name}')
+            #to-do log no specified version
+
+        # Get object class from suffix 
+        cls = ASSET_SUFFIXES.get(asset_suffix) 
+
+        if cls:
+            #return cls(asset_name, asset_version)
+            try: 
+                obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
+            except Exception as e:
+                print(e)
+            else:
+                print(obj)
+                pass
+        else:
+            raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
+
+        
+
+    
 @dataclass
 class Gizmo(Asset):
     type:str = "Gizmo"
@@ -91,7 +133,7 @@ ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
 
 
-def asset_factory(asset_path:Path)->Gizmo|Script:
+def asset_factory(context:Context, asset_path:Path)->Gizmo|Script:
     #Force Path for stem and suffix methods
     if isinstance(asset_path, str):
         asset_path = Path(asset_path)
@@ -110,21 +152,9 @@ def asset_factory(asset_path:Path)->Gizmo|Script:
     else:
         # No specified version
         asset_name = asset_stem
-        asset_version = Version('0.1.0') #assumes init version
+        asset_version = None #assumes init version
         logger.warning(f'No specified version for {asset_name}')
         #to-do log no specified version
-
-
-    cls = ASSET_SUFFIXES.get(asset_suffix) 
-    logger.debug(cls)
-    if cls:
-        return cls(asset_name, asset_version)
-    else: 
-        raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
-
-    
-
-
 
 
 

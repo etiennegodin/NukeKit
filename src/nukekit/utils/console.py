@@ -13,7 +13,7 @@ def menu2():
     option, index = pick(options, title)
     print(f"Selected: {option} - {index}")
 
-def menu():
+def choose_menu(options:dict):
     
     from simple_term_menu import TerminalMenu
 
@@ -42,5 +42,6 @@ def print_manifest(manifest:dict, status_filter:AssetStatus = None):
     for category, assets_dict in manifest.items():
         category_tree = tree.add(category)
         recursive_tree(assets_dict, category_tree)
+
     print(tree)
     

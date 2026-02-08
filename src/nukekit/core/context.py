@@ -21,9 +21,14 @@ class Context():
     date: str
     repo_manifest: Manifest
     local_manifest: Manifest
-    local_state: Manifest
+    local_state: Manifest = None
+
 
     def __post_init__(self):
+
+        self.local_state = Manifest.from_scanner(self)
+
+
         # Updated local state
         self._update_local_state()
     
@@ -85,6 +90,7 @@ class Context():
 
 
     def _update_local_state(self):
+
         scanned_data = self.local_state.data
         local_data = self.local_manifest.data
 
