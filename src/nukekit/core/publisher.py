@@ -4,6 +4,7 @@ import logging
 
 from ..core.assets import Asset
 from .context import Context
+from .installer import Installer
 from ..core.versioning import Version
 from .manifest import Manifest 
 from ..utils.ux import user_input_choice
@@ -29,9 +30,20 @@ class Publisher():
         asset = self._ensure_changelog(asset)
         asset.ensure_metadata()
             
-
         self._publish_to_repo(asset)
+
+        delete = user_input_choice(f'Do you want to remove published asset {asset} from local repo')
+
+        self._sync_after_publish(asset)
+
+        # Sync local state to reflect newly published gizmo
+        #  
+
         return self.context
+    
+    def _sync_after_publish(self, asset):
+        installer = Installer(self.context)
+        installer.install_asset(asset)
     
     def _ensure_changelog(self, asset:Asset)-> Asset:
         if asset.changelog is None:
@@ -49,7 +61,7 @@ class Publisher():
 
         while True:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
-
+            
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
                 break
@@ -78,10 +90,10 @@ class Publisher():
 
     def _publish_to_repo(self,asset:Asset)-> bool:
         
-        destination_path = asset.get_remote_path(self.context.repo)
+        destination_path = asset.get_remote_path(self.context.repo) 
 
         try:
-            shutil.copy2(asset_path, destination_path)
+            shutil.copy2(asset.source_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")
             asset.set_publish_status('published')
             self.context.repo_manifest.update(asset)

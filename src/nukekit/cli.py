@@ -67,6 +67,7 @@ def publish(args, context:Context):
         #pprint(context.local_state.data)
         print_manifest(context.local_state.data)
         asset = choose_menu(context.local_state.data)
+        pprint(asset)
         publisher.publish_asset(asset)        
         pass
 

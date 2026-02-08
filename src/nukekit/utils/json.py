@@ -28,6 +28,8 @@ def universal_decoder(dct):
     for k, v in dct.items():
         if isinstance(v, str) and k.endswith('_path'):
             dct[k] = Path(v)
+        if isinstance(v,str) and k == 'version':
+            dct[k] = Version(v)
 
     # After fixing paths, handle dataclass reconstruction
     if "__type__" in dct:

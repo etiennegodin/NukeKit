@@ -81,7 +81,9 @@ class Manifest:
         if isinstance(asset,Asset):
             if asset.name in data[asset.type].keys():
                 return Version(data[asset.type][asset.name]['latest_version'])
-            logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
+            
+            # New asset pubish 
+            #logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
             return None
             
         elif isinstance(asset, str):

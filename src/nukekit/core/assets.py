@@ -42,7 +42,6 @@ class Asset():
     version: Version = None
     source_path:Path = None
     status:AssetStatus = None
-
     changelog:str = None
     author: str = None
     time:str = None
@@ -102,7 +101,7 @@ class Asset():
         else:
             # No specified version
             asset_name = asset_stem
-            asset_version = Version('0.0.0')
+            asset_version = Version('0.1.0')
             logger.warning(f'No specified version for {asset_name}')
 
         # Get object class from suffix 
