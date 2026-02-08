@@ -2,7 +2,7 @@ from __future__ import annotations
 import shutil
 import logging
 
-from ..core.assets import Asset, asset_factory
+from ..core.assets import Asset
 from .context import Context
 from ..core.versioning import Version
 from .manifest import Manifest 
@@ -15,21 +15,22 @@ class Publisher():
     def __init__(self, context:Context):
         self.context = context
 
-    def publish_asset(self, asset_path:Path)-> bool:
-
-        asset = asset_factory(asset_path)
+    def publish_asset(self, asset:Path|Asset)-> bool:
+        if isinstance(asset, Path):
+            asset = Asset.from_path(self.context, asset)
         
-        if asset.type == 'script':
+        if asset.type == 'Script':
             raise NotImplementedError
         
         asset = self._resolve_version(asset)
+
         if asset == False:
             return 
         asset = self._ensure_changelog(asset)
         asset.ensure_metadata()
             
 
-        self._publish_to_repo(asset_path, asset)
+        self._publish_to_repo(asset)
         return self.context
     
     def _ensure_changelog(self, asset:Asset)-> Asset:
@@ -75,12 +76,10 @@ class Publisher():
         asset.version.version_up(version_update)
         return asset 
 
-    def _publish_to_repo(self, asset_path, asset:Asset)-> bool:
+    def _publish_to_repo(self,asset:Asset)-> bool:
         
         destination_path = asset.get_remote_path(self.context.repo)
 
-        logger.debug(asset_path)
-        logger.debug(asset_path)
         try:
             shutil.copy2(asset_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")

@@ -67,9 +67,7 @@ def publish(args, context:Context):
         #pprint(context.local_state.data)
         print_manifest(context.local_state.data)
         asset = choose_menu(context.local_state.data)
-        print(asset)
-        #uuid = input('Enter uuid for asset to publish')
-        
+        publisher.publish_asset(asset)        
         pass
 
 def install(args, context:Context):
@@ -111,6 +109,7 @@ def main():
 
 
     args = parser.parse_args()
+    context = init()
 
     # Call the function associated with the subcommand
     if hasattr(args, 'func'):
@@ -118,7 +117,6 @@ def main():
         if args.force:
             UserPaths.clean()
         # Create context 
-        context = init()
         args.func(args, context)
     else:
         # If no subcommand is given, show help

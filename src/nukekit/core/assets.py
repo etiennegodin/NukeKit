@@ -40,13 +40,14 @@ PUBLISH_STATUS = Literal["unpublished", 'synced', 'published']
 class Asset():
     name:str 
     version: Version = None
+    source_path:Path = None
+
     changelog:str = None
     author: str = None
     time:str = None
     id:str = None
     type:str = None
     status:AssetStatus = None
-    source_path:Path = None
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -113,7 +114,7 @@ class Asset():
                 obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
             except Exception as e:
                 # New asset 
-                return cls(asset_name, asset_version)
+                return cls(asset_name, asset_version, asset_path)
             else:
                 return obj
         else:
@@ -133,30 +134,3 @@ class Script(Asset):
 
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
 ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
-
-
-def asset_factory(context:Context, asset_path:Path)->Gizmo|Script:
-    #Force Path for stem and suffix methods
-    if isinstance(asset_path, str):
-        asset_path = Path(asset_path)
-
-    # Get stem & suffix 
-    asset_stem = asset_path.stem
-    asset_suffix = asset_path.suffix
-
-    logger.debug(asset_stem)
-    logger.debug(asset_suffix)
-
-    # Check if naming matches with enforced versionning
-    if "_v" in asset_stem:
-        asset_name = asset_stem.split(sep='_v')[0]
-        asset_version = Version(asset_stem.split(sep='_v')[1])
-    else:
-        # No specified version
-        asset_name = asset_stem
-        asset_version = None #assumes init version
-        logger.warning(f'No specified version for {asset_name}')
-        #to-do log no specified version
-
-
-

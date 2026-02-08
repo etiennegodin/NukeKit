@@ -39,11 +39,6 @@ def choose_menu(d:dict, level_name = "Main menu")->Asset:
             return value
     return value
 
-    
-
-
-
-
 def print_manifest(manifest:dict, status_filter:AssetStatus = None):
     def recursive_tree(d:dict, t:Tree):
         for key, value in d.items():

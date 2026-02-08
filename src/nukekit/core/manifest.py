@@ -26,6 +26,7 @@ class Manifest:
         
     @classmethod
     def from_file(cls, path:Path):
+        logger.debug(path)
         """Create Manifest from a file path"""
         root = path
         try:
@@ -77,9 +78,6 @@ class Manifest:
 
     def get_latest_asset_version(self, asset:Asset|str)->Version:
         data = self.read_manifest()
-        logger.debug(asset.name)
-        logger.debug(data[asset.type].keys())
-        logger.debug(asset.name in data[asset.type].keys())
         if isinstance(asset,Asset):
             if asset.name in data[asset.type].keys():
                 return Version(data[asset.type][asset.name]['latest_version'])
@@ -102,8 +100,6 @@ class Manifest:
     def write_manifest(self, data: dict = None, verbose: bool = False):
         if data is None:
             data = self.data
-        logger.debug(data)
-        logger.debug(self.ROOT)
         with open(self.ROOT, "w") as json_file:
             json.dump(data, json_file, indent=4, cls=self.encoder)
         

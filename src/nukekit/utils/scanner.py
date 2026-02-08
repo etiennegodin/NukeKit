@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from ..core.assets import ASSET_SUFFIXES
-from ..core.assets import asset_factory, Asset
+from ..core.assets import Asset
 from ..utils.paths import UserPaths
 from ..utils.console import print_manifest
 import logging
@@ -25,7 +25,6 @@ class Scanner:
                     asset_subtype[asset.name] = {"versions" : {str(asset.version) : asset}}
                 elif str(asset.version) not in asset_subtype['versions']:
                     asset_subtype[asset.name]['versions'] = {str(asset.version) : asset}
-                logger.debug(asset.type)
             assets[obj.type] = asset_subtype
         return assets
     
