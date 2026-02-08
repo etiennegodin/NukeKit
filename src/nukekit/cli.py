@@ -64,9 +64,10 @@ def publish(args, context:Context):
     if args.file:
         context = publisher.publish_asset(args.file)
     else:
-        pprint(context.local_state.data)
-        #print_manifest(context.local_state.data, status_filter=AssetStatus('unpublished'))
-        #menu()
+        #pprint(context.local_state.data)
+        print_manifest(context.local_state.data)
+        asset = choose_menu(context.local_state.data)
+        print(asset)
         #uuid = input('Enter uuid for asset to publish')
         
         pass

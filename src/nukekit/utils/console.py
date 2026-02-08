@@ -1,26 +1,47 @@
+import logging
 from rich import print
 from rich.table import Table
 from rich.console import Console
 from rich.tree import Tree
-from ..core.assets import AssetStatus
+from ..core.assets import AssetStatus, Asset
+from simple_term_menu import TerminalMenu
+
+logger = logging.getLogger(__name__)
 
 
-def menu2():
+def menu2(options:dict):
     from pick import pick
 
     title = 'Please choose a file:'
-    options = ['file1.txt', 'file2.txt', '\t/file3.txt']
+    #options = ['file1.txt', 'file2.txt', '\t/file3.txt']
     option, index = pick(options, title)
     print(f"Selected: {option} - {index}")
 
-def choose_menu(options:dict):
-    
-    from simple_term_menu import TerminalMenu
+def choose_menu(d:dict, level_name = "Main menu")->Asset:
+    while True:
+        options = list(d.keys())
+        options.append('Return')
+        terminal_menu = TerminalMenu(options, title= level_name)
+        menu_entry_index = terminal_menu.show()
 
-    options = ["Option 1", "Option 2", "Option 3"]
-    terminal_menu = TerminalMenu(options)
-    menu_entry_index = terminal_menu.show()
-    print(f"You selected: {options[menu_entry_index]}")
+        if options[menu_entry_index] == 'Return':
+            break
+        try: 
+            key = options[menu_entry_index]
+            value = d[key]
+        except (ValueError, IndexError):
+            print('Invalid selection')
+        else:
+            if isinstance(value, Asset):
+                return value
+            elif isinstance(value, dict):
+                value = choose_menu(value, level_name=key)
+            return value
+    return value
+
+    
+
+
 
 
 def print_manifest(manifest:dict, status_filter:AssetStatus = None):
@@ -30,8 +51,7 @@ def print_manifest(manifest:dict, status_filter:AssetStatus = None):
                 continue
             if key == "versions":
                 for v in value.values():
-                    if v.status == status_filter:
-                        t.add(f"{str(v.version)} - {v.id}")
+                    t.add(f"{v.status.name} - {str(v.version)} - {v.id}")
                 break
             sub_tree = t.add(key)
             if isinstance(value, dict):

@@ -9,6 +9,10 @@ import getpass
 import shortuuid
 from enum import Enum
 
+
+logger = logging.getLogger(__name__)
+
+
 ASSET_TYPES = Literal['Gizmo', 'Script']
 class AssetType(str, Enum):
     Gizmo = 'Gizmo'
@@ -31,7 +35,6 @@ INSTALL_STATUS = Literal['non_local', 'local']
 PUBLISH_STATUS = Literal["unpublished", 'synced', 'published']
 
 
-logger = logging.getLogger(__name__)
 
 @dataclass
 class Asset():
