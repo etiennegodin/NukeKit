@@ -39,20 +39,22 @@ def choose_menu(d:dict, level_name = "Main menu")->Asset:
             return value
     return value
 
-def print_manifest(manifest:dict, status_filter:AssetStatus = None):
+def print_manifest(manifest:dict, label = 'Manifest'):
+    format_string = "| {:<12} | {:^8} | {:^8} |"
     def recursive_tree(d:dict, t:Tree):
         for key, value in d.items():
             if key == 'latest_version':
                 continue
             if key == "versions":
+                t.add(format_string.format("Status", "Version", "Id" ))
                 for v in value.values():
-                    t.add(f"{v.status.name} - {str(v.version)} - {v.id}")
+                    t.add(format_string.format(str(v.status.name), str(v.version),str(v.id)))
                 break
             sub_tree = t.add(key)
             if isinstance(value, dict):
                 recursive_tree(value, sub_tree)
 
-    tree = Tree('Manifest')
+    tree = Tree(label)
 
     for category, assets_dict in manifest.items():
         category_tree = tree.add(category)

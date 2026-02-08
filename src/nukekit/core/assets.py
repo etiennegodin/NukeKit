@@ -41,13 +41,13 @@ class Asset():
     name:str 
     version: Version = None
     source_path:Path = None
+    status:AssetStatus = None
 
     changelog:str = None
     author: str = None
     time:str = None
     id:str = None
     type:str = None
-    status:AssetStatus = None
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -114,7 +114,7 @@ class Asset():
                 obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
             except Exception as e:
                 # New asset 
-                return cls(asset_name, asset_version, asset_path)
+                return cls(asset_name, asset_version, asset_path, AssetStatus.UNPUBLISHED)
             else:
                 return obj
         else:

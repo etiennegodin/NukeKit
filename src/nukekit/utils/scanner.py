@@ -19,7 +19,6 @@ class Scanner:
             asset_paths = list(path.rglob(f"*{suffix}"))
             asset_subtype = {}
             for path in asset_paths:
-                #asset = asset_factory(path)
                 asset = Asset.from_path(self.context,path)
                 if asset.name not in asset_subtype:
                     asset_subtype[asset.name] = {"versions" : {str(asset.version) : asset}}

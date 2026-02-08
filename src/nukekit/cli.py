@@ -75,11 +75,13 @@ def install(args, context:Context):
     installer.install_from_repo()
 
 def scan(args, context:Context):
-    scanner = Scanner(context.user_paths)
+    scanner = Scanner(context)
     if args.directory is not None:
         assets = scanner.scan_folder(args.directory)
     else:
         assets = scanner.scan_local(verbose = True)
+    #pprint(assets)
+    print_manifest(assets)
 def main():
 
     parser = argparse.ArgumentParser(prog='NukeKit',
