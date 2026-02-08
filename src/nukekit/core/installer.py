@@ -16,6 +16,8 @@ class Installer():
         pass
 
     def install_from_repo(self):
+        print('xxxx')
+        logger.debug('Install from repo')
         assets = self.context.repo_manifest.read_manifest()
 
         print('installer')

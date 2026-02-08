@@ -28,7 +28,6 @@ class Context():
 
         self.local_state = Manifest.from_scanner(self)
 
-
         # Updated local state
         self._update_local_state()
     
@@ -75,7 +74,7 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.1.0
                 if asset_name not in remote_assets_dict.keys():
-                    assets_dict[asset_name]['versions']['0.1.0'].set_publish_status('unpublished')
+                    assets_dict[asset_name]['versions']['0.0.0'].set_publish_status('unpublished')
                     continue
 
                 versions = assets_dict[asset_name]['versions']

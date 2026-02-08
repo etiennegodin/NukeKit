@@ -98,22 +98,21 @@ class Asset():
         else:
             # No specified version
             asset_name = asset_stem
-            asset_version = None #assumes init version
+            asset_version = Version('0.0.0')
             logger.warning(f'No specified version for {asset_name}')
-            #to-do log no specified version
 
         # Get object class from suffix 
         cls = ASSET_SUFFIXES.get(asset_suffix) 
 
         if cls:
-            #return cls(asset_name, asset_version)
+            # Check if asset is a copy from repo
             try: 
                 obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
             except Exception as e:
-                print(e)
+                # New asset 
+                return cls(asset_name, asset_version)
             else:
-                print(obj)
-                pass
+                return obj
         else:
             raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 

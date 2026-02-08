@@ -64,12 +64,12 @@ def publish(args, context:Context):
     if args.file:
         context = publisher.publish_asset(args.file)
     else:
-        #pprint(context.local_state.data)
+        pprint(context.local_state.data)
         #print_manifest(context.local_state.data, status_filter=AssetStatus('unpublished'))
-        menu()
+        #menu()
         #uuid = input('Enter uuid for asset to publish')
         
-    pass
+        pass
 
 def install(args, context:Context):
     installer = Installer(context)
@@ -98,7 +98,7 @@ def main():
 
     # Create the parser for the "push" command
     parser_install = subparsers.add_parser('install', help='Push changes to a remote repository')
-    parser_install.add_argument('remote', type=str, help='The remote repository name')
+    #parser_install.add_argument('remote', type=str, help='The remote repository name')
     parser_install.set_defaults(func=install) # Associate a function
 
     # Create the parser for the "sync" command
@@ -116,7 +116,6 @@ def main():
         # Dev force clean state 
         if args.force:
             UserPaths.clean()
-
         # Create context 
         context = init()
         args.func(args, context)
