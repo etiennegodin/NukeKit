@@ -30,7 +30,7 @@ class JsonTreeBuilder:
 
                 for version, asset in versions.items():
                     version_item = QStandardItem(version)
-                    info_item = QStandardItem(f"{asset.id} KB")
+                    info_item = QStandardItem(f"{asset.changelog}")
                     type_item = QStandardItem("Gizmo")
 
                     # Store actual object

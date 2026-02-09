@@ -67,6 +67,14 @@ class Asset():
     def set_install_status(self,status: INSTALL_STATUS):
         self.status = AssetStatus(status)
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "author": self.author,
+            "size": self.id,
+            "metadata": self.changelog,
+        }
+
     def __str__(self):
         return f"{self.name}_v{self.version}"
     
