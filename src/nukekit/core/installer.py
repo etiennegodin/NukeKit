@@ -25,7 +25,7 @@ class Installer():
         #print(assets)
         #print_json(json.dumps(assets,cls=UniversalEncoder))
         
-        asset = assets['Gizmo']['city']['versions']['0.1.0']
+        asset = assets['Gizmo']['city']['0.1.0']
         self.install_asset(asset)
 
     def install_asset(self, asset:Asset):

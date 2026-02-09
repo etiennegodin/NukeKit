@@ -110,11 +110,9 @@ class Manifest:
             raise Exception('manifest')
 
         if asset.name not in data[asset.type]:
-            data[asset.type][asset.name] = {"versions" : {version: asset},
-                                        "latest_version" : version}
+            data[asset.type][asset.name] = {version: asset}
         else:
-            data[asset.type][asset.name]['versions'][version] = asset  
-            data[asset.type][asset.name]['latest_version'] = version
+            data[asset.type][asset.name][version] = asset  
 
         self.write_manifest(data)
         logger.info(f"Successfully added {asset.name} v{version} to repo manifest")

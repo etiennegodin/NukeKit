@@ -16,19 +16,15 @@ class JsonTreeBuilder:
             cat_item = QStandardItem(category)
             root.appendRow([cat_item, QStandardItem(""), QStandardItem("Category")])
 
-            for asset_name, asset_data in assets.items():
+            for asset_name, asset_versions in assets.items():
                 asset_item = QStandardItem(asset_name)
                 cat_item.appendRow(
                     [asset_item, QStandardItem(""), QStandardItem("Asset")]
                 )
+                print(asset_versions)
 
-                versions = asset_data.get("versions", {})
-                versions_item = QStandardItem("versions")
-                asset_item.appendRow(
-                    [versions_item, QStandardItem(""), QStandardItem("Container")]
-                )
-
-                for version, asset in versions.items():
+                for version, asset in asset_versions.items():
+                    print(asset)
                     version_item = QStandardItem(version)
                     info_item = QStandardItem(f"{asset.changelog}")
                     type_item = QStandardItem("Gizmo")
@@ -36,6 +32,6 @@ class JsonTreeBuilder:
                     # Store actual object
                     version_item.setData(asset, ROLE_OBJECT)
 
-                    versions_item.appendRow([version_item, info_item, type_item])
+                    asset_item.appendRow([version_item, info_item, type_item])
 
         return model

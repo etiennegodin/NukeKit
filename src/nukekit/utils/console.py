@@ -56,11 +56,9 @@ def print_data(data:dict, label:str = 'Manifest'):
     
     format_string = "| {:<12} | {:<8} | {:<10} |"
     
-    def recursive_tree(d:dict, t:Tree):
+    def recursive_tree(d:dict, t:Tree, stop:str):
         for key, value in d.items():
-            if key == 'latest_version':
-                continue
-            if key == "versions":
+            if key == stop:
                 t.add(format_string.format("Status", "Version", "Id" ))
                 for v in value.values():
                     t.add(format_string.format(str(v.status.name), str(v.version),str(v.id)))
@@ -75,7 +73,9 @@ def print_data(data:dict, label:str = 'Manifest'):
     # Loop through asset categories and create a tree from recursive exploration
     for category, assets_dict in data.items():
         category_tree = tree.add(category)
-        recursive_tree(assets_dict, category_tree)
+        for asset_name, asset_data in assets_dict.items():
+            asset_tree = tree.add(asset_name)
+            recursive_tree(assets_dict, asset_tree, asset_name)
 
     print(tree)
     

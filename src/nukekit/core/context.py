@@ -69,17 +69,17 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.0.0
                 if asset_name not in local_assets_dict.keys():
-                    assets_dict[asset_name]['versions']['0..0'].set_install_status('non_local')
+                    assets_dict[asset_name]['0..0'].set_install_status('non_local')
                     continue
 
-                versions = assets_dict[asset_name]['versions']
-                local_versions = list(assets_dict[asset_name]['versions'].keys() & local_assets_dict[asset_name]['versions'].keys())
+                versions = assets_dict[asset_name]
+                local_versions = list(assets_dict[asset_name].keys() & local_assets_dict[asset_name].keys())
 
                 for versions, asset in versions.items():     
                     if str(asset.version) in local_versions:
-                        assets_dict[asset.name]['versions'][str(asset.version)].set_install_status('local')
+                        assets_dict[asset.name][str(asset.version)].set_install_status('local')
                     else:
-                        assets_dict[asset.name]['versions'][str(asset.version)].set_install_status('non_local')
+                        assets_dict[asset.name][str(asset.version)].set_install_status('non_local')
             data[asset_category] = assets_dict
 
         self.repo_manifest.data = data
@@ -93,15 +93,15 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.0.0
                 if asset_name not in remote_assets_dict.keys():
-                    assets_dict[asset_name]['versions']['0.0.0'].set_publish_status('unpublished')
+                    assets_dict[asset_name]['0.0.0'].set_publish_status('unpublished')
                     continue
 
-                versions = assets_dict[asset_name]['versions']
-                local_versions = list(assets_dict[asset_name]['versions'].keys() & remote_assets_dict[asset_name]['versions'].keys())
+                versions = assets_dict[asset_name]
+                local_versions = list(assets_dict[asset_name].keys() & remote_assets_dict[asset_name].keys())
 
                 for versions, asset in versions.items():     
                     if str(asset.version) in local_versions:
-                        assets_dict[asset.name]['versions'][str(asset.version)].set_publish_status('synced')
+                        assets_dict[asset.name][str(asset.version)].set_publish_status('synced')
             data[asset_category] = assets_dict
 
         self.local_state.data = data
@@ -113,7 +113,7 @@ class Context():
 
         for assets_dict in scanned_data.values():
             for asset_name in assets_dict.keys():
-                for asset in assets_dict[asset_name]['versions'].values():
+                for asset in assets_dict[asset_name].values():
                     try:
                         asset.name in local_data[asset.type]
                     except KeyError:
@@ -126,11 +126,11 @@ class Context():
                             scanned_data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
 
                         # Version already in manifest, read from cached
-                        elif str(asset.version) in local_data[asset.type][asset.name]['versions'].keys():
-                            scanned_data[asset.type][asset.name]['versions'][str(asset.version)] = local_data[asset.type][asset.name]['versions'][str(asset.version)]
+                        elif str(asset.version) in local_data[asset.type][asset.name].keys():
+                            scanned_data[asset.type][asset.name][str(asset.version)] = local_data[asset.type][asset.name][str(asset.version)]
                             continue
                         # New version not in local state 
-                        scanned_data[asset.type][asset.name]['versions'][str(asset.version)] = asset
+                        scanned_data[asset.type][asset.name][str(asset.version)] = asset
 
         self.local_state.data = scanned_data
         self.local_state.write_manifest()

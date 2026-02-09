@@ -21,9 +21,9 @@ class Scanner:
             for path in asset_paths:
                 asset = Asset.from_path(self.context,path)
                 if asset.name not in asset_subtype.keys():
-                    asset_subtype[asset.name] = {"versions" : {}}
-                if str(asset.version) not in asset_subtype[asset.name]['versions'].keys():
-                    asset_subtype[asset.name]['versions'][str(asset.version)] = asset
+                    asset_subtype[asset.name] = {}
+                if str(asset.version) not in asset_subtype[asset.name].keys():
+                    asset_subtype[asset.name][str(asset.version)] = asset
             assets[obj.type] = asset_subtype
         return assets
     
