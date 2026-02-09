@@ -1,40 +1,41 @@
-# json_tree.py
-from __future__ import annotations
-from typing import Any
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
-ROLE_PATH = Qt.UserRole + 1
-ROLE_VALUE = Qt.UserRole + 2
 
-def build_json_model(data: Any) -> QStandardItemModel:
-    model = QStandardItemModel()
-    model.setHorizontalHeaderLabels(["Asset", "Version", "Type"])
-    _fill_item(model.invisibleRootItem(), data, path=())
-    return model
+ROLE_OBJECT = Qt.UserRole + 1
 
-def _fill_item(parent: QStandardItem, obj: Any, path: tuple) -> None:
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            _append_row(parent, key=str(k), value=v, path=path + (k,))
-    elif isinstance(obj, list):
-        for i, v in enumerate(obj):
-            _append_row(parent, key=f"[{i}]", value=v, path=path + (i,))
-    else:
-        # leaf scalar (shouldn't happen at root often, but safe)
-        _append_row(parent, key="value", value=obj, path=path)
+class JsonTreeBuilder:
+    @staticmethod
+    def build_model(data: dict) -> QStandardItemModel:
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["Name", "Info", "Type"])
 
-def _append_row(parent: QStandardItem, key: str, value: Any, path: tuple) -> None:
-    key_item = QStandardItem(key)
+        root = model.invisibleRootItem()
 
-    is_container = isinstance(value, (dict, list))
-    val_item = QStandardItem("" if is_container else str(value))
-    type_item = QStandardItem(type(value).__name__)
+        for category, assets in data.items():
+            cat_item = QStandardItem(category)
+            root.appendRow([cat_item, QStandardItem(""), QStandardItem("Category")])
 
-    key_item.setData(path, ROLE_PATH)
-    key_item.setData(value, ROLE_VALUE)
+            for asset_name, asset_data in assets.items():
+                asset_item = QStandardItem(asset_name)
+                cat_item.appendRow(
+                    [asset_item, QStandardItem(""), QStandardItem("Asset")]
+                )
 
-    parent.appendRow([key_item, val_item, type_item])
+                versions = asset_data.get("versions", {})
+                versions_item = QStandardItem("versions")
+                asset_item.appendRow(
+                    [versions_item, QStandardItem(""), QStandardItem("Container")]
+                )
 
-    if is_container:
-        _fill_item(key_item, value, path=path)
+                for version, gizmo in versions.items():
+                    version_item = QStandardItem(version)
+                    info_item = QStandardItem(f"{gizmo.size} KB")
+                    type_item = QStandardItem("Gizmo")
+
+                    # Store actual object
+                    version_item.setData(gizmo, ROLE_OBJECT)
+
+                    versions_item.appendRow([version_item, info_item, type_item])
+
+        return model

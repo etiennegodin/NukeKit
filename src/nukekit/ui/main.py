@@ -4,13 +4,19 @@ from PyQt5.QtWidgets import QApplication
 
 from .main_window import MainWindow
 from .presenter import MainPresenter
-
 from ..core.context import Context
-from pprint import pprint
 
 def launch(context:Context):
     app = QApplication(sys.argv)
-    ui = MainWindow()
-    presenter = MainPresenter(context, ui)
-    presenter.refresh_all()
-    sys.exit(app.exec_())
+
+    window = MainWindow()
+    window.resize(900, 500)
+    window.show()
+
+    presenter = MainPresenter(context, window)
+
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    launch()

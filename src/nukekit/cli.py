@@ -72,8 +72,7 @@ def publish(args, context:Context):
     if asset is not None:
         publisher.publish_asset(asset)
     else: 
-        print('Asset publish aborted')     
-    
+        print('Asset publish aborted')      
 
 def install(args, context:Context):
     """
@@ -100,7 +99,6 @@ def scan(args, context:Context):
     scanner = Scanner(context)
     assets = scanner.scan_local(verbose = True)
     print_data(assets)
-
 
 def main():
 

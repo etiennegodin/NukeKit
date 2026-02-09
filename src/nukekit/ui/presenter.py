@@ -1,42 +1,35 @@
-from __future__ import annotations
-from typing import Any
 
-from PyQt5.QtCore import QModelIndex
-
-from ..core.context import Context
-from .json_tree import ROLE_VALUE
 from .main_window import MainWindow
+from .json_tree import JsonTreeBuilder, ROLE_OBJECT
+from ..core.context import Context
+from ..core.assets import Asset
 
 class MainPresenter:
-    def __init__(self, ctx:Context, view:MainWindow):
+    def __init__(self, ctx: Context, view: MainWindow):
         self.ctx = ctx
         self.view = view
 
-    def _connect_signals(self) -> None:
-        # tree selection
-        sel = self.view.ui.treeView.selectionModel()
-        sel.selectionChanged.connect(self.on_tree_selection_changed)
+        self.refresh()
 
-        # (optional) refresh button
-        # self.view.ui.refreshButton.clicked.connect(self.refresh_all)
+        self.view.tree.selectionModel().selectionChanged.connect(
+            self.on_selection_changed
+        )
 
-    def refresh_all(self) -> None:
-        self.view.set_json(self.ctx.repo_manifest)
-        #self.view.set_status(self.ctx.status)
+    def refresh(self):
+        model = JsonTreeBuilder.build_model(self.ctx.data)
+        self.view.set_model(model)
+        self.view.set_status(self.ctx.status)
 
-        # After model reset, selectionModel changes -> reconnect
-        sel = self.view.ui.treeView.selectionModel()
-        sel.selectionChanged.connect(self.on_tree_selection_changed)
-
-    def on_tree_selection_changed(self, selected, deselected) -> None:
-        idxs = self.view.ui.treeView.selectionModel().selectedIndexes()
-        if not idxs:
+    def on_selection_changed(self):
+        index = self.view.tree.currentIndex()
+        if not index.isValid():
             return
 
-        idx: QModelIndex = idxs[0]  # column 0 item
-        model = self.view.ui.treeView.model()
+        model = self.view.tree.model()
+        item = model.itemFromIndex(index)
+        obj = item.data(ROLE_OBJECT)
 
-        # Since we used QStandardItemModel, we can do itemFromIndex
-        item = model.itemFromIndex(idx)
-        value: Any = item.data(ROLE_VALUE)
-        self.view.set_text_preview(value)        
+        if isinstance(obj, Asset):
+            self.view.show_asset(obj)
+        else:
+            self.view.show_text(item.text())
