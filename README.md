@@ -3,18 +3,20 @@
 ## Version control handler for nuke Gizmos and Scripts 
 
 
-## No Gui 
+## Default with Gui
 
-`nukekit --no-gui`
-
-## Install 
-
-`nukekit install <asset>`
-
-## Scan
-
-`nukekit scan`
+`nukekit`
 
 ## Publish 
 
-`nukekit publish -f <file>`
+`nukekit publish`
+
+
+## Install 
+
+`nukekit install`
+
+## Scan
+
+`nukekit scan <location>`
+

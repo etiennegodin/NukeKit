@@ -101,9 +101,9 @@ def scan(args, context:Context):
     """  
     context.set_mode('scan')
     scanner = Scanner(context)
-    if args.action == 'local':
+    if args.location == 'local':
         assets = context.local_state.data
-    elif args.action == 'remote':
+    elif args.location == 'remote':
         assets = scanner.scan_folder(context.repo.ROOT)
     print_data(assets)
 
@@ -132,7 +132,7 @@ def main():
     # Create the parser for the "scan" command
     scan_choices = ['local', 'remote']
     parser_scan = subparsers.add_parser('scan', parents=[parent_parser], help='Scan directory for assets')
-    parser_scan.add_argument("action", choices= scan_choices, help = "Where to scan" )
+    parser_scan.add_argument("location", choices= scan_choices, help = "Where to scan" )
 
     #parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
     parser_scan.set_defaults(func=scan) # Associate a function
