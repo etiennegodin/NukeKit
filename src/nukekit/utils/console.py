@@ -8,15 +8,18 @@ from ..core.assets import Asset
 
 logger = logging.getLogger(__name__)
 
-def menu2(options:dict):
-    from pick import pick
 
-    title = 'Please choose a file:'
-    #options = ['file1.txt', 'file2.txt', '\t/file3.txt']
-    option, index = pick(options, title)
-    print(f"Selected: {option} - {index}")
+def choose_menu(d:dict, level_name:str = "Main menu")->Asset:
+    """
+    Interactive terminal selection menu    
 
-def choose_menu(d:dict, level_name = "Main menu")->Asset:
+    :param d: Data to explore 
+    :type d: dict
+    :param level_name: Name for menu/sub-menu
+    :type level_name: str
+    :return: Asset instance from selected option
+    :rtype: Asset
+    """
     value = None
     while True:
         options = list(d.keys())
@@ -41,8 +44,18 @@ def choose_menu(d:dict, level_name = "Main menu")->Asset:
     if value is not None:
         return value
 
-def print_manifest(manifest:dict, label = 'Manifest'):
-    format_string = "| {:<12} | {:^8} | {:^8} |"
+def print_data(data:dict, label:str = 'Manifest'):
+    """
+    Print input dictionnary as tree in terminal 
+    
+    :param data: Data to displauy
+    :type data: dict
+    :param label: Top level label for this branch of the tree 
+    :type label: str
+    """
+    
+    format_string = "| {:<12} | {:<8} | {:<10} |"
+    
     def recursive_tree(d:dict, t:Tree):
         for key, value in d.items():
             if key == 'latest_version':
@@ -56,9 +69,11 @@ def print_manifest(manifest:dict, label = 'Manifest'):
             if isinstance(value, dict):
                 recursive_tree(value, sub_tree)
 
+    # Initilize tree 
     tree = Tree(label)
-
-    for category, assets_dict in manifest.items():
+    
+    # Loop through asset categories and create a tree from recursive exploration
+    for category, assets_dict in data.items():
         category_tree = tree.add(category)
         recursive_tree(assets_dict, category_tree)
 

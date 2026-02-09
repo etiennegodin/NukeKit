@@ -9,7 +9,7 @@ path_types = Literal['str', 'Path']
 logger = logging.getLogger(__name__)
 
 class UserPaths:
-    """All user paths."""
+    """Class for all local user paths."""
 
     BASE_DIR = Path.home() / ".nukekit"
     NUKE_DIR = Path.home() / ".nuke"
@@ -17,6 +17,9 @@ class UserPaths:
     STATE_FILE = BASE_DIR / "local_state.json"
     LOG_FILE = BASE_DIR / "nukekit.log"
     CACHED_MANIFEST = BASE_DIR / "cached_manifest.json"
+
+    def __init__(self):
+        self.ensure()
 
     @classmethod
     def clean(cls):
@@ -31,3 +34,4 @@ class UserPaths:
         """Create local dirs if thy don't exist. Called once"""
         cls.BASE_DIR.mkdir(exist_ok=True)
         cls.NUKE_KIT_DIR.mkdir(parents=True, exist_ok=True)
+    

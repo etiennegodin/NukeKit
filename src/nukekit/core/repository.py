@@ -9,7 +9,15 @@ path_types = Literal['str', 'Path']
 logger = logging.getLogger(__name__)
 
 class Repository:
+
     def __init__(self, repo_dict:dict):
+        """
+        Object representation of remote repository 
+        
+        :param repo_dict: Dictionnary from config to configure repository
+        :type repo_dict: dict
+        """
+        
         self.ROOT = Path(repo_dict['root'])
         self.SUBFOLDERS = repo_dict['subfolder']
         self.MANIFEST = self.ROOT / "manifest.json"

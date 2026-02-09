@@ -5,6 +5,9 @@ from pathlib import Path
 from typing import Optional
 
 class ConfigLoader:
+    """
+    Resolve and load config for this session
+    """
 
     ENV_VAR = "NUKEKIT_CONFIG_PATH"
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging 
-from datetime import date
 from typing import Any, Dict
 from dataclasses import dataclass
 
@@ -14,18 +13,33 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Context():
+    """
+    Main class for session context
+        
+    :param repo: Repository instance from this session
+    :type repo: Repository
+    :param user_paths: UserPaths instance from this session
+    :type user_paths: UserPaths
+    :param config: Dictionnary read from ConfigLoader class 
+    :type config: dict
+    :param repo_manifest: Manifest instance from remote repository state
+    :type repo_manifest: Manifest
+    :param local_manifest: Manifest instance from cached local state
+    :type local_manifest: Manifest
+    :param local_state: Manifest instance from local state 
+    :type local_state: Manifest
+
+
+    """
     repo: Repository
     user_paths: UserPaths
     config: Dict[str, Any ]
-    date: str = None
     repo_manifest: Manifest = None
     local_manifest: Manifest = None
     local_state: Manifest = None
 
 
     def __post_init__(self):
-        self.date = str(date.today())
-
         # Read cached manifests from disk  
         self.repo_manifest = Manifest.from_file(self.repo.MANIFEST)
         self.local_manifest = Manifest.from_file(self.user_paths.CACHED_MANIFEST)
