@@ -30,6 +30,8 @@ def universal_decoder(dct):
             dct[k] = Path(v)
         if isinstance(v,str) and k == 'version':
             dct[k] = Version(v)
+        if isinstance(v,str) and k == 'status':
+            dct[k] = AssetStatus(v)
 
     # After fixing paths, handle dataclass reconstruction
     if "__type__" in dct:

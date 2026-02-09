@@ -28,14 +28,25 @@ class Context():
 
         self.local_state = Manifest.from_scanner(self)
 
+        print("Debug context post init")
+
+        print('local state')
+        pprint(self.local_state.data)
+
+        print('local manifest')
+        pprint(self.local_manifest.data)
+
+        print('repo manifest')
+        pprint(self.repo_manifest.data)
+
         # Updated local state
-        self._update_local_state()
+        #self._update_local_state()
     
         # Set publish status for local assets 
-        self._set_publish_status()
+        #self._set_publish_status()
 
         # Set install status for remote assets 
-        self._set_install_status()
+        #self._set_install_status()
 
         #self.local_manifest.write_manifest(verbose=True)
         pass
@@ -93,7 +104,6 @@ class Context():
         scanned_data = self.local_state.data
         local_data = self.local_manifest.data
 
-
         for assets_dict in scanned_data.values():
             for asset_name in assets_dict.keys():
                 for asset in assets_dict[asset_name]['versions'].values():
@@ -109,7 +119,7 @@ class Context():
                             scanned_data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
 
                         # Version already in manifest, read from cached
-                        elif str(asset.version) in scanned_data[asset.type][asset.name]['versions'].keys():
+                        elif str(asset.version) in local_data[asset.type][asset.name]['versions'].keys():
                             scanned_data[asset.type][asset.name]['versions'][str(asset.version)] = local_data[asset.type][asset.name]['versions'][str(asset.version)]
                             continue
                         # New version not in local state 
