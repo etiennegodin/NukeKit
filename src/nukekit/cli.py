@@ -14,7 +14,7 @@ from .utils._logger import init_logger
 from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
 from .utils.scanner import Scanner
-from .utils.console import print_manifest, choose_menu
+from .utils.console import print_data, choose_menu
 
 
 ROOT_FOLDER = Path(os.getcwd())
@@ -58,15 +58,15 @@ def publish(args, context:Context):
     """
 
     publisher = Publisher(context)
-    if args.directory is not None:
-        scanner = Scanner()
-        data = scanner.scan_folder(args.directory)
+    if args.local:
+        scanner = Scanner(context)
+        data = scanner.scan_folder(Path.cwd())
     else:
         data = context.local_state.data
 
     #Print visual cue for explorer 
-    print_manifest(data)
-    
+    print_data(data)
+
     asset = choose_menu(data)
 
     if asset is not None:
@@ -84,7 +84,7 @@ def install(args, context:Context):
     """
 
     installer = Installer(context)
-    print_manifest(context.repo_manifest.data)
+    print_data(context.repo_manifest.data)
     asset = choose_menu(context.repo_manifest.data)
     if asset is not None:
         installer.install_asset(asset)
@@ -99,7 +99,7 @@ def scan(args, context:Context):
 
     scanner = Scanner(context)
     assets = scanner.scan_local(verbose = True)
-    print_manifest(assets)
+    print_data(assets)
 
 
 def main():
@@ -114,7 +114,7 @@ def main():
 
     # Create the parser for the "publish" command
     parser_publish = subparsers.add_parser('publish', help='Record changes to the repository')
-    parser_publish.add_argument("--directory", "--d", help = "From this directory" )
+    parser_publish.add_argument("--local", "-l", action= 'store_true', help = "Publish from this directory" )
 
     parser_publish.set_defaults(func=publish) # Associate a function
 
