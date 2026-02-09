@@ -56,13 +56,14 @@ def publish(args, context:Context):
     :param context: This sessions's context
     :type context: Context
     """
-
+    context.set_mode('publish')
     publisher = Publisher(context)
+
     if args.local:
         scanner = Scanner(context)
         data = scanner.scan_folder(Path.cwd())
     else:
-        data = context.local_state.data
+        data = context.get_current_data()
 
     #Print visual cue for explorer 
     print_data(data)
@@ -82,9 +83,12 @@ def install(args, context:Context):
     :type context: Context
     """
 
+    context.set_mode('install')
+    data = context.get_current_data()
     installer = Installer(context)
-    print_data(context.repo_manifest.data)
-    asset = choose_menu(context.repo_manifest.data)
+
+    print_data(data)
+    asset = choose_menu(data)
     if asset is not None:
         installer.install_asset(asset)
 
@@ -96,32 +100,36 @@ def scan(args, context:Context):
     :type context: Context
     """  
 
+    context.set_mode('scan')
     scanner = Scanner(context)
     assets = scanner.scan_local(verbose = True)
     print_data(assets)
 
 def main():
 
+    parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser.add_argument("--force", action = 'store_true', help = "Wipe Local State Clean")
+    parent_parser.add_argument("--no-gui", action = 'store_true', help = "Launch without gui")
+
     parser = argparse.ArgumentParser(prog='NukeKit',
                     description='--- Nuke Gizmo and Script manager ---')
     
-    parser.add_argument("--force", action = 'store_true', help = "Wipe Local State Clean")
-    parser.add_argument("--no-gui", action = 'store_true', help = "Launch without gui")
+
 
     subparsers = parser.add_subparsers(help='Available subcommands')
 
     # Create the parser for the "publish" command
-    parser_publish = subparsers.add_parser('publish', help='Record changes to the repository')
+    parser_publish = subparsers.add_parser('publish', parents=[parent_parser], help='Record changes to the repository')
     parser_publish.add_argument("--local", "-l", action= 'store_true', help = "Publish from this directory" )
 
     parser_publish.set_defaults(func=publish) # Associate a function
 
     # Create the parser for the "install" command
-    parser_install = subparsers.add_parser('install', help='Push changes to a remote repository')
+    parser_install = subparsers.add_parser('install', parents=[parent_parser], help='Push changes to a remote repository')
     parser_install.set_defaults(func=install) # Associate a function
 
     # Create the parser for the "scan" command
-    parser_scan = subparsers.add_parser('scan', help='Push changes to a remote repository')
+    parser_scan = subparsers.add_parser('scan', parents=[parent_parser], help='Push changes to a remote repository')
     #parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
     parser_scan.set_defaults(func=scan) # Associate a function
 
@@ -137,6 +145,7 @@ def main():
         # Create context 
         args.func(args, context)
     else:
+        context.set_mode('publish')
         ui.launch(context)
 
 if __name__ == '__main__':

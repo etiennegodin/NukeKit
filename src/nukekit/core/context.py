@@ -3,10 +3,20 @@ from __future__ import annotations
 import logging 
 from typing import Any, Dict
 from dataclasses import dataclass
+from enum import Enum
+from typing import Literal
 
 from .repository import Repository
 from .manifest import Manifest
 from ..utils.paths import UserPaths 
+
+
+class AppMode(str, Enum):
+    PUBLISH = "publish"
+    INSTALL = "install"
+    SCAN = 'scan'
+
+APP_MODE = Literal['publish','install','scan']
 
 
 logger = logging.getLogger(__name__)
@@ -37,6 +47,7 @@ class Context():
     repo_manifest: Manifest = None
     local_manifest: Manifest = None
     local_state: Manifest = None
+    mode:AppMode = None
 
 
     def __post_init__(self):
@@ -48,7 +59,6 @@ class Context():
         self.local_state = Manifest.from_scanner(self)
 
         # Set specific install status for repo assets 
-
 
     def _set_install_status(self):
 
@@ -74,7 +84,6 @@ class Context():
 
         self.repo_manifest.data = data
 
-        
     def _set_publish_status(self):
 
         data = self.local_state.data
@@ -96,7 +105,6 @@ class Context():
             data[asset_category] = assets_dict
 
         self.local_state.data = data
-
 
     def _update_local_state(self):
 
@@ -126,3 +134,12 @@ class Context():
 
         self.local_state.data = scanned_data
         self.local_state.write_manifest()
+
+    def set_mode(self, mode: APP_MODE):
+        self.mode = AppMode(mode)
+
+    def get_current_data(self) -> dict[str, Any]:
+        if self.mode == AppMode.PUBLISH:
+            return self.local_state.data
+        elif self.mode == AppMode.INSTALL:
+            return self.repo_manifest.data

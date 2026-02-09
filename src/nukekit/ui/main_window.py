@@ -12,6 +12,8 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QSplitter,
+    QRadioButton,
+    QButtonGroup,
 )
 
 from ..core.assets import Asset
@@ -43,9 +45,24 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(splitter)
         main_layout.addLayout(status_layout)
 
+        self.publish_radio = QRadioButton("Publish")
+        self.install_radio = QRadioButton("Install")
+        self.publish_radio.setChecked(True)
+
+        self.mode_group = QButtonGroup()
+        self.mode_group.addButton(self.publish_radio)
+        self.mode_group.addButton(self.install_radio)
+
         container = QWidget()
         container.setLayout(main_layout)
         self.setCentralWidget(container)
+
+        mode_layout = QHBoxLayout()
+        mode_layout.addWidget(self.publish_radio)
+        mode_layout.addWidget(self.install_radio)
+        mode_layout.addStretch()
+
+        main_layout.insertLayout(0, mode_layout)
 
     # -------- UI Update Methods --------
 
@@ -62,6 +79,7 @@ class MainWindow(QMainWindow):
         self.detail.setPlainText(text)
 
     def set_status(self, status: dict):
+        raise NotImplementedError
         ok = status.get("db") and status.get("cache")
 
         if ok:

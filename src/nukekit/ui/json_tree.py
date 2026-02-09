@@ -28,13 +28,13 @@ class JsonTreeBuilder:
                     [versions_item, QStandardItem(""), QStandardItem("Container")]
                 )
 
-                for version, gizmo in versions.items():
+                for version, asset in versions.items():
                     version_item = QStandardItem(version)
-                    info_item = QStandardItem(f"{gizmo.size} KB")
+                    info_item = QStandardItem(f"{asset.id} KB")
                     type_item = QStandardItem("Gizmo")
 
                     # Store actual object
-                    version_item.setData(gizmo, ROLE_OBJECT)
+                    version_item.setData(asset, ROLE_OBJECT)
 
                     versions_item.appendRow([version_item, info_item, type_item])
 
