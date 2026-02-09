@@ -60,6 +60,12 @@ class Manifest:
             return new_manifest()
         else:
             return False
+        
+    def _sort(self, d:dict):
+        return {
+            k: self._sort(v) if isinstance(v, dict) else v
+            for k, v in sorted(d.items(), reverse=True)
+        }
 
     def read_manifest(self)->dict:
         try:
@@ -69,25 +75,23 @@ class Manifest:
             return None
         else:
             with open(self.ROOT, 'r') as file:
-                return json.load(file, object_hook=self.decoder)
+                data = json.load(file, object_hook=self.decoder)
+                return self._sort(data)
 
     def get_latest_asset_version(self, asset:Asset|str)->Version:
         data = self.read_manifest()
         if isinstance(asset,Asset):
             if asset.name in data[asset.type].keys():
-                return Version(data[asset.type][asset.name]['latest_version'])
-            
+                versions = list(data[asset.type][asset.name])
+                latest = Version.from_tuple((0,0,0))
+                for v in versions:
+                    v = Version(v)
+                    if v > latest:
+                        latest = v
+                return latest
             # New asset pubish 
             #logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
             return None
-            
-        elif isinstance(asset, str):
-            # Asset type undefined, looping through options
-            for asset_category, asset_names in data.items():
-                if asset in asset_names.keys():
-                    return Version(data[asset_category][asset]['latest_version'])
-
-                logger.error(f"Asset '{asset}' not found in {self.ROOT} manifest")
         else:
             # Handle unexpected type 
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
@@ -97,6 +101,10 @@ class Manifest:
     def write_manifest(self, data: dict = None, verbose: bool = False):
         if data is None:
             data = self.data
+        
+        # Write sorted
+        data = self._sort(data)
+        
         with open(self.ROOT, "w") as json_file:
             json.dump(data, json_file, indent=4, cls=self.encoder)
         

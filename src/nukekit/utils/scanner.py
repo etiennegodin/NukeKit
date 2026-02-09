@@ -25,7 +25,15 @@ class Scanner:
                 if str(asset.version) not in asset_subtype[asset.name].keys():
                     asset_subtype[asset.name][str(asset.version)] = asset
             assets[obj.type] = asset_subtype
+
+        assets = self._sort(assets)
         return assets
+    
+    def _sort(self, d:dict):
+        return {
+            k: self._sort(v) if isinstance(v, dict) else v
+            for k, v in sorted(d.items(), reverse=True)
+        }
     
     def scan_local(self, verbose:bool = False)->dict:
         self.data = self._scan(self.user_paths.NUKE_DIR)

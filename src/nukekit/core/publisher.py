@@ -55,7 +55,7 @@ class Publisher():
 
         while True:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
-            
+            #latest_version = None
             #New asset or newer than repo
             if latest_version is None or asset.version > latest_version:
                 break
