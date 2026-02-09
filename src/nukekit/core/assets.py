@@ -1,25 +1,19 @@
 from __future__ import annotations
-from pathlib import Path
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Literal
-from .versioning import Version
 import logging
+from enum import Enum
+from pathlib import Path
+from typing import Literal
+from datetime import datetime
+from dataclasses import dataclass
+
 import getpass
 import shortuuid
-from enum import Enum
 
+from .versioning import Version
 
 logger = logging.getLogger(__name__)
 
-
 ASSET_TYPES = Literal['Gizmo', 'Script']
-class AssetType(str, Enum):
-    Gizmo = 'Gizmo'
-    Script = 'Script'
-
-    def __repr__(self):
-        return self.name
 
 class AssetStatus(str, Enum):
     LOCAL = 'local'
@@ -29,12 +23,8 @@ class AssetStatus(str, Enum):
     PUBLISHED = 'published'
     CACHED = 'cached'
 
-
-
 INSTALL_STATUS = Literal['non_local', 'local']
 PUBLISH_STATUS = Literal["unpublished", 'synced', 'published']
-
-
 
 @dataclass
 class Asset():
@@ -69,7 +59,6 @@ class Asset():
         # Create asset folder if first publish 
         if not repo_path.exists():
             repo_path.mkdir(exist_ok=True)
-
         return repo_path / f"{self.name}_v{self.version}.gizmo"
 
     def set_publish_status(self, status: PUBLISH_STATUS):
@@ -115,9 +104,6 @@ class Asset():
         else:
             raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 
-        
-
-    
 @dataclass
 class Gizmo(Asset):
     type:str = "Gizmo"

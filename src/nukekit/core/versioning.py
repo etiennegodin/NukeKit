@@ -1,7 +1,7 @@
 from __future__ import annotations
 import semver
-from typing import Self, Literal
 import logging
+from typing import Self, Literal
 
 
 """

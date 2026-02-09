@@ -1,5 +1,4 @@
-from typing import Literal, Union, get_args, get_origin, Any
-import ast
+from typing import Literal, get_args, get_origin, Any
 
 return_type = Literal['bool', 'str']
 

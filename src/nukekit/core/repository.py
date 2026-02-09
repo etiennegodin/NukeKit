@@ -1,7 +1,8 @@
 from __future__ import annotations
+import logging
+
 from pathlib import Path
 from typing import Literal
-import logging
 
 path_types = Literal['str', 'Path']
 
@@ -43,9 +44,3 @@ class Repository:
                 return assets_dir
         else:
             raise Exception
-
-
-
-
-
-

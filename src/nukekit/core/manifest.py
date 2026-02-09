@@ -1,15 +1,13 @@
 from __future__ import annotations
 import json 
 import logging
-import tempfile
-from typing import Self
 from pathlib import Path
+
 from .assets import Asset, ASSET_REGISTRY
 from .versioning import Version
 from ..utils.json import universal_decoder, UniversalEncoder
 from ..utils.scanner import Scanner
 
-from pprint import pprint
 
 
 logger = logging.getLogger(__name__)

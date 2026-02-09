@@ -1,10 +1,9 @@
 from __future__ import annotations
 import shutil
 import logging
-from pathlib import Path
-from ..core.assets import Asset
+
+from .assets import Asset
 from .context import Context
-from pprint import pprint 
 
 logger = logging.getLogger(__name__)
 
@@ -13,9 +12,12 @@ class Installer():
         self.context = context
 
     def install_all(self):
+        raise NotImplementedError('Not implemented')
         pass
 
     def install_from_repo(self):
+        raise NotImplementedError('Not implemented')
+
         logger.debug('Install from repo')
         assets = self.context.repo_manifest.read_manifest()
 

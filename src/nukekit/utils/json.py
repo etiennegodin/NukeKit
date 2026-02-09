@@ -1,10 +1,11 @@
 from __future__ import annotations
-from ..core.assets import Asset, ASSET_REGISTRY
+import json
+from dataclasses import asdict
+from pathlib import Path
+
+from ..core.assets import ASSET_REGISTRY
 from ..core.versioning import Version
 from ..core.assets import AssetStatus
-from dataclasses import asdict
-import json
-from pathlib import Path
 
 
 class UniversalEncoder(json.JSONEncoder):

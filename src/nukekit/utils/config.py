@@ -28,5 +28,3 @@ class ConfigLoader:
         path = cls.resolve()
         with open(path, 'r') as file:
             return yaml.safe_load(file)
-
-        

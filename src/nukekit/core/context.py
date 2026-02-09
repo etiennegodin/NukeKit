@@ -1,15 +1,13 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import Any, Dict, Literal, TypeAlias
+
 import logging 
+from datetime import date
+from typing import Any, Dict
+from dataclasses import dataclass
+
 from .repository import Repository
 from .manifest import Manifest
 from ..utils.paths import UserPaths 
-from ..utils.scanner import Scanner
-from .assets import Asset
-from datetime import date
-
-from pprint import pprint
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +32,8 @@ class Context():
 
         # Create local state manifest from scanner 
         self.local_state = Manifest.from_scanner(self)
+
+        # Set specific install status for repo assets 
 
 
     def _set_install_status(self):
@@ -112,7 +112,3 @@ class Context():
 
         self.local_state.data = scanned_data
         self.local_state.write_manifest()
-
-
-
-

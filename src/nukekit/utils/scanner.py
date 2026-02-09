@@ -1,9 +1,9 @@
 from __future__ import annotations
+import logging
 from pathlib import Path
+
 from ..core.assets import ASSET_SUFFIXES
 from ..core.assets import Asset
-import logging
-from pprint import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -35,10 +35,3 @@ class Scanner:
     def scan_folder(self, path)->dict:
         if path is not None:
             return self._scan(path)
-        
-
-
-        
-        
-    
-    

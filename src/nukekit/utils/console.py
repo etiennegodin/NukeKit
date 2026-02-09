@@ -1,10 +1,10 @@
 import logging
-from rich import print
-from rich.table import Table
-from rich.console import Console
-from rich.tree import Tree
-from ..core.assets import AssetStatus, Asset
+
 from simple_term_menu import TerminalMenu
+from rich import print
+from rich.tree import Tree
+
+from ..core.assets import Asset
 
 logger = logging.getLogger(__name__)
 
