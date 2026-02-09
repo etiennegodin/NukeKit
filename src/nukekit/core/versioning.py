@@ -41,7 +41,7 @@ class Version():
         current_val = getattr(self,type_name)
         setattr(self,type_name, current_val+1)
         if type_name == 'major':
-            self.minor = 1 
+            self.minor = 0 
             self.patch = 0
         elif type_name == 'minor':
             self.patch = 0 

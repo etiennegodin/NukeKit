@@ -24,7 +24,7 @@ class Publisher():
         
         asset = self._resolve_version(asset)
 
-        if asset == False:
+        if not asset :
             return 
         
         asset = self._ensure_changelog(asset)
@@ -34,7 +34,7 @@ class Publisher():
 
         self._sync_after_publish(asset)
 
-        return self.context
+        return True
     
     def _sync_after_publish(self, asset):
         installer = Installer(self.context)

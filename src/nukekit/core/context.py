@@ -69,13 +69,13 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.0.0
                 if asset_name not in local_assets_dict.keys():
-                    assets_dict[asset_name]['0..0'].set_install_status('non_local')
+                    assets_dict[asset_name]['0.0.0'].set_install_status('non_local')
                     continue
 
                 versions = assets_dict[asset_name]
                 local_versions = list(assets_dict[asset_name].keys() & local_assets_dict[asset_name].keys())
 
-                for versions, asset in versions.items():     
+                for version_key, asset in versions.items():
                     if str(asset.version) in local_versions:
                         assets_dict[asset.name][str(asset.version)].set_install_status('local')
                     else:

@@ -5,6 +5,11 @@ from pathlib import Path
 from typing import Literal
 from datetime import datetime
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .repository import Repository
+    from .context import Context
 
 import getpass
 import shortuuid
@@ -67,12 +72,16 @@ class Asset():
     def set_install_status(self,status: INSTALL_STATUS):
         self.status = AssetStatus(status)
 
-    def to_dict(self):
+    def to_dict(self)-> dict:
         return {
             "name": self.name,
+            "version": str(self.version),
             "author": self.author,
-            "size": self.id,
-            "metadata": self.changelog,
+            "id": self.id,
+            "changelog": self.changelog,
+            "status": self.status.value if self.status else None,
+            "type": self.type,
+            "source_path": str(self.source_path) if self.source_path else None,
         }
 
     def __str__(self):
@@ -88,7 +97,7 @@ class Asset():
         asset_stem = asset_path.stem
         asset_suffix = asset_path.suffix
 
-        # Check if naming matches with enforced versionning
+        # Check if naming matches with enforced versioning
         if "_v" in asset_stem:
             asset_name = asset_stem.split(sep='_v')[0]
             asset_version = Version(asset_stem.split(sep='_v')[1])
