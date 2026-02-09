@@ -30,6 +30,7 @@ class Installer():
         #Force back type if read from string 
         source_path = asset.get_remote_path(self.context.repo)
         destination_path = self.context.user_paths.NUKE_KIT_DIR
+
         try:
             shutil.copy2(source_path, destination_path)
         except shutil.SameFileError as e :
