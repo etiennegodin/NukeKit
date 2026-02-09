@@ -55,11 +55,14 @@ def publish(args, context:Context):
     if args.file:
         context = publisher.publish_asset(args.file)
     else:
+        
         #pprint(context.local_state.data)
         print_manifest(context.local_state.data)
         asset = choose_menu(context.local_state.data)
-        pprint(asset)
-        publisher.publish_asset(asset)        
+        if asset is not None:
+            publisher.publish_asset(asset)
+        else: 
+            print('Exited publish menu')     
         pass
 
 def install(args, context:Context):

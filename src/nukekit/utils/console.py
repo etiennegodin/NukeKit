@@ -18,6 +18,7 @@ def menu2(options:dict):
     print(f"Selected: {option} - {index}")
 
 def choose_menu(d:dict, level_name = "Main menu")->Asset:
+    value = None
     while True:
         options = list(d.keys())
         options.append('Return')
@@ -36,8 +37,10 @@ def choose_menu(d:dict, level_name = "Main menu")->Asset:
                 return value
             elif isinstance(value, dict):
                 value = choose_menu(value, level_name=key)
+        if value is not None:
             return value
-    return value
+    if value is not None:
+        return value
 
 def print_manifest(manifest:dict, label = 'Manifest'):
     format_string = "| {:<12} | {:^8} | {:^8} |"
