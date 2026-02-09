@@ -17,6 +17,5 @@ def launch(context:Context):
 
     sys.exit(app.exec())
 
-
 if __name__ == "__main__":
     launch()

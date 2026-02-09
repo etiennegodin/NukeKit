@@ -9,7 +9,7 @@ def init_logger(log_file: Path = None, level=logging.DEBUG):
     :type log_file: Path
     :param level: Log level
     """
-    format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format = '%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s'
     logging.basicConfig(
         filename=log_file,
         level=level,

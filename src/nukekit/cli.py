@@ -102,7 +102,10 @@ def scan(args, context:Context):
 
     context.set_mode('scan')
     scanner = Scanner(context)
-    assets = scanner.scan_local(verbose = True)
+    if args.action == 'local':
+        assets = scanner.scan_local(verbose = True)
+    elif args.action == 'remote':
+        assets = scanner.scan_folder(context.repo.ROOT)
     print_data(assets)
 
 def main():
@@ -115,7 +118,6 @@ def main():
                     description='--- Nuke Gizmo and Script manager ---')
     
 
-
     subparsers = parser.add_subparsers(help='Available subcommands')
 
     # Create the parser for the "publish" command
@@ -125,11 +127,14 @@ def main():
     parser_publish.set_defaults(func=publish) # Associate a function
 
     # Create the parser for the "install" command
-    parser_install = subparsers.add_parser('install', parents=[parent_parser], help='Push changes to a remote repository')
+    parser_install = subparsers.add_parser('install', parents=[parent_parser], help='Install asset to nuke directory')
     parser_install.set_defaults(func=install) # Associate a function
 
     # Create the parser for the "scan" command
-    parser_scan = subparsers.add_parser('scan', parents=[parent_parser], help='Push changes to a remote repository')
+    scan_choices = ['local', 'remote']
+    parser_scan = subparsers.add_parser('scan', parents=[parent_parser], help='Scan directory for assets')
+    parser_scan.add_argument("action", choices= scan_choices, help = "Where to scan" )
+
     #parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
     parser_scan.set_defaults(func=scan) # Associate a function
 

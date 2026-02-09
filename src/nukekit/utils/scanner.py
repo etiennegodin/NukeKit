@@ -19,8 +19,6 @@ class Scanner:
             asset_subtype = {}
             for path in asset_paths:
                 asset = Asset.from_path(self.context,path)
-                logger.debug(type(asset.version))
-                logger.debug(asset.version)
                 if asset.name not in asset_subtype.keys():
                     asset_subtype[asset.name] = {"versions" : {}}
                 if str(asset.version) not in asset_subtype[asset.name]['versions'].keys():
@@ -33,5 +31,6 @@ class Scanner:
         return self.data
 
     def scan_folder(self, path)->dict:
+        logger.debug(f"Scan folder {path}")
         if path is not None:
             return self._scan(path)

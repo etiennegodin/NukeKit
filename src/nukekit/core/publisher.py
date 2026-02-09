@@ -41,15 +41,14 @@ class Publisher():
         installer.install_asset(asset)
     
     def _ensure_changelog(self, asset:Asset)-> Asset:
-        if asset.changelog is None:
-            while True:
-                changelog = input(f'No changelog found for {asset.name}, please enter a message: \n')
-                if changelog:
-                    break
-                else:
-                    print("\033[1A\033[K", end="") 
+        while True:
+            changelog = input(f'No changelog found for {asset.name}, please enter a message: \n')
+            if changelog:
+                break
+            else:
+                print("\033[1A\033[K", end="") 
 
-            asset.changelog = changelog
+        asset.changelog = changelog
         return asset
 
     def _resolve_version(self,asset)-> Asset:
