@@ -8,7 +8,7 @@ from .presenter import MainPresenter
 from ..core.context import Context
 from pprint import pprint
 
-def launchUi(context:Context):
+def launch(context:Context):
     app = QApplication(sys.argv)
     ui = MainWindow()
     presenter = MainPresenter(context, ui)

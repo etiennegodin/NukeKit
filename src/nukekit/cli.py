@@ -9,6 +9,7 @@ from .core.repository import Repository
 from .core.publisher import Publisher
 from .core.installer import Installer
 
+from nukekit import ui 
 from .utils.logger import setup_logger
 from .utils.config import ConfigLoader
 from .utils.paths import UserPaths
@@ -37,15 +38,10 @@ def init()->Context:
     # Init Central Repo
     REPO = Repository(CONFIG['repository'])
     
-    try:
-        context = Context(REPO,
+    return Context(REPO,
                 USER_PATHS,
                 CONFIG,
                 )
-    except Exception as e:
-        raise e 
-    else:
-        return context
 
 def publish(args, context:Context):
     publisher = Publisher(context)
@@ -103,7 +99,6 @@ def main():
     #parser_scan.add_argument('remote', type=str, help='The remote repository name')
     parser_scan.set_defaults(func=scan) # Associate a function
 
-
     args = parser.parse_args()
     context = init()
 
@@ -115,8 +110,7 @@ def main():
         # Create context 
         args.func(args, context)
     else:
-        # If no subcommand is given, show help
-        parser.print_help()
+        ui.launch(context)
 
     """
     actions = ["publish", 'install', "scan"]
