@@ -35,28 +35,6 @@ class Context():
         # Create local state manifest from scanner 
         self.local_state = Manifest.from_scanner(self)
 
-        print("Debug context post init")
-
-        print('local state')
-        pprint(self.local_state.data)
-
-        print('local manifest')
-        pprint(self.local_manifest.data)
-
-        print('repo manifest')
-        pprint(self.repo_manifest.data)
-
-        # Updated local state
-        #self._update_local_state()
-    
-        # Set publish status for local assets 
-        #self._set_publish_status()
-
-        # Set install status for remote assets 
-        #self._set_install_status()
-
-        #self.local_manifest.write_manifest(verbose=True)
-        pass
 
     def _set_install_status(self):
 
