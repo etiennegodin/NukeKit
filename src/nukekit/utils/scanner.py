@@ -13,6 +13,7 @@ class Scanner:
         self.user_paths = context.user_paths
 
     def _scan(self,path:Path)->dict:
+        logger.debug(path)
         assets = {}
         for suffix, obj in ASSET_SUFFIXES.items():
             asset_paths = list(path.rglob(f"*{suffix}"))
@@ -31,6 +32,6 @@ class Scanner:
         return self.data
 
     def scan_folder(self, path)->dict:
-        logger.debug(f"Scan folder {path}")
+        logger.debug(path)
         if path is not None:
             return self._scan(path)

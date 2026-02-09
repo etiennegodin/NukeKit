@@ -99,11 +99,10 @@ def scan(args, context:Context):
     :param context: This sessions's context
     :type context: Context
     """  
-
     context.set_mode('scan')
     scanner = Scanner(context)
     if args.action == 'local':
-        assets = scanner.scan_local(verbose = True)
+        assets = context.local_state.data
     elif args.action == 'remote':
         assets = scanner.scan_folder(context.repo.ROOT)
     print_data(assets)
