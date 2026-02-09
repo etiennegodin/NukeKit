@@ -26,14 +26,13 @@ class Context():
 
 
     def __post_init__(self):
+        self.date = str(date.today())
 
-
-    #Read remote and local manifest
-        self.date = str(date.today()),
-
+        # Read cached manifests from disk  
         self.repo_manifest = Manifest.from_file(self.repo.MANIFEST)
         self.local_manifest = Manifest.from_file(self.user_paths.CACHED_MANIFEST)
 
+        # Create local state manifest from scanner 
         self.local_state = Manifest.from_scanner(self)
 
         print("Debug context post init")

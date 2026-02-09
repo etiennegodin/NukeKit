@@ -8,7 +8,6 @@ from .assets import Asset, ASSET_REGISTRY
 from .versioning import Version
 from ..utils.json import universal_decoder, UniversalEncoder
 from ..utils.scanner import Scanner
-from ..utils.paths import UserPaths
 
 from pprint import pprint
 
@@ -44,7 +43,7 @@ class Manifest:
         """Create Manifest from scanner results"""
         scanner = Scanner(context)
         scanner.scan_local()
-        return cls(data=scanner.data, root = context.userPaths.STATE_FILE)
+        return cls(data=scanner.data, root = context.user_paths.STATE_FILE)
 
     def _ensure_manifest(self)->bool:
         def new_manifest():

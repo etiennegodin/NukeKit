@@ -106,7 +106,7 @@ class Asset():
         if cls:
             # Check if asset is a copy from repo
             try: 
-                obj = context.repo_manifest.data[cls.type][asset_name]['versions'].get([str(asset_version)])
+                obj = context.repo_manifest.data[cls.type][asset_name]['versions'][str(asset_version)]
             except Exception as e:
                 # New asset 
                 return cls(asset_name, asset_version, asset_path, AssetStatus.UNPUBLISHED)
