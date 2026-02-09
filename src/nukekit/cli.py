@@ -55,8 +55,6 @@ def publish(args, context:Context):
     if args.file:
         context = publisher.publish_asset(args.file)
     else:
-        
-        #pprint(context.local_state.data)
         print_manifest(context.local_state.data)
         asset = choose_menu(context.local_state.data)
         if asset is not None:
@@ -67,7 +65,10 @@ def publish(args, context:Context):
 
 def install(args, context:Context):
     installer = Installer(context)
-    installer.install_from_repo()
+    print_manifest(context.repo_manifest.data)
+    asset = choose_menu(context.repo_manifest.data)
+    if asset is not None:
+        installer.install_asset(asset)
 
 def scan(args, context:Context):
     scanner = Scanner(context)

@@ -8,7 +8,6 @@ from simple_term_menu import TerminalMenu
 
 logger = logging.getLogger(__name__)
 
-
 def menu2(options:dict):
     from pick import pick
 
