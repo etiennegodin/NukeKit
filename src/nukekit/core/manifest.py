@@ -41,12 +41,10 @@ class Manifest:
     
     @classmethod
     def from_scanner(cls, context:Context):
-        userPaths = context.user_paths
         """Create Manifest from scanner results"""
         scanner = Scanner(context)
         scanner.scan_local()
-        data = scanner.data
-        return cls(data=data, root = userPaths.STATE_FILE)
+        return cls(data=scanner.data, root = context.userPaths.STATE_FILE)
 
     def _ensure_manifest(self)->bool:
         def new_manifest():

@@ -7,6 +7,7 @@ from .manifest import Manifest
 from ..utils.paths import UserPaths 
 from ..utils.scanner import Scanner
 from .assets import Asset
+from datetime import date
 
 from pprint import pprint
 
@@ -18,13 +19,20 @@ class Context():
     repo: Repository
     user_paths: UserPaths
     config: Dict[str, Any ]
-    date: str
-    repo_manifest: Manifest
-    local_manifest: Manifest
+    date: str = None
+    repo_manifest: Manifest = None
+    local_manifest: Manifest = None
     local_state: Manifest = None
 
 
     def __post_init__(self):
+
+
+    #Read remote and local manifest
+        self.date = str(date.today()),
+
+        self.repo_manifest = Manifest.from_file(self.repo.MANIFEST)
+        self.local_manifest = Manifest.from_file(self.user_paths.CACHED_MANIFEST)
 
         self.local_state = Manifest.from_scanner(self)
 

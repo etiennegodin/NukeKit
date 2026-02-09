@@ -4,7 +4,6 @@ import sys
 from pprint import pprint
 from pathlib import Path
 from dotenv import load_dotenv
-from datetime import date
 
 from .core.manifest import Manifest
 from .core.context import Context
@@ -40,19 +39,11 @@ def init()->Context:
 
     # Init Central Repo
     REPO = Repository(CONFIG['repository'])
-
-    #Read remote and local manifest
-    REPO_MANIFEST = Manifest.from_file(REPO.MANIFEST)
-    LOCAL_MANIFEST = Manifest.from_file(USER_PATHS.CACHED_MANIFEST)
-    #LOCAL_STATE = Manifest.from_scanner(USER_PATHS)
     
     try:
         context = Context(REPO,
                 USER_PATHS,
                 CONFIG,
-                str(date.today()),
-                REPO_MANIFEST,
-                LOCAL_MANIFEST,
                 )
     except Exception as e:
         raise e 
@@ -83,6 +74,7 @@ def scan(args, context:Context):
         assets = scanner.scan_local(verbose = True)
     #pprint(assets)
     print_manifest(assets)
+
 def main():
 
     parser = argparse.ArgumentParser(prog='NukeKit',
