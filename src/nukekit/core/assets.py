@@ -18,18 +18,18 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-ASSET_TYPES = Literal['Gizmo', 'Script']
+ASSET_TYPES = Literal["Gizmo", "Script"]
 
 class AssetStatus(str, Enum):
-    LOCAL = 'local'
-    NON_LOCAL = 'non_local'
-    UNPUBLISHED = 'unpublished'
-    SYNCED = 'synced'
-    PUBLISHED = 'published'
-    CACHED = 'cached'
+    LOCAL = "local"
+    NON_LOCAL = "non_local"
+    UNPUBLISHED = "unpublished"
+    SYNCED = "synced"
+    PUBLISHED = "published"
+    CACHED = "cached"
 
-INSTALL_STATUS = Literal['non_local', 'local']
-PUBLISH_STATUS = Literal["unpublished", 'synced', 'published']
+INSTALL_STATUS = Literal["non_local", "local"]
+PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
 @dataclass
 class Asset():
@@ -69,33 +69,36 @@ class Asset():
 
         # Check if naming matches with enforced versioning
         if "_v" in asset_stem:
-            asset_name = asset_stem.split(sep='_v')[0]
-            asset_version = Version(asset_stem.split(sep='_v')[1])
+            asset_name = asset_stem.split(sep="_v")[0]
+            asset_version = Version(asset_stem.split(sep="_v")[1])
         else:
             # No specified version
             asset_name = asset_stem
-            asset_version = Version('0.0.0')
-            logger.warning(f'No specified version for {asset_name}')
+            asset_version = Version("0.0.0")
+            logger.warning(f"No specified version for {asset_name}")
 
         # Get object class from path suffix
         try:
             cls = ASSET_SUFFIXES.get(asset_suffix) 
         except KeyError:
-            raise TypeError(f'\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
+            raise TypeError(f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ")
 
         if cls:
             # Check if asset is a copy from repo
             try: 
-                obj = context.repo_manifest.data[cls.type][asset_name][str(asset_version)]
-            # If not, create a new asset and set status to unpublished
+                return context.repo_manifest.data[cls.type][asset_name][asset_version]
             except KeyError:
-                return cls(asset_name, asset_version, asset_path, AssetStatus.UNPUBLISHED)
-            else:
-                return obj
+                # Asset doesn't exist in repo, create new one
+                return cls(
+                    name = asset_name,
+                    version = asset_version,
+                    source_path = asset_path,
+                    status = AssetStatus.UNPUBLISHED,
+                    type = cls.type)
 
     def ensure_message(self):
         while True:
-            message = input(f'No message found for {self.name}, please enter a message: \n')
+            message = input(f"No message found for {self.name}, please enter a message: \n")
             if message:
                 break
             else:
