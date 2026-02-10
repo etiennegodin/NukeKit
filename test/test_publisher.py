@@ -5,7 +5,7 @@ from nukekit.core.publisher import Publisher
 from nukekit.core.assets import asset_factory
 from nukekit.core.context import init_context
 from nukekit.core.repository import Repository
-from nukekit.utils.logger import setup_logger
+from nukekit.utils.logger import setuplogger
 from nukekit.utils.config import ConfigLoader
 from nukekit.utils.paths import UserPaths
 
@@ -23,7 +23,7 @@ def test_publisher_none_type():
     USER_PATHS.ensure()
 
     # Init logger
-    logger = setup_logger(USER_PATHS.LOG_FILE)
+    logger = setuplogger(USER_PATHS.LOG_FILE)
 
     # Config solver
     CONFIG = ConfigLoader().load()

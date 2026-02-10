@@ -2,7 +2,7 @@ import logging
 import sys
 from pathlib import Path
 
-def init_logger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
+def initlogger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
     """Configure application-wide logging."""
 
     file_formatter = logging.Formatter(
@@ -25,9 +25,9 @@ def init_logger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
     console_handler.setFormatter(console_formatter)
     
     # Root logger
-    root_logger = logging.getLogger('nukekit')
-    root_logger.setLevel(logging.DEBUG)
-    root_logger.addHandler(file_handler)
-    root_logger.addHandler(console_handler)
+    rootlogger = logging.getLogger('nukekit')
+    rootlogger.setLevel(logging.DEBUG)
+    rootlogger.addHandler(file_handler)
+    rootlogger.addHandler(console_handler)
     
-    return root_logger
+    return rootlogger
