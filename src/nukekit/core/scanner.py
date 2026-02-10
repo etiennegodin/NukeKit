@@ -2,8 +2,8 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from ..core.assets import ASSET_SUFFIXES
-from ..core.assets import Asset
+from .assets import ASSET_SUFFIXES
+from .assets import Asset
 
 logger = logging.getLogger(__name__)
 

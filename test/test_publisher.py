@@ -6,7 +6,7 @@ from nukekit.core.assets import asset_factory
 from nukekit.core.context import init_context
 from nukekit.core.repository import Repository
 from nukekit.utils.logger import setuplogger
-from nukekit.utils.config import ConfigLoader
+from nukekit.core.config import ConfigLoader
 from nukekit.utils.paths import UserPaths
 
 
