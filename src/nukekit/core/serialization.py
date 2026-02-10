@@ -30,11 +30,9 @@ def dataclass_to_dict(obj):
 
 class UniversalEncoder(json.JSONEncoder):
     def default(self, obj):
-
         # Handle Version as str rather than dict 
         if isinstance(obj, Version):
             return str(obj)
-        
         #Handle dataclasses
         if hasattr(obj, "__dataclass_fields__"):
             return dataclass_to_dict(obj)
@@ -65,7 +63,6 @@ def universal_decoder(dct):
     return dct
 
 def stringify_keys(obj):
-    logger.debug(obj)
     if isinstance(obj, dict):
         return {
             str(k) if isinstance(k, Version) else k:
@@ -74,12 +71,9 @@ def stringify_keys(obj):
         }
     elif isinstance(obj, list):
         return [stringify_keys(i) for i in obj]
-    logger.debug(obj)
-
     return obj
 
 def dump_json(data, path: Path):
-    logger.debug(path)
     data = stringify_keys(data)
     with open(path, "w") as f:
         json.dump(data, f, indent=4, cls=UniversalEncoder)

@@ -24,7 +24,6 @@ def _sort(d:dict):
 class Manifest:
 
     def __init__(self, data:dict = None, root:Path = None):
-        logger.debug(root)
         self.ROOT = root 
         self.data = data
         self.write_manifest()
@@ -34,8 +33,6 @@ class Manifest:
     def from_file(cls, path:Path) -> Self:
         """Create Manifest from a file path"""
         root = path
-        logger.debug(root)
-
         data = cls.read_manifest(self = cls,path = root)
         return cls(data = data,root = root)
 
@@ -88,8 +85,7 @@ class Manifest:
         :return: Confirmation of successfull write
         :rtype: bool
         """
-
-        logger.debug(self.ROOT)
+        
         if data is None:
             try:
                 data = self.data
