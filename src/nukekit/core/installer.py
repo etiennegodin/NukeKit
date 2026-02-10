@@ -30,7 +30,8 @@ class Installer():
         asset = assets['Gizmo']['city']['0.1.0']
         self.install_asset(asset)
 
-    def install_asset(self, asset:Asset):
+    def install_asset(self, asset:Asset) -> bool:
+        installed = False
         #Force back type if read from string 
         source_path = asset.get_remote_path(self.context.repo)
         destination_path = self.context.user_paths.NUKE_KIT_DIR
@@ -49,5 +50,7 @@ class Installer():
             logger.info(f"Successfully saved {asset} to {destination_path} ")
             asset.set_install_status('local')
             self.context.local_manifest.update(asset)
-            return True
+            installed = True
+        finally:
+            return installed
         

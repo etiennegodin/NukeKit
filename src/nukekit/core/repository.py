@@ -32,15 +32,12 @@ class Repository:
                 Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
             return True
         return False
-    
-    def build_from_manifest():
-        pass
 
     def get_subdir(self,asset_type:str)->Path:
         subdir = Path(f"{self.ROOT}/{asset_type}")
         if not subdir.exists():
             raise FileNotFoundError(f"Path {subdir} does not exists")
-        returnsubdir
+        return subdir
 
     def list_assets(self, asset_type:str, output_type:path_types = 'Path'):
         if asset_type:

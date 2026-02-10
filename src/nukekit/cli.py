@@ -20,7 +20,7 @@ from .utils.console import print_data, choose_menu
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = f'{ROOT_FOLDER}/nukekit.log'
 
-def get_context()->Context:
+def get_context() -> Context:
     """
     Initialize context for this session
     

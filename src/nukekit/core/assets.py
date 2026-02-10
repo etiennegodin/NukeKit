@@ -1,9 +1,8 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, Self
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Literal
 from datetime import datetime
 from dataclasses import dataclass
 
@@ -44,52 +43,8 @@ class Asset():
     id:str = None
     type:str = None
 
-    def _set_time(self):
-        self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
-
-    def _set_author(self):
-        if self.author is None:
-            self.author = getpass.getuser()
-    
-    def _set_uuid(self):
-        unique_id = shortuuid.uuid()[:10]
-        self.id = str(unique_id)
-
-    def ensure_metadata(self):
-        self._set_time()
-        self._set_author()
-        self._set_uuid()
-
-    def get_remote_path(self, repo:Repository):
-        repo_path = repo.get_subdir(self.type) / self.name
-        # Create asset folder if first publish 
-        if not repo_path.exists():
-            repo_path.mkdir(exist_ok=True)
-        return repo_path / f"{self.name}_v{self.version}.gizmo"
-
-    def set_publish_status(self, status: PUBLISH_STATUS):
-        self.status = AssetStatus(status)
-
-    def set_install_status(self,status: INSTALL_STATUS):
-        self.status = AssetStatus(status)
-
-    def to_dict(self)-> dict:
-        return {
-            "name": self.name,
-            "version": str(self.version),
-            "author": self.author,
-            "id": self.id,
-            "changelog": self.changelog,
-            "status": self.status.value if self.status else None,
-            "type": self.type,
-            "source_path": str(self.source_path) if self.source_path else None,
-        }
-
-    def __str__(self):
-        return f"{self.name}_v{self.version}"
-    
     @classmethod
-    def from_path(cls, context:Context, asset_path:Path):
+    def from_path(cls, context:Context, asset_path:Path) -> Self :
     #Force Path for stem and suffix methods
         if isinstance(asset_path, str):
             asset_path = Path(asset_path)
@@ -122,6 +77,50 @@ class Asset():
         else:
             raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
 
+    def ensure_metadata(self):
+        self._set_time()
+        self._set_author()
+        self._set_uuid()
+
+    def set_publish_status(self, status: PUBLISH_STATUS):
+        self.status = AssetStatus(status)
+
+    def set_install_status(self,status: INSTALL_STATUS):
+        self.status = AssetStatus(status)
+
+    def get_remote_path(self, repo:Repository) -> Path:
+        repo_path = repo.get_subdir(self.type) / self.name
+        # Create asset folder if first publish 
+        if not repo_path.exists():
+            repo_path.mkdir(exist_ok=True)
+        return repo_path / f"{self.name}_v{self.version}.gizmo"
+
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "version": str(self.version),
+            "author": self.author,
+            "id": self.id,
+            "changelog": self.changelog,
+            "status": self.status.value if self.status else None,
+            "type": self.type,
+            "source_path": str(self.source_path) if self.source_path else None,
+        }
+    
+    def _set_time(self):
+        self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
+
+    def _set_author(self):
+        if self.author is None:
+            self.author = getpass.getuser()
+    
+    def _set_uuid(self):
+        unique_id = shortuuid.uuid()[:10]
+        self.id = str(unique_id)
+    
+    def __str__(self):
+        return f"{self.name}_v{self.version}"
 @dataclass
 class Gizmo(Asset):
     type:str = "Gizmo"
