@@ -52,7 +52,7 @@ class Manifest:
             manifest_path = self.ROOT
 
         if not manifest_path.exists():
-            logger.warning(f"Manifest file {manifest_path} doesn"t exist, returning empty manifest")
+            logger.warning(f"Manifest file {manifest_path} does not exist, returning empty manifest")
             return self._new_empty_manifest()
         try:
             with open(manifest_path, "r") as file:
@@ -138,7 +138,7 @@ class Manifest:
             try:
                 asset_versions_list = list(asset.name in data[asset.type].keys())
             except Exception as e:
-                logger.error(f"Couldn"t find {asset.name} in {self.name} manifest")
+                logger.error(f"Could not find {asset.name} in {self.name} manifest")
                 raise
             else:
                 return Version.highest_version(asset_versions_list)
@@ -157,4 +157,3 @@ class Manifest:
                 k: self._sort(v) if isinstance(v, dict) else v
                 for k, v in sorted(d.items(), reverse=True)
         }
-
