@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import logging
 
 from pathlib import Path
@@ -39,7 +40,7 @@ class Repository:
         subdir = Path(f"{self.ROOT}/{asset_type}")
         if not subdir.exists():
             raise FileNotFoundError(f"Path {subdir} does not exists")
-        return subdir
+        returnsubdir
 
     def list_assets(self, asset_type:str, output_type:path_types = 'Path'):
         if asset_type:

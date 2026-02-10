@@ -1,13 +1,16 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 import shutil
 import logging
 from pathlib import Path
 
 from .assets import Asset
-from .context import Context
 from .installer import Installer
-from .versioning import Version
 from ..utils.ux import user_input_choice
+
+if TYPE_CHECKING:
+    from .versioning import Version
+    from .context import Context
 
 logger = logging.getLogger(__name__)
 

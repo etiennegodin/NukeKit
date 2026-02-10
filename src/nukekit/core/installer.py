@@ -1,9 +1,11 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 import shutil
 import logging
 
-from .assets import Asset
-from .context import Context
+if TYPE_CHECKING:
+    from .assets import Asset
+    from .context import Context
 
 logger = logging.getLogger(__name__)
 

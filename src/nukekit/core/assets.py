@@ -1,20 +1,21 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 import logging
 from enum import Enum
 from pathlib import Path
 from typing import Literal
 from datetime import datetime
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .repository import Repository
-    from .context import Context
 
 import getpass
 import shortuuid
 
 from .versioning import Version
+
+if TYPE_CHECKING:
+    from .repository import Repository
+    from .context import Context
+
 
 logger = logging.getLogger(__name__)
 

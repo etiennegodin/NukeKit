@@ -1,15 +1,16 @@
 from __future__ import annotations
-
+from typing import TYPE_CHECKING
 import logging 
 from typing import Any, Dict
 from dataclasses import dataclass
 from enum import Enum
 from typing import Literal
 
-from .repository import Repository
 from .manifest import Manifest
-from ..utils.paths import UserPaths 
 
+if TYPE_CHECKING:
+    from .repository import Repository
+    from ..utils.paths import UserPaths 
 
 class AppMode(str, Enum):
     PUBLISH = "publish"
@@ -17,7 +18,6 @@ class AppMode(str, Enum):
     SCAN = 'scan'
 
 APP_MODE = Literal['publish','install','scan']
-
 
 logger = logging.getLogger(__name__)
 
