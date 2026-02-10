@@ -45,7 +45,26 @@ class Version():
             self.patch = 0
         elif type_name == 'minor':
             self.patch = 0 
+    @classmethod
+    def highest_version(cls, version_list: list[str|tuple|Version]) -> Version:
+        """
+        Returns highest version for a versions list 
 
+        :param version_list: List of versions to compare
+        :type version_list: list[str | tuple | Version]
+        :return: Highest version from list
+        :rtype: Version
+        """
+        latest = Version("0.0.0")
+        for v in version_list:
+            if isinstance(v, str):
+                v = Version(v)
+            if isinstance(v, tuple):
+                v = Version.from_tuple(v)
+            if v > latest:
+                latest = v
+        return latest
+            
     def __gt__(self, other:Self):
         return (self.major, self.minor, self.patch) > \
                (other.major, other.minor, other.patch)

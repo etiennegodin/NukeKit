@@ -96,55 +96,53 @@ class Manifest:
             if verbose:
                 logger.info(f"Successfully wrote {self.ROOT}")
             
-    def update(self, asset:Asset) -> None:
+    def update(self, asset:Asset) -> bool:
         """
         Reads current manifest, adds asset and writes out updated manifest. 
 
         :param asset: Asset object to add to manifest 
         :type asset: Asset
+        :return: Confirmation of successfull update
+        :rtype: bool
         """
 
         data = self.read_manifest()
-        version_string = asset.version
-
-        if asset.type not in data:
-            raise Exception('manifest')
 
         if asset.name not in data[asset.type]:
-            data[asset.type][asset.name] = {version_string: asset}
+            # New asset
+            data[asset.type][asset.name] = {asset.version: asset}
         else:
-            data[asset.type][asset.name][version_string] = asset  
+            # Existing asset, add to asset's dict
+            data[asset.type][asset.name][asset.version] = asset  
+        
+        if self.write_manifest(data):
+            # Updates current status
+            self.data = data 
+            logger.info(f"Successfully added {asset.name} v{asset.version} to repo manifest")
+            return True
+        else:
+            return False
 
-        self.write_manifest(data)
-        logger.info(f"Successfully added {asset.name} v{version_string} to repo manifest")
-
-    def get_asset(self, id:str):
-
-        def recursive_dict_loop(d):
-            for key, value in d.items():
-                if isinstance(value, dict):
-                    # If the value is a dictionary, recurse into it
-                    recursive_dict_loop(value)
-                else:
-                    # Otherwise, process the key-value pair
-                    print(f"Key: {key}, Value: {value}")
-
-        recursive_dict_loop(self.data)
-
-    def get_latest_asset_version(self, asset:Asset|str)->Version:
+    def get_latest_asset_version(self, asset:Asset) -> Version:
+        """
+        Parses the manifest and returns the highest version for this asset.
+        
+        :param asset: Asset to return latest version
+        :type asset: Asset
+        :return: Version instance of latest asset's version
+        :rtype: Version
+        """
         data = self.read_manifest()
+
         if isinstance(asset,Asset):
-            if asset.name in data[asset.type].keys():
-                versions = list(data[asset.type][asset.name])
-                latest = Version.from_tuple((0,0,0))
-                for v in versions:
-                    v = Version(v)
-                    if v > latest:
-                        latest = v
-                return latest
-            # New asset pubish 
-            #logger.info(f"Asset '{asset.name}' not found in {self.ROOT} manifest")
-            return None
+            try:
+                asset_versions_list = list(asset.name in data[asset.type].keys())
+            except Exception as e:
+                logger.error(f"Couldn't find {asset.name} in {self.name} manifest")
+                raise
+            else:
+                return Version.highest_version(asset_versions_list)
+            
         else:
             # Handle unexpected type 
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
