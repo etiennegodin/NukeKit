@@ -38,3 +38,9 @@ def test_version_parsing():
 def test_version_invalid():
     with pytest.raises(ValueError):
         Version("1.2")  # Missing patch
+
+def test_version_dict_hash():
+    version= Version("0.1.0")
+    value = "my_version"
+    d = {version:value}
+    assert d[version] == value

@@ -75,10 +75,10 @@ class Context():
                 local_versions = list(assets_dict[asset_name].keys() & local_assets_dict[asset_name].keys())
 
                 for version_key, asset in versions.items():
-                    if str(asset.version) in local_versions:
-                        assets_dict[asset.name][str(asset.version)].set_install_status('local')
+                    if asset.version in local_versions:
+                        assets_dict[asset.name][asset.version].set_install_status('local')
                     else:
-                        assets_dict[asset.name][str(asset.version)].set_install_status('non_local')
+                        assets_dict[asset.name][asset.version].set_install_status('non_local')
             data[asset_category] = assets_dict
 
         self.repo_manifest.data = data
@@ -99,8 +99,8 @@ class Context():
                 local_versions = list(assets_dict[asset_name].keys() & remote_assets_dict[asset_name].keys())
 
                 for versions, asset in versions.items():     
-                    if str(asset.version) in local_versions:
-                        assets_dict[asset.name][str(asset.version)].set_publish_status('synced')
+                    if asset.version in local_versions:
+                        assets_dict[asset.name][asset.version].set_publish_status('synced')
             data[asset_category] = assets_dict
 
         self.local_state.data = data
@@ -122,14 +122,14 @@ class Context():
                     else:
                         # New asset
                         if asset.name not in local_data[asset.type].keys():
-                            scanned_data[asset.type][asset.name] = {'versions': {str(asset.version) : asset}}
+                            scanned_data[asset.type][asset.name] = {'versions': {asset.version : asset}}
 
                         # Version already in manifest, read from cached
-                        elif str(asset.version) in local_data[asset.type][asset.name].keys():
-                            scanned_data[asset.type][asset.name][str(asset.version)] = local_data[asset.type][asset.name][str(asset.version)]
+                        elif asset.version in local_data[asset.type][asset.name].keys():
+                            scanned_data[asset.type][asset.name][asset.version] = local_data[asset.type][asset.name][asset.version]
                             continue
                         # New version not in local state 
-                        scanned_data[asset.type][asset.name][str(asset.version)] = asset
+                        scanned_data[asset.type][asset.name][asset.version] = asset
 
         self.local_state.data = scanned_data
         self.local_state.write_manifest()

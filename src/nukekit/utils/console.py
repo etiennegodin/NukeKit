@@ -61,7 +61,7 @@ def print_data(data:dict, label:str = 'Manifest'):
             if key == stop:
                 t.add(format_string.format("Status", "Version", "Id" ))
                 for v in value.values():
-                    t.add(format_string.format(str(v.status.name), str(v.version),str(v.id)))
+                    t.add(format_string.format(str(v.status.name), v.version,str(v.id)))
                 break
             sub_tree = t.add(key)
             if isinstance(value, dict):

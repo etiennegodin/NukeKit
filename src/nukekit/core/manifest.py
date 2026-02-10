@@ -105,7 +105,7 @@ class Manifest:
         """
 
         data = self.read_manifest()
-        version_string = str(asset.version)
+        version_string = asset.version
 
         if asset.type not in data:
             raise Exception('manifest')
