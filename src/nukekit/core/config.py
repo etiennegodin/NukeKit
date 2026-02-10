@@ -10,25 +10,27 @@ class ConfigLoader:
     Resolve and load config for this session
     """
 
-    ENV_VAR = "NUKEKIT_CONFIG_PATH"
+    NUKEKIT_CONFIG_PATH = "NUKEKIT_CONFIG_PATH"
 
     @classmethod
-    def resolve(cls)->Path:
-        env_path = Path(os.getenv(cls.ENV_VAR))
+    def resolve(cls) -> Path:
+        # Read from .env
+        env_path = Path(os.getenv(cls.NUKEKIT_CONFIG_PATH))
         if env_path.exists():
             return Path(env_path)
         
+        # Read from this package as fallback
         package_root = Path(__file__).parents[3] 
         adjacent = package_root / "config" / "settings.yaml"
         if adjacent.exists():
             return adjacent
         
         raise FileNotFoundError(f"NukeKit could not find studio config.\n"
-            f"  → Set the {cls.ENV_VAR} env var to your config path\n"
+            f"  → Set the {cls.NUKEKIT_CONFIG_PATH} env var to your config path\n"
             f"  → Or place studio_settings.yaml in {package_root / 'config'}")
         
     @classmethod
-    def load(cls)->dict:
+    def load(cls) -> dict:
         path = cls.resolve()
         with open(path, "r") as file:
             return yaml.safe_load(file)
@@ -43,25 +45,29 @@ class ConfigValidator:
     }
 
     @classmethod
-    def validate(cls, config: dict) -> tuple[bool, list[str]]:
+    def validate(cls, config: dict) -> bool:
         """Validate config. Returns (is_valid, errors)."""
-        errors = []
-        
+        warnings = []
         # Check required sections
         for section, keys in cls.REQUIRED_KEYS.items():
             if section not in config:
-                errors.append(f"Missing required section: {section}")
+                logger.error(f"Missing required section in config: {section}")
+                quit()
                 continue
             
             for key in keys:
                 if key not in config[section]:
-                    errors.append(f"Missing required key: {section}.{key}")
+                    logger.error(f"Missing required key in config: {section}.{key}")
+                    quit()
         
         # Validate paths
         if 'repository' in config:
             root = Path(config['repository'].get('root', ''))
             if not root.is_absolute():
-                errors.append(f"Repository root must be absolute path: {root}")
+                warnings.append(f"Repository root must be absolute path: {root}")
         
-        return len(errors) == 0, errors
+        if len(warnings) == 0:
+            return True
+        [logger.warning(w) for w in warnings]
+        return False
     

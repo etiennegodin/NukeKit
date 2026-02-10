@@ -39,8 +39,8 @@ def get_context() -> Context:
 
     # Config solver
     CONFIG = ConfigLoader().load()
-    if not ConfigValidator.validate(CONFIG)[0]:
-        logger.error(ConfigValidator.validate(CONFIG))
+    ConfigValidator.validate(CONFIG)
+
 
     # Init Central Repo
     REPO = Repository(CONFIG)

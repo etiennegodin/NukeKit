@@ -72,10 +72,10 @@ class Asset():
             asset_name = asset_stem.split(sep="_v")[0]
             asset_version = Version(asset_stem.split(sep="_v")[1])
         else:
-            # No specified version
+            # No specified version, local asset
             asset_name = asset_stem
             asset_version = Version.from_string("0.0.0")
-            logger.warning(f"No specified version for {asset_name}")
+            logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
         try:

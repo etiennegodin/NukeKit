@@ -49,6 +49,20 @@ nukekit scan local
 nukekit scan remote
 ```
 
+## Configuration 
+Edit `~/.nukekit/config.yaml`:
+```yaml
+repository:
+  root: /path/to/your/repo
+  subfolder:
+    - Gizmo
+    - Script
+
+publishing:
+  require_changelog: true
+  auto_increment_patch: false
+```
+
 ## Project Structure
 ```
 NukeKit/
