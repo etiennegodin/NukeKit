@@ -11,7 +11,7 @@ from .core.installer import Installer
 
 from nukekit import ui 
 from .utils.logger import init_logger
-from .core.config import ConfigLoader
+from .core.config import ConfigLoader, ConfigValidator
 from .utils.paths import UserPaths
 from .core.scanner import Scanner
 from .utils.console import print_data, choose_menu
@@ -39,6 +39,8 @@ def get_context() -> Context:
 
     # Config solver
     CONFIG = ConfigLoader().load()
+    if not ConfigValidator.validate(CONFIG)[0]:
+        logger.error(ConfigValidator.validate(CONFIG))
 
     # Init Central Repo
     REPO = Repository(CONFIG)

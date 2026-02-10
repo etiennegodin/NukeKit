@@ -5,8 +5,7 @@ from rich.tree import Tree
 from simple_term_menu import TerminalMenu
 from typing import Literal, get_args, get_origin, Any, TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from ..core.assets import Asset
+from ..core.assets import Asset
 
 logger = logging.getLogger(__name__)
 

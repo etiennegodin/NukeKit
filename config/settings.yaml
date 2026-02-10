@@ -1,5 +1,5 @@
 repository:
-  root: "${HOME}/nukekit_repo"
+  root: "/home/etienne/nukekit_repo"
   subfolder:
     - Gizmo
     - Script

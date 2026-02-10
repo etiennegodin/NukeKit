@@ -32,3 +32,36 @@ class ConfigLoader:
         path = cls.resolve()
         with open(path, "r") as file:
             return yaml.safe_load(file)
+
+
+class ConfigValidator:
+    """Validate configuration against schema."""
+
+    REQUIRED_KEYS = {
+        'repository': ['root', 'subfolder'],
+        'user': ['nuke_dir'],
+    }
+
+    @classmethod
+    def validate(cls, config: dict) -> tuple[bool, list[str]]:
+        """Validate config. Returns (is_valid, errors)."""
+        errors = []
+        
+        # Check required sections
+        for section, keys in cls.REQUIRED_KEYS.items():
+            if section not in config:
+                errors.append(f"Missing required section: {section}")
+                continue
+            
+            for key in keys:
+                if key not in config[section]:
+                    errors.append(f"Missing required key: {section}.{key}")
+        
+        # Validate paths
+        if 'repository' in config:
+            root = Path(config['repository'].get('root', ''))
+            if not root.is_absolute():
+                errors.append(f"Repository root must be absolute path: {root}")
+        
+        return len(errors) == 0, errors
+    
