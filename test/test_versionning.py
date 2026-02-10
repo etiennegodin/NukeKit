@@ -3,12 +3,12 @@ import pytest
 from nukekit.core.versioning import Version
 
 def test_version_comparison_gt():
-    v1 = Version("1.2.0")
-    v2 = Version("1.1.5")
+    v1 = Version.from_string("1.2.0")
+    v2 = Version.from_string("1.1.5")
     assert v1 > v2
 
 def test_version_up_major():
-    v1 = Version("1.1.13")
+    v1 = Version.from_string("1.1.13")
     v1.version_up('major')
 
     assert v1.major == 2
@@ -16,7 +16,7 @@ def test_version_up_major():
     assert v1.patch == 0
 
 def test_version_up_minor():
-    v1 = Version("1.1.13")
+    v1 = Version.from_string("1.1.13")
     v1.version_up('minor')
 
     assert v1.major == 1
@@ -30,17 +30,17 @@ def test_version_from_tuple():
     assert v.patch == 3
 
 def test_version_parsing():
-    v = Version("2.10.3")
+    v = Version.from_string("2.10.3")
     assert v.major == 2
     assert v.minor == 10
     assert v.patch == 3
 
 def test_version_invalid():
     with pytest.raises(ValueError):
-        Version("1.2")  # Missing patch
+        Version.from_string("1.2")  # Missing patch
 
 def test_version_dict_hash():
-    version= Version("0.1.0")
+    version= Version.from_string("0.1.0")
     value = "my_version"
     d = {version:value}
     assert d[version] == value

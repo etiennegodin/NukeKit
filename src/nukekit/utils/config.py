@@ -13,8 +13,8 @@ class ConfigLoader:
 
     @classmethod
     def resolve(cls)->Path:
-        env_path = os.getenv(cls.ENV_VAR)
-        if env_path and Path(env_path).exists():
+        env_path = Path(os.getenv(cls.ENV_VAR))
+        if env_path.exists():
             return Path(env_path)
         
         package_root = Path(__file__).parents[3] 
@@ -29,5 +29,5 @@ class ConfigLoader:
     @classmethod
     def load(cls)->dict:
         path = cls.resolve()
-        with open(path, 'r') as file:
+        with open(path, "r") as file:
             return yaml.safe_load(file)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 import semver
+from dataclasses import dataclass
 import logging
 from typing import Self, Literal
 
@@ -12,25 +13,28 @@ Patch: Bug fixes
 
 logger = logging.getLogger(__name__)
 
-class Version():
-    
-    classes = Literal["major", "minor","patch"]
+VERSION_CLASSES = Literal["major", "minor","patch"]
 
-    def __init__(self, version_string:str):
+
+@dataclass(frozen=True, order=True)
+class Version():
+    major: int 
+    minor: int
+    patch: int
+
+    @classmethod
+    def from_string(cls, version_string):
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
             raise e
-            
-        self.major = ver.major
-        self.minor = ver.minor
-        self.patch = ver.patch
+        return cls(ver.major, ver.minor, ver.patch)
 
     @classmethod
     def from_tuple(cls, version_tuple:tuple[int,int,int]) -> Self:
         return cls(".".join(str(val) for val in version_tuple))
     
-    def version_up(self, type_name:classes) -> Self:
+    def version_up(self, type_name:VERSION_CLASSES):
         """
         Docstring for version_up
         
@@ -58,7 +62,7 @@ class Version():
         :rtype: Version
         """
         # Temp version as lowest possible
-        latest = Version("0.0.0")
+        latest = Version.from_string("0.0.0")
         for v in version_list:
             #Handle multiple cases
             if isinstance(v, str):
@@ -70,19 +74,13 @@ class Version():
             if v > latest:
                 latest = v
         return latest
-            
-    def __gt__(self, other:Self):
-        return (self.major, self.minor, self.patch) > \
-               (other.major, other.minor, other.patch)
     
-    def __eq__(self, other:Self):
-        return (self.major == other.major and self.minor == other.minor and self.patch == other.patch)
-    
-    def __hash__(self):
-        return hash((self.major,self.minor,self.patch))
-    
-    def __repr__(self):
-        return str(f"{self.major}.{self.minor}.{self.patch}")
+    def __repr__(self) -> str:
+        return f"Version('{self}')"
     
     def __str__(self):
-        return str(f"{self.major}.{self.minor}.{self.patch}")
+        return (f"{self.major}.{self.minor}.{self.patch}")
+
+    def __format__(self, format_spec):
+        return str(self)
+            

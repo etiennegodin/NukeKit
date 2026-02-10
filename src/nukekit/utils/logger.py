@@ -15,13 +15,13 @@ def initlogger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
     )
 
     # File handler
-    file_handler = logging.FileHandler(log_file)
+    file_handler = logging.FileHandler(log_file, mode = 'w')
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(file_formatter)
     
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(level)
+    console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(console_formatter)
     
     # Root logger

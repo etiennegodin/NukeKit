@@ -1,24 +1,25 @@
 from __future__ import annotations
-
 import logging
-
+import os
 from pathlib import Path
-from typing import Literal
 
 logger = logging.getLogger(__name__)
 
 class Repository:
 
-    def __init__(self, repo_dict:dict):
+    def __init__(self, config:dict):
         """
         Object representation of remote repository 
         
         :param repo_dict: Dictionnary from config to configure repository
         :type repo_dict: dict
         """
-        
-        self.ROOT = Path(repo_dict["root"])
-        self.SUBFOLDERS = repo_dict["subfolder"]
+        root = config['repository']['root']
+        root = os.path.expandvars(root)
+        root = os.path.expanduser(root)
+
+        self.ROOT = Path(root)
+        self.SUBFOLDERS = config['repository']["subfolder"]
         self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
     

@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 class AppMode(str, Enum):
     PUBLISH = "publish"
     INSTALL = "install"
-    SCAN = 'scan'
+    SCAN = "scan"
 
-APP_MODE = Literal['publish','install','scan']
+APP_MODE = Literal["publish","install","scan"]
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.0.0
                 if asset_name not in local_assets_dict.keys():
-                    assets_dict[asset_name]['0.0.0'].set_install_status('non_local')
+                    assets_dict[asset_name]["0.0.0"].set_install_status("non_local")
                     continue
 
                 versions = assets_dict[asset_name]
@@ -76,9 +76,9 @@ class Context():
 
                 for version_key, asset in versions.items():
                     if asset.version in local_versions:
-                        assets_dict[asset.name][asset.version].set_install_status('local')
+                        assets_dict[asset.name][asset.version].set_install_status("local")
                     else:
-                        assets_dict[asset.name][asset.version].set_install_status('non_local')
+                        assets_dict[asset.name][asset.version].set_install_status("non_local")
             data[asset_category] = assets_dict
 
         self.repo_manifest.data = data
@@ -92,7 +92,7 @@ class Context():
             for asset_name in assets_dict.keys():
                 # Edge case, unpublished asset, default version to 0.0.0
                 if asset_name not in remote_assets_dict.keys():
-                    assets_dict[asset_name]['0.0.0'].set_publish_status('unpublished')
+                    assets_dict[asset_name]["0.0.0"].set_publish_status("unpublished")
                     continue
 
                 versions = assets_dict[asset_name]
@@ -100,7 +100,7 @@ class Context():
 
                 for versions, asset in versions.items():     
                     if asset.version in local_versions:
-                        assets_dict[asset.name][asset.version].set_publish_status('synced')
+                        assets_dict[asset.name][asset.version].set_publish_status("synced")
             data[asset_category] = assets_dict
 
         self.local_state.data = data
@@ -122,7 +122,7 @@ class Context():
                     else:
                         # New asset
                         if asset.name not in local_data[asset.type].keys():
-                            scanned_data[asset.type][asset.name] = {'versions': {asset.version : asset}}
+                            scanned_data[asset.type][asset.name] = {"versions": {asset.version : asset}}
 
                         # Version already in manifest, read from cached
                         elif asset.version in local_data[asset.type][asset.name].keys():

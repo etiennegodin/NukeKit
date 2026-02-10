@@ -14,21 +14,11 @@ class Installer():
         self.context = context
 
     def install_all(self):
-        raise NotImplementedError('Not implemented')
+        raise NotImplementedError("Not implemented")
         pass
 
     def install_from_repo(self):
-        raise NotImplementedError('Not implemented')
-
-        logger.debug('Install from repo')
-        assets = self.context.repo_manifest.read_manifest()
-
-        logger.error('installer')
-        #logger.error(assets)
-        #logger.error_json(json.dumps(assets,cls=UniversalEncoder))
-        
-        asset = assets['Gizmo']['city']['0.1.0']
-        self.install_asset(asset)
+        raise NotImplementedError("Not implemented")
 
     def install_asset(self, asset:Asset) -> bool:
         """
@@ -57,7 +47,7 @@ class Installer():
             logger.error(f"An error occurred: {e}")
         else:
             logger.info(f"Successfully saved {asset} to {destination_path} ")
-            asset.set_install_status('local')
+            asset.set_install_status("local")
             self.context.local_manifest.update(asset)
             installed = True
             

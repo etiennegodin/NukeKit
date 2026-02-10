@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import (
 )
 
 from ..core.assets import Asset
+from ..core.serialization import dumps_json
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -72,7 +73,7 @@ class MainWindow(QMainWindow):
 
     def show_asset(self, asset: Asset):
         self.detail.setPlainText(
-            json.dumps(asset.to_dict(), indent=2)
+            dumps_json(asset.to_dict())
         )
 
     def show_text(self, text: str):

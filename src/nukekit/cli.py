@@ -41,7 +41,7 @@ def get_context() -> Context:
     CONFIG = ConfigLoader().load()
 
     # Init Central Repo
-    REPO = Repository(CONFIG["repository"])
+    REPO = Repository(CONFIG)
     
     # Create and return context instance
     return Context(REPO,

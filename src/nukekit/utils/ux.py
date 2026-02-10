@@ -1,10 +1,10 @@
 from typing import Literal, get_args, get_origin, Any
 
-return_type = Literal['bool', 'str']
+return_type = Literal["bool", "str"]
 
 def add_question_mark(question:str)->str:
-    if not question.endswith('?'):
-        question += '?'
+    if not question.endswith("?"):
+        question += "?"
     return question
 
 def format_options_list(options:Any):
@@ -12,7 +12,7 @@ def format_options_list(options:Any):
         options = list(get_args(options))
     return options
 
-def user_input_choice(question:str, options:list[str] = ['y','n'], type:return_type = 'bool')-> bool | str:
+def user_input_choice(question:str, options:list[str] = ["y","n"], type:return_type = "bool")-> bool | str:
     """
     Ask user a question with options answers in terminal. Loops until correct answer is given.
 
@@ -36,6 +36,6 @@ def user_input_choice(question:str, options:list[str] = ['y','n'], type:return_t
         else:
             print("\033[1A\033[K", end="") 
 
-    if type == 'bool':
-        return user_input_choice == 'y'
+    if type == "bool":
+        return user_input_choice == "y"
     return user_input_choice

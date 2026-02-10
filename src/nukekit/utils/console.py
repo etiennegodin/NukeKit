@@ -23,17 +23,17 @@ def choose_menu(d:dict, level_name:str = "Main menu")->Asset:
     value = None
     while True:
         options = list(d.keys())
-        options.append('Return')
+        options.append("Return")
         terminal_menu = TerminalMenu(options, title= level_name)
         menu_entry_index = terminal_menu.show()
 
-        if options[menu_entry_index] == 'Return':
+        if options[menu_entry_index] == "Return":
             break
         try: 
             key = options[menu_entry_index]
             value = d[key]
         except (ValueError, IndexError):
-            print('Invalid selection')
+            print("Invalid selection")
         else:
             if isinstance(value, Asset):
                 return value
@@ -44,7 +44,7 @@ def choose_menu(d:dict, level_name:str = "Main menu")->Asset:
     if value is not None:
         return value
 
-def print_data(data:dict, label:str = 'Manifest'):
+def print_data(data:dict, label:str = "Manifest"):
     """
     Print input dictionnary as tree in terminal 
     
@@ -61,7 +61,7 @@ def print_data(data:dict, label:str = 'Manifest'):
             if key == stop:
                 t.add(format_string.format("Status", "Version", "Id" ))
                 for v in value.values():
-                    t.add(format_string.format(str(v.status.name), v.version,str(v.id)))
+                    t.add(format_string.format(v.status.name, v.version, str(v.id)))
                 break
             sub_tree = t.add(key)
             if isinstance(value, dict):

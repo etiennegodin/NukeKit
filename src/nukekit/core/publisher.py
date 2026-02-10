@@ -7,6 +7,7 @@ from pathlib import Path
 from .assets import Asset
 from .installer import Installer
 from ..utils.ux import user_input_choice
+from .versioning import VERSION_CLASSES
 
 if TYPE_CHECKING:
     from .versioning import Version
@@ -57,7 +58,7 @@ class Publisher():
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
 
             # New asset or newer than repo nothing to resolve
-            if latest_version is Version("0.0.0") or asset.version > latest_version:
+            if latest_version is Version.from_string("0.0.0") or asset.version > latest_version:
                 break
 
             # Version Logic: Conflict/Exists 
@@ -87,7 +88,7 @@ class Publisher():
         return asset
         
     def _version_up(self,asset:Asset) -> Asset:
-        version_update = user_input_choice("Which type of update", Version.classes, type="str")
+        version_update = user_input_choice("Which type of update", VERSION_CLASSES, type="str")
         asset.version.version_up(version_update)
         return asset 
 

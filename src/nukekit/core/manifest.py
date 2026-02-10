@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .assets import ASSET_REGISTRY
 from .versioning import Version
-from ..utils.json import universal_decoder, UniversalEncoder
+from .serialization import dump_json, load_json
 from ..utils.scanner import Scanner
 
 if TYPE_CHECKING:
@@ -15,19 +15,28 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+def _sort(d:dict):
+    return {
+            k: _sort(v) if isinstance(v, dict) else v
+            for k, v in sorted(d.items(), reverse=True)
+    }
+
 class Manifest:
+
     def __init__(self, data:dict = None, root:Path = None):
+        logger.debug(root)
         self.ROOT = root 
-        self.decoder = universal_decoder
-        self.encoder = UniversalEncoder
-        self.write_manifest()
         self.data = data
+        self.write_manifest()
+
         
     @classmethod
     def from_file(cls, path:Path) -> Self:
         """Create Manifest from a file path"""
         root = path
-        data = cls.read_manifest(path)
+        logger.debug(root)
+
+        data = cls.read_manifest(self = cls,path = root)
         return cls(data = data,root = root)
 
     @classmethod
@@ -36,7 +45,11 @@ class Manifest:
         scanner = Scanner(context)
         scanner.scan_local()
         return cls(data=scanner.data, root = context.user_paths.STATE_FILE)
-        
+    
+    @classmethod
+    def _new_empty_manifest(self) -> dict:
+        return {type_: {} for type_ in ASSET_REGISTRY.keys()}
+
     def read_manifest(self, path:Path = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.
     
@@ -45,19 +58,18 @@ class Manifest:
         :return: Data from manifest json file. Defaults to empty if not found.
         :rtype: dict
         """
-    
         if path is not None:
             manifest_path = path 
         else: 
             manifest_path = self.ROOT
 
         if not manifest_path.exists():
-            logger.warning(f"Manifest file {manifest_path} does not exist, returning empty manifest")
+            logger.warning(f"{manifest_path} does not exist, returning empty manifest")
             return self._new_empty_manifest()
         try:
             with open(manifest_path, "r") as file:
-                data = json.load(file, object_hook=self.decoder)
-                return self._sort(data)        
+                data = load_json(manifest_path)
+                return _sort(data)        
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse manifest {manifest_path}: {e}")
             return self._new_empty_manifest()
@@ -76,6 +88,8 @@ class Manifest:
         :return: Confirmation of successfull write
         :rtype: bool
         """
+
+        logger.debug(self.ROOT)
         if data is None:
             try:
                 data = self.data
@@ -84,14 +98,13 @@ class Manifest:
                 raise
 
         # Sort outgoing dict
-        data = self._sort(data)
+        data = _sort(data)
 
         # Write to disk 
         try:
-            with open(self.ROOT, "w") as json_file:
-                json.dump(data, json_file, indent=4, cls=self.encoder)
+            dump_json(data, self.ROOT)
         except Exception as e:
-            logger.error(f"Error writing manifest to {self.ROOT}: {e}")
+            logger.exception(f"Error writing manifest to {self.ROOT}: {e}")
         else:
             if verbose:
                 logger.info(f"Successfully wrote {self.ROOT}")
@@ -149,11 +162,5 @@ class Manifest:
             logger.error(msg)
             raise NotImplementedError(msg)
  
-    def _new_empty_manifest(self) -> dict:
-        return {type_: {} for type_ in ASSET_REGISTRY.keys()}
 
-    def _sort(self, d:dict):
-        return {
-                k: self._sort(v) if isinstance(v, dict) else v
-                for k, v in sorted(d.items(), reverse=True)
-        }
+
