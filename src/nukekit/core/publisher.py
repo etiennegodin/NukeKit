@@ -31,7 +31,7 @@ class Publisher():
         if isinstance(asset, Path):
             asset = Asset.from_path(self.context, asset)
 
-        if asset.type == 'Script':
+        if asset.type == "Script":
             raise NotImplementedError
         
         asset = self._resolve_version(asset)
@@ -65,19 +65,19 @@ class Publisher():
 
             # If same version ask to update
             if latest_version == asset.version:
-                if user_input_choice(f'{asset} already exists in repo. \nDo you want to publish a new version?'):
+                if user_input_choice(f"{asset} already exists in repo. \nDo you want to publish a new version?"):
                     to_update = True
                 else:
-                    raise UserWarning('Cannot publish over existing asset, aborting publish')
+                    raise UserWarning("Cannot publish over existing asset, aborting publish")
 
             # If lower version ask to update 
             elif latest_version > asset.version:
-                if user_input_choice(f'A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?'):
+                if user_input_choice(f"A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?"):
                     # Promote current asset version to latest version and flag to update 
                     asset.version = latest_version
                     to_update = True
                 else:
-                    raise UserWarning('Cannot publish a lower version than existing asset, aborting publish')
+                    raise UserWarning("Cannot publish a lower version than existing asset, aborting publish")
             
             # Handle the Decision
             if to_update:
@@ -87,7 +87,7 @@ class Publisher():
         return asset
         
     def _version_up(self,asset:Asset) -> Asset:
-        version_update = user_input_choice('Which type of update', Version.classes, type='str')
+        version_update = user_input_choice("Which type of update", Version.classes, type="str")
         asset.version.version_up(version_update)
         return asset 
 
@@ -99,7 +99,7 @@ class Publisher():
         try:
             shutil.copy2(asset.source_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")
-            asset.set_publish_status('published')
+            asset.set_publish_status("published")
             self.context.repo_manifest.update(asset)
             published = True
             

@@ -12,9 +12,23 @@ description = "Nuke gizmo/script publishing system"
 authors = [{ name="Etienne Godin", email="etiennegodin@duck.com" }]
 
 dependencies = [
- 'semver',
- 'pytest'
+ "semver",
+ "python-dotenv",
+ "shortuuid",
+ "pyaml"
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+]
+ui = [
+    "PyQt5>=5.15.0",  # Or PySide6
+]
+
 
 [project.scripts]   # <-- entry point CLI
 nukekit = "nukekit.cli:main"

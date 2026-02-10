@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class Version():
     
-    classes = Literal['major', 'minor','patch']
+    classes = Literal["major", "minor","patch"]
 
     def __init__(self, version_string:str):
         try:
@@ -28,7 +28,7 @@ class Version():
 
     @classmethod
     def from_tuple(cls, version_tuple:tuple[int,int,int]) -> Self:
-        return cls('.'.join(str(val) for val in version_tuple))
+        return cls(".".join(str(val) for val in version_tuple))
     
     def version_up(self, type_name:classes) -> Self:
         """
@@ -41,10 +41,10 @@ class Version():
         current_val = getattr(self,type_name)
         setattr(self,type_name, current_val+1)
 
-        if type_name == 'major':
+        if type_name == "major":
             self.minor = 0 
             self.patch = 0
-        elif type_name == 'minor':
+        elif type_name == "minor":
             self.patch = 0 
 
     @classmethod

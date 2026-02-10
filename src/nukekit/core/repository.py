@@ -17,8 +17,8 @@ class Repository:
         :type repo_dict: dict
         """
         
-        self.ROOT = Path(repo_dict['root'])
-        self.SUBFOLDERS = repo_dict['subfolder']
+        self.ROOT = Path(repo_dict["root"])
+        self.SUBFOLDERS = repo_dict["subfolder"]
         self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
     
@@ -26,9 +26,9 @@ class Repository:
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok= True)
             for s in self.SUBFOLDERS:
-                Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
-                
-            logger.info(f'Created central repo at {self.ROOT}')
+                (self.ROOT / s).mkdir(exist_ok=True, parents=True)
+
+            logger.info(f"Created central repo at {self.ROOT}")
             return True
         return False
 

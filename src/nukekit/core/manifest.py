@@ -38,7 +38,7 @@ class Manifest:
         return cls(data=scanner.data, root = context.user_paths.STATE_FILE)
         
     def read_manifest(self, path:Path = None) -> dict:
-        """Read and return manifest data. Returns empty dict if file doesn't exist.
+        """Read and return manifest data. Returns empty dict if file doesn"t exist.
     
         :param path: Optionnal path to read manifest. Defaults to manifest root
         :type path: Path
@@ -52,10 +52,10 @@ class Manifest:
             manifest_path = self.ROOT
 
         if not manifest_path.exists():
-            logger.warning(f"Manifest file {manifest_path} doesn't exist, returning empty manifest")
+            logger.warning(f"Manifest file {manifest_path} doesn"t exist, returning empty manifest")
             return self._new_empty_manifest()
         try:
-            with open(manifest_path, 'r') as file:
+            with open(manifest_path, "r") as file:
                 data = json.load(file, object_hook=self.decoder)
                 return self._sort(data)        
         except json.JSONDecodeError as e:
@@ -69,7 +69,7 @@ class Manifest:
         """
         Write manifest data to disk. 
         
-        :param data: Data to write on disk. If empty defaults to manifest's data. 
+        :param data: Data to write on disk. If empty defaults to manifest"s data. 
         :type data: dict
         :param verbose: Add a logger liner confirming successfull write
         :type verbose: bool
@@ -112,7 +112,7 @@ class Manifest:
             # New asset
             data[asset.type][asset.name] = {asset.version: asset}
         else:
-            # Existing asset, add to asset's dict
+            # Existing asset, add to asset"s dict
             data[asset.type][asset.name][asset.version] = asset  
         
         if self.write_manifest(data):
@@ -129,7 +129,7 @@ class Manifest:
         
         :param asset: Asset to return latest version
         :type asset: Asset
-        :return: Version instance of latest asset's version
+        :return: Version instance of latest asset"s version
         :rtype: Version
         """
         data = self.read_manifest()
@@ -138,7 +138,7 @@ class Manifest:
             try:
                 asset_versions_list = list(asset.name in data[asset.type].keys())
             except Exception as e:
-                logger.error(f"Couldn't find {asset.name} in {self.name} manifest")
+                logger.error(f"Couldn"t find {asset.name} in {self.name} manifest")
                 raise
             else:
                 return Version.highest_version(asset_versions_list)
@@ -154,7 +154,7 @@ class Manifest:
 
     def _sort(self, d:dict):
         return {
-            k: self._sort(v) if isinstance(v, dict) else v
-            for k, v in sorted(d.items(), reverse=True)
+                k: self._sort(v) if isinstance(v, dict) else v
+                for k, v in sorted(d.items(), reverse=True)
         }
 
