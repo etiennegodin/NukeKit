@@ -27,10 +27,10 @@ class Version():
         self.patch = ver.patch
 
     @classmethod
-    def from_tuple(cls, version_tuple:tuple[int,int,int])->Self:
+    def from_tuple(cls, version_tuple:tuple[int,int,int]) -> Self:
         return cls('.'.join(str(val) for val in version_tuple))
     
-    def version_up(self, type_name:classes)->Self:
+    def version_up(self, type_name:classes) -> Self:
         """
         Docstring for version_up
         
@@ -40,11 +40,13 @@ class Version():
         """
         current_val = getattr(self,type_name)
         setattr(self,type_name, current_val+1)
+
         if type_name == 'major':
             self.minor = 0 
             self.patch = 0
         elif type_name == 'minor':
             self.patch = 0 
+
     @classmethod
     def highest_version(cls, version_list: list[str|tuple|Version]) -> Version:
         """
@@ -55,12 +57,16 @@ class Version():
         :return: Highest version from list
         :rtype: Version
         """
+        # Temp version as lowest possible
         latest = Version("0.0.0")
         for v in version_list:
+            #Handle multiple cases
             if isinstance(v, str):
                 v = Version(v)
             if isinstance(v, tuple):
                 v = Version.from_tuple(v)
+                
+            # Compare
             if v > latest:
                 latest = v
         return latest

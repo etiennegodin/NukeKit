@@ -102,6 +102,7 @@ class Publisher():
             asset.set_publish_status('published')
             self.context.repo_manifest.update(asset)
             published = True
+            
         except shutil.SameFileError as e :
             logger.error("Source and destination represent the same file.")
         except PermissionError:
@@ -110,5 +111,6 @@ class Publisher():
             logger.error("The source file or destination directory was not found.")
         except Exception as e:
             logger.error(f"An error occurred: {e}")
+
         finally:   
             return published

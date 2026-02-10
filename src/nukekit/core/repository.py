@@ -5,8 +5,6 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-path_types = Literal['str', 'Path']
-
 logger = logging.getLogger(__name__)
 
 class Repository:
@@ -24,28 +22,19 @@ class Repository:
         self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
     
-    def ensure(self)->bool:
+    def ensure(self) -> bool:
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok= True)
-            logger.info(f'Created central repo at {self.ROOT}')
             for s in self.SUBFOLDERS:
                 Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
+                
+            logger.info(f'Created central repo at {self.ROOT}')
             return True
         return False
 
-    def get_subdir(self,asset_type:str)->Path:
+    def get_asset_subdir(self,asset_type:str) -> Path:
         subdir = Path(f"{self.ROOT}/{asset_type}")
         if not subdir.exists():
             raise FileNotFoundError(f"Path {subdir} does not exists")
         return subdir
 
-    def list_assets(self, asset_type:str, output_type:path_types = 'Path'):
-        if asset_type:
-            subdir = self.get_subdir(asset_type)
-            assets_dir = [p for p in subdir.iterdir() if p.is_dir()]
-            if output_type == 'str':
-                return [folder.name for folder in assets_dir]
-            else:
-                return assets_dir
-        else:
-            raise Exception

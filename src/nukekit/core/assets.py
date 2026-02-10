@@ -119,7 +119,7 @@ class Asset():
         self.status = AssetStatus(status)
 
     def get_remote_path(self, repo:Repository) -> Path:
-        repo_path = repo.get_subdir(self.type) / self.name
+        repo_path = repo.get_asset_subdir(self.type) / self.name
         # Create asset folder if first publish 
         if not repo_path.exists():
             repo_path.mkdir(exist_ok=True)
