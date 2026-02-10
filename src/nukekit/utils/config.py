@@ -9,7 +9,7 @@ class ConfigLoader:
     Resolve and load config for this session
     """
 
-    ENV_VAR = "NUKEKIT_CONFIG_PATH"
+    ENV_VAR = "NUKEKIT_REPO_ROOT"
 
     @classmethod
     def resolve(cls)->Path:

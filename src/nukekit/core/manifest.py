@@ -15,11 +15,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-def _sort(d:dict):
-    return {
-            k: _sort(v) if isinstance(v, dict) else v
-            for k, v in sorted(d.items(), reverse=True)
-    }
 
 class Manifest:
 
@@ -85,7 +80,7 @@ class Manifest:
         :return: Confirmation of successfull write
         :rtype: bool
         """
-        
+
         if data is None:
             try:
                 data = self.data
@@ -158,5 +153,13 @@ class Manifest:
             logger.error(msg)
             raise NotImplementedError(msg)
  
+
+
+def _sort(d:dict):
+    return {
+            k: _sort(v) if isinstance(v, dict) else v
+            for k, v in sorted(d.items(), reverse=True)
+    }
+
 
 

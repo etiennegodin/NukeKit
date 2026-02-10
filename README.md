@@ -1,22 +1,62 @@
 # NukeKit
 
-## Version control handler for nuke Gizmos and Scripts 
+> Version control system for Nuke Gizmos and Scripts
+
+## Features
+
+- Semantic versioning for Nuke assets
+- Publish/install workflow
+- Changelog tracking
+- Centralized asset repository
+- CLI and _GUI*_ interfaces
 
 
-## Default with Gui
+## Installation
 
-`nukekit`
+```bash
+pip install nukekit
+```
 
-## Publish 
+## Quick start
 
-`nukekit publish`
+### Setup repository
+```bash
+# Configure your repository location
+export NUKEKIT_REPO_ROOT="$HOME/nukekit_repo"
+```
 
+### Publishing a Gizmo
+```bash
+# Publish from Nuke directory
+nukekit publish
 
-## Install 
+# Or publish from current directory
+nukekit publish --local
+```
+### Installing assets
+```bash
+nukekit install
+```
 
-`nukekit install`
+### Scanning 
+```bash
+# Scan local Nuke directory
+nukekit scan local
 
-## Scan
+# Scan remote repository
+nukekit scan remote
+```
 
-`nukekit scan <location>`
+## Project Structure
+```
+NukeKit/
+├── src/nukekit/
+│   ├── core/          # Business logic
+│   ├── ui/            # GUI components  
+│   ├── utils/         # Utilities
+│   └── cli.py         # CLI entry point
+├── test/              # Test suite
+├── config/            # Default configs
+└── examples/          # Example assets
+```
 
