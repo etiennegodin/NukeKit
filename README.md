@@ -10,6 +10,8 @@
 - Centralized asset repository
 - CLI and _GUI*_ interfaces
 
+*Not implemented yet
+
 
 ## Installation
 
