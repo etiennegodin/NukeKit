@@ -37,7 +37,7 @@ class Asset():
     version: Version = None
     source_path:Path = None
     status:AssetStatus = None
-    changelog:str = None
+    message:str = None
     author: str = None
     time:str = None
     id:str = None
@@ -102,7 +102,7 @@ class Asset():
             "version": str(self.version),
             "author": self.author,
             "id": self.id,
-            "changelog": self.changelog,
+            "message": self.message,
             "status": self.status.value if self.status else None,
             "type": self.type,
             "source_path": str(self.source_path) if self.source_path else None,

@@ -45,13 +45,13 @@ class Publisher():
     
     def _ensure_changelog(self, asset:Asset)-> Asset:
         while True:
-            changelog = input(f'No changelog found for {asset.name}, please enter a message: \n')
-            if changelog:
+            message = input(f'No message found for {asset.name}, please enter a message: \n')
+            if message:
                 break
             else:
                 print("\033[1A\033[K", end="") 
 
-        asset.changelog = changelog
+        asset.message = message
         return asset
 
     def _resolve_version(self,asset)-> Asset:
