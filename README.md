@@ -53,14 +53,14 @@ nukekit scan remote
 Edit `~/.nukekit/config.yaml`:
 ```yaml
 repository:
-  root: /path/to/your/repo
+  root: "${HOME}/nukekit_repo"
   subfolder:
     - Gizmo
     - Script
 
-publishing:
-  require_changelog: true
-  auto_increment_patch: false
+user:
+  nuke_dir: "~/.nuke"
+
 ```
 
 ## Project Structure
