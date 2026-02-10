@@ -8,7 +8,7 @@ user:
   nuke_dir: "~/.nuke"
 
 publishing:
-  require_changelog: true
+  require_message: true
   auto_increment_patch: false
   
 validation:

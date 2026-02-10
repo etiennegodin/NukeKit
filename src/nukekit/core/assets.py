@@ -44,8 +44,22 @@ class Asset():
     type:str = None
 
     @classmethod
-    def from_path(cls, context:Context, asset_path:Path) -> Self :
-    #Force Path for stem and suffix methods
+    def from_path(
+        cls,
+        context:Context,
+        asset_path:Path
+    ) -> Self :
+        """
+        Construct an Asset from a path
+        
+        :param context: Current context used to parse remote repository
+        :type context: Context
+        :param asset_path: Path to construct asset from
+        :type asset_path: Path
+        :return: Asset instance constructed
+        :rtype: Self
+        """
+        # Force Path for stem and suffix methods
         if isinstance(asset_path, str):
             asset_path = Path(asset_path)
 
@@ -63,21 +77,37 @@ class Asset():
             asset_version = Version('0.0.0')
             logger.warning(f'No specified version for {asset_name}')
 
-        # Get object class from suffix 
-        cls = ASSET_SUFFIXES.get(asset_suffix) 
+        # Get object class from path suffix
+        try:
+            cls = ASSET_SUFFIXES.get(asset_suffix) 
+        except KeyError:
+            raise TypeError(f'\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
+
         if cls:
             # Check if asset is a copy from repo
             try: 
                 obj = context.repo_manifest.data[cls.type][asset_name][str(asset_version)]
-            except Exception as e:
-                # New asset 
+            # If not, create a new asset and set status to unpublished
+            except KeyError:
                 return cls(asset_name, asset_version, asset_path, AssetStatus.UNPUBLISHED)
             else:
                 return obj
-        else:
-            raise TypeError(f'\nProvided path is not a supported asset type. \nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ')
+
+    def ensure_message(self):
+        while True:
+            message = input(f'No message found for {self.name}, please enter a message: \n')
+            if message:
+                break
+            else:
+                print("\033[1A\033[K", end="") 
+
+        self.message = message
 
     def ensure_metadata(self):
+        """
+        Adds time, author and uuid metadata to asset
+    
+        """
         self._set_time()
         self._set_author()
         self._set_uuid()

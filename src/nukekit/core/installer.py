@@ -23,14 +23,23 @@ class Installer():
         logger.debug('Install from repo')
         assets = self.context.repo_manifest.read_manifest()
 
-        print('installer')
-        #print(assets)
-        #print_json(json.dumps(assets,cls=UniversalEncoder))
+        logger.error('installer')
+        #logger.error(assets)
+        #logger.error_json(json.dumps(assets,cls=UniversalEncoder))
         
         asset = assets['Gizmo']['city']['0.1.0']
         self.install_asset(asset)
 
     def install_asset(self, asset:Asset) -> bool:
+        """
+        Docstring for install_asset
+        
+        :param self: Description
+        :param asset: Description
+        :type asset: Asset
+        :return: Description
+        :rtype: bool
+        """
         installed = False
         #Force back type if read from string 
         source_path = asset.get_remote_path(self.context.repo)
@@ -39,18 +48,19 @@ class Installer():
         try:
             shutil.copy2(source_path, destination_path)
         except shutil.SameFileError as e :
-            print("Source and destination represent the same file.")
+            logger.error("Source and destination represent the same file.")
         except PermissionError:
-            print("Permission denied.")
+            logger.error("Permission denied.")
         except FileNotFoundError:
-            print("The source file or destination directory was not found.")
+            logger.error("The source file or destination directory was not found.")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logger.error(f"An error occurred: {e}")
         else:
             logger.info(f"Successfully saved {asset} to {destination_path} ")
             asset.set_install_status('local')
             self.context.local_manifest.update(asset)
             installed = True
+            
         finally:
             return installed
         
