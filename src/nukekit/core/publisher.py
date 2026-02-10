@@ -6,8 +6,8 @@ from pathlib import Path
 
 from .assets import Asset
 from .installer import Installer
-from ..utils.ux import user_input_choice
 from .versioning import VERSION_CLASSES
+from ..utils.console import user_input_choice
 
 if TYPE_CHECKING:
     from .versioning import Version

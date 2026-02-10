@@ -10,10 +10,10 @@ from .core.publisher import Publisher
 from .core.installer import Installer
 
 from nukekit import ui 
-from .utils.logger import initlogger
-from .utils.config import ConfigLoader
+from .utils.logger import init_logger
+from .core.config import ConfigLoader
 from .utils.paths import UserPaths
-from .utils.scanner import Scanner
+from .core.scanner import Scanner
 from .utils.console import print_data, choose_menu
 
 
@@ -35,7 +35,7 @@ def get_context() -> Context:
     USER_PATHS = UserPaths()
 
     # Init logger
-    logger = initlogger(USER_PATHS.LOG_FILE)
+    logger = init_logger(USER_PATHS.LOG_FILE)
 
     # Config solver
     CONFIG = ConfigLoader().load()

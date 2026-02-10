@@ -7,7 +7,7 @@ from pathlib import Path
 from .assets import ASSET_REGISTRY
 from .versioning import Version
 from .serialization import dump_json, load_json
-from ..utils.scanner import Scanner
+from .scanner import Scanner
 
 if TYPE_CHECKING:
     from .context import Context

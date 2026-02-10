@@ -1,20 +1,12 @@
 from __future__ import annotations
 import semver
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 from typing import Self, Literal
-
-
-"""
-Major: Breaking changes (different inputs/outputs)
-Minor: New features, backward compatible
-Patch: Bug fixes
-"""
 
 logger = logging.getLogger(__name__)
 
 VERSION_CLASSES = Literal["major", "minor","patch"]
-
 
 @dataclass(frozen=True, order=True)
 class Version():

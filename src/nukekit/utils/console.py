@@ -1,15 +1,18 @@
 import logging
 
-from simple_term_menu import TerminalMenu
 from rich import print
 from rich.tree import Tree
+from simple_term_menu import TerminalMenu
+from typing import Literal, get_args, get_origin, Any, TYPE_CHECKING
 
-from ..core.assets import Asset
+if TYPE_CHECKING:
+    from ..core.assets import Asset
 
 logger = logging.getLogger(__name__)
 
+RETURN_TYPES = Literal["bool", "str"]
 
-def choose_menu(d:dict, level_name:str = "Main menu")->Asset:
+def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
     """
     Interactive terminal selection menu    
 
@@ -78,4 +81,44 @@ def print_data(data:dict, label:str = "Manifest"):
             recursive_tree(assets_dict, asset_tree, asset_name)
 
     print(tree)
+
+
+def _add_question_mark(question:str)->str:
+    if not question.endswith("?"):
+        question += "?"
+    return question
+
+def _format_options_list(options:Any):
+    if get_origin(options) is Literal:
+        options = list(get_args(options))
+    return options
+
+def user_input_choice(question:str, options:list[str] = ["y","n"], type:RETURN_TYPES = "bool")-> bool | str:
+    """
+    Ask user a question with options answers in terminal. Loops until correct answer is given.
+
+    :param question: Question to ask
+    :type question: str
+    :param options: Options of correct answers. Defaults to y/n
+    :type options: list[str]
+    :param type: Type of return, either string or bool. Defaults to bool.
+    :type type: RETURN_TYPES
+    :return: Returns bool if y/n, str from options
+    :rtype: bool | str
+    """
+    correct = False
+    question = _add_question_mark(question)
+    options = _format_options_list(options)
+
+    while not correct:
+        user_input_choice = input(f"{question} {[o for o in options]} ")
+        if user_input_choice in options:
+            correct = True
+        else:
+            print("\033[1A\033[K", end="") 
+
+    if type == "bool":
+        return user_input_choice == "y"
+    return user_input_choice
+
     

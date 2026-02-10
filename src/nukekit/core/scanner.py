@@ -1,9 +1,12 @@
 from __future__ import annotations
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from .assets import ASSET_SUFFIXES
-from .assets import Asset
+from .assets import ASSET_SUFFIXES, Asset
+
+if TYPE_CHECKING:
+    from .context import Context
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +15,7 @@ class Scanner:
         self.context = context
         self.user_paths = context.user_paths
 
-    def _scan(self,path:Path)->dict:
+    def _scan(self,path:Path) -> dict:
         logger.debug(path)
         assets = {}
         for suffix, obj in ASSET_SUFFIXES.items():
@@ -35,11 +38,11 @@ class Scanner:
             for k, v in sorted(d.items(), reverse=True)
         }
     
-    def scan_local(self, verbose:bool = False)->dict:
+    def scan_local(self, verbose:bool = False) -> dict:
         self.data = self._scan(self.user_paths.NUKE_DIR)
         return self.data
 
-    def scan_folder(self, path)->dict:
+    def scan_folder(self, path) -> dict:
         logger.debug(path)
         if path is not None:
             return self._scan(path)

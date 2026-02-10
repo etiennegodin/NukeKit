@@ -11,14 +11,14 @@ if TYPE_CHECKING:
     from .repository import Repository
     from ..utils.paths import UserPaths 
 
+logger = logging.getLogger(__name__)
+
 class AppMode(str, Enum):
     PUBLISH = "publish"
     INSTALL = "install"
     SCAN = "scan"
 
 APP_MODE = Literal["publish","install","scan"]
-
-logger = logging.getLogger(__name__)
 
 @dataclass
 class Context():

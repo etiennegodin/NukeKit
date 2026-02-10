@@ -1,9 +1,8 @@
 from __future__ import annotations
 import json
 import logging
-from dataclasses import asdict
-from pathlib import Path
 from enum import Enum
+from pathlib import Path
 
 from .assets import ASSET_REGISTRY
 from .versioning import Version
@@ -11,14 +10,13 @@ from .assets import AssetStatus
 
 logger = logging.getLogger(__name__)
 
-
 def dataclass_to_dict(obj):
     """Small dataclass serializer to avoid recursive"""
     result = {}
     for field in obj.__dataclass_fields__:
         value = getattr(obj, field)
 
-        # 🔥 handle Version here explicitly
+        # Handle Version here
         if isinstance(value, Version):
             result[field] = str(value)
         else:
@@ -27,22 +25,16 @@ def dataclass_to_dict(obj):
     result["__type__"] = type(obj).__name__
     return result
 
-
-class UniversalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        # Handle Version as str rather than dict 
-        if isinstance(obj, Version):
-            return str(obj)
-        #Handle dataclasses
-        if hasattr(obj, "__dataclass_fields__"):
-            return dataclass_to_dict(obj)
-        if isinstance(obj, Path):
-            return str(obj)
-        elif isinstance(obj, Enum):
-            return str(obj.name)
-        return super().default(obj)
-
-
+def stringify_keys(obj):
+    if isinstance(obj, dict):
+        return {
+            str(k) if isinstance(k, Version) else k:
+                stringify_keys(v)
+            for k, v in obj.items()
+        }
+    elif isinstance(obj, list):
+        return [stringify_keys(i) for i in obj]
+    return obj
 
 def universal_decoder(dct):
     # Dynamic: Convert any key that ends with "_path" into a Path object
@@ -61,17 +53,19 @@ def universal_decoder(dct):
         if cls:
             return cls(**dct)
     return dct
-
-def stringify_keys(obj):
-    if isinstance(obj, dict):
-        return {
-            str(k) if isinstance(k, Version) else k:
-                stringify_keys(v)
-            for k, v in obj.items()
-        }
-    elif isinstance(obj, list):
-        return [stringify_keys(i) for i in obj]
-    return obj
+class UniversalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        # Handle Version as str rather than dict 
+        if isinstance(obj, Version):
+            return str(obj)
+        #Handle dataclasses
+        if hasattr(obj, "__dataclass_fields__"):
+            return dataclass_to_dict(obj)
+        if isinstance(obj, Path):
+            return str(obj)
+        elif isinstance(obj, Enum):
+            return str(obj.name)
+        return super().default(obj)
 
 def dump_json(data, path: Path):
     data = stringify_keys(data)

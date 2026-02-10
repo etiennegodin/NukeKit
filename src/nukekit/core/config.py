@@ -2,14 +2,15 @@ import os
 import yaml
 import logging
 from pathlib import Path
-from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 class ConfigLoader:
     """
     Resolve and load config for this session
     """
 
-    ENV_VAR = "NUKEKIT_REPO_ROOT"
+    ENV_VAR = "NUKEKIT_CONFIG_PATH"
 
     @classmethod
     def resolve(cls)->Path:
