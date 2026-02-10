@@ -1,29 +1,33 @@
 import logging
+import sys
 from pathlib import Path
 
-def init_logger(log_file: Path = None, level=logging.DEBUG):
-    """
-    Configure logger with log file path and level
-    
-    :param log_file: Path to write log file
-    :type log_file: Path
-    :param level: Log level
-    """
-    format = '%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s'
-    logging.basicConfig(
-        filename=log_file,
-        level=level,
-        filemode= 'w',
-        format=format
+def init_logger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
+    """Configure application-wide logging."""
+
+    file_formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s",
+        datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    logger = logging.getLogger('root')
-    formatter = logging.Formatter(format)
+    console_formatter = logging.Formatter(
+        '%(levelname)s: %(message)s'
+    )
 
-    # Console handler
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    console.setFormatter(formatter)
-    logger.addHandler(console)
+    # File handler
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(file_formatter)
     
-    return logger
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(level)
+    console_handler.setFormatter(console_formatter)
+    
+    # Root logger
+    root_logger = logging.getLogger('nukekit')
+    root_logger.setLevel(logging.DEBUG)
+    root_logger.addHandler(file_handler)
+    root_logger.addHandler(console_handler)
+    
+    return root_logger
