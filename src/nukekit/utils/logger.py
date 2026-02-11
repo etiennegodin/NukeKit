@@ -2,8 +2,12 @@ import logging
 import sys
 from pathlib import Path
 
+from .paths import UserPaths
 
-def init_logger(log_file: Path, level=logging.DEBUG) -> logging.Logger:
+
+def init_logger(
+    log_file: Path = UserPaths.LOG_FILE, level=logging.DEBUG
+) -> logging.Logger:
     """Configure application-wide logging."""
 
     file_formatter = logging.Formatter(

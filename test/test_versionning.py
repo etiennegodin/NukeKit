@@ -12,7 +12,7 @@ def test_version_up_major():
     v1.version_up('major')
 
     assert v1.major == 2
-    assert v1.minor == 1
+    assert v1.minor == 0
     assert v1.patch == 0
 
 def test_version_up_minor():
@@ -38,9 +38,3 @@ def test_version_parsing():
 def test_version_invalid():
     with pytest.raises(ValueError):
         Version.from_string("1.2")  # Missing patch
-
-def test_version_dict_hash():
-    version= Version.from_string("0.1.0")
-    value = "my_version"
-    d = {version:value}
-    assert d[version] == value

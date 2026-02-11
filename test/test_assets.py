@@ -1,15 +1,19 @@
 import pytest
-from nukekit.core.assets import asset_factory, Gizmo, Script
+from nukekit.core import Asset, Gizmo
+from nukekit.core.context import get_context
+
 
 def test_assets_create_gizmo():
+    context = get_context()
     asset_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.gizmo'
-    asset = asset_factory(asset_path)
+    asset = Asset.from_path(context,asset_path)
+    print(type(asset))
     assert isinstance(asset, Gizmo)
 
 
 def test_assets_wrong_file_type():
-    
+    context = get_context()
     asset_path = '/home/etienne/projects/pipetd/NukeKit/examples/my_gizmo.wrong_type'
     with pytest.raises(TypeError): # Catches any Exception type
-        asset_factory(asset_path)
+        Asset.from_path(context,asset_path)
 

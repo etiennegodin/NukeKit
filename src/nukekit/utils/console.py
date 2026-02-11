@@ -97,7 +97,7 @@ def _format_options_list(options: Any):
 
 
 def user_input_choice(
-    question: str, options: Literal | list[str] | None = None, type: RETURN_TYPES = "bool"
+    question: str, options: list[str] | None = None, type: RETURN_TYPES = "bool"
 ) -> bool | str:
     """Ask user a question with options answers in terminal. Loops until correct answer is given.
 

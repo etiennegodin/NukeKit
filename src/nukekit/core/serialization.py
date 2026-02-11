@@ -29,7 +29,10 @@ def dataclass_to_dict(obj):
 
 def stringify_keys(obj):
     if isinstance(obj, dict):
-        return {str(k) if isinstance(k, Version) else k: stringify_keys(v) for k, v in obj.items()}
+        return {
+            str(k) if isinstance(k, Version) else k: stringify_keys(v)
+            for k, v in obj.items()
+        }
     elif isinstance(obj, list):
         return [stringify_keys(i) for i in obj]
     return obj
@@ -40,9 +43,9 @@ def universal_decoder(dct):
     for k, v in dct.items():
         if isinstance(v, str) and k.endswith("_path"):
             dct[k] = Path(v)
-        if (isinstance(v, str)) and k == "version":
+        elif (isinstance(v, str)) and k == "version":
             dct[k] = Version.from_string(v)
-        if isinstance(v, str) and k == "status":
+        elif isinstance(v, str) and k == "status":
             dct[k] = AssetStatus(v)
 
     # After fixing paths, handle dataclass reconstruction
@@ -66,6 +69,8 @@ class UniversalEncoder(json.JSONEncoder):
             return str(obj)
         elif isinstance(obj, Enum):
             return str(obj.name)
+        elif obj is NotImplemented:
+            return None
         return super().default(obj)
 
 

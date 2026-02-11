@@ -83,3 +83,6 @@ class Version:
 
     def __format__(self, format_spec):
         return str(self)
+
+    def __hash__(self):
+        return hash(str(self))

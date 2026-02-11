@@ -41,7 +41,7 @@ class Asset:
     version: Version
     source_path: Path
     status: AssetStatus
-    type: str
+    type: str = "Asset"
     message: str = NotImplemented
     author: str = NotImplemented
     time: str = NotImplemented
@@ -61,7 +61,9 @@ class Asset:
     def ensure_message(self):
         """Prompt user for changelog if not provided."""
         while True:
-            message = input(f"No message found for {self.name}, please enter a message: \n")
+            message = input(
+                f"No message found for {self.name}, please enter a message: \n"
+            )
             if message:
                 break
             else:
@@ -108,7 +110,11 @@ class Asset:
         """Assets are equal if they have same name, version, and type."""
         if not isinstance(other, Asset):
             return NotImplemented
-        return self.name == other.name and self.version == other.version and self.type == other.type
+        return (
+            self.name == other.name
+            and self.version == other.version
+            and self.type == other.type
+        )
 
     def __hash__(self) -> int:
         """Make Asset hashable for use in sets/dicts."""
@@ -156,15 +162,17 @@ class Asset:
 
         # Check if asset is a copy from repo
         try:
-            return context.repo_manifest.data[cls.type][asset_name][asset_version]
+            return context.repo_manifest.data[asset_class.type][asset_name][
+                asset_version
+            ]
         except KeyError:
             # Asset doesn't exist in repo, create new one
-            return cls(
+            return asset_class(
                 name=asset_name,
                 version=asset_version,
                 source_path=asset_path,
                 status=AssetStatus.UNPUBLISHED,
-                type=cls.type,
+                type=asset_class.type,
             )
 
 

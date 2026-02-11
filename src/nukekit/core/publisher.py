@@ -65,7 +65,10 @@ class Publisher:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
 
             # New asset or newer than repo nothing to resolve
-            if latest_version is Version.from_string("0.0.0") or asset.version > latest_version:
+            if (
+                latest_version is Version.from_string("0.0.0")
+                or asset.version > latest_version
+            ):
                 break
 
             # Version Logic: Conflict/Exists
@@ -74,11 +77,14 @@ class Publisher:
             # If same version ask to update
             if latest_version == asset.version:
                 if user_input_choice(
-                    f"{asset} already exists in repo. \n" "Do you want to publish a new version?"
+                    f"{asset} already exists in repo. \n"
+                    "Do you want to publish a new version?"
                 ):
                     to_update = True
                 else:
-                    raise UserWarning("Cannot publish over existing asset, aborting publish")
+                    raise UserWarning(
+                        "Cannot publish over existing asset, aborting publish"
+                    )
 
             # If lower version ask to update
             elif latest_version > asset.version:
@@ -103,7 +109,9 @@ class Publisher:
 
     def _version_up(self, asset: Asset) -> Asset:
         """Increment asset version based on user choice."""
-        version_update = user_input_choice("Which type of update", VERSION_CLASSES, type="str")
+        version_update = user_input_choice(
+            "Which type of update", VERSION_CLASSES, type="str"
+        )
         asset.version.version_up(version_update)
         return asset
 

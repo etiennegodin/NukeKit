@@ -5,10 +5,14 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Literal
 
+from dotenv import load_dotenv
+
+from ..utils.paths import UserPaths
+from .config import ConfigLoader, ConfigValidator
 from .manifest import Manifest
+from .repository import Repository
 
 if TYPE_CHECKING:
-    from ..utils.paths import UserPaths
     from .repository import Repository
 
 logger = logging.getLogger(__name__)
@@ -72,3 +76,32 @@ class Context:
             return self.repo_manifest.data
         else:
             raise NotImplementedError(f"App mode {self.mode} is not implemented")
+
+
+def get_context() -> Context:
+    """
+    Initialize context for this session
+
+    :return: Context instance for current session
+    :rtype: Context
+    """
+
+    # Load .env
+    load_dotenv()
+
+    # Setup user paths
+    user_paths = UserPaths()
+
+    # Config solver
+    config = ConfigLoader().load()
+    ConfigValidator.validate(config)
+
+    # Init Central Repo
+    repo = Repository(config)
+
+    # Create and return context instance
+    return Context(
+        repo,
+        user_paths,
+        config,
+    )

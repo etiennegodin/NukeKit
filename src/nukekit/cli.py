@@ -2,15 +2,11 @@ import argparse
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 from nukekit import ui
 
-from .core.config import ConfigLoader, ConfigValidator
-from .core.context import Context
+from .core.context import Context, get_context
 from .core.installer import Installer
 from .core.publisher import Publisher
-from .core.repository import Repository
 from .core.scanner import Scanner
 from .utils.console import choose_menu, print_data
 from .utils.logger import init_logger
@@ -18,38 +14,6 @@ from .utils.paths import UserPaths
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
-
-
-def get_context() -> Context:
-    """
-    Initialize context for this session
-
-    :return: Context instance for current session
-    :rtype: Context
-    """
-
-    # Load .env
-    load_dotenv()
-
-    # Setup user paths
-    user_paths = UserPaths()
-
-    # Init logger
-    init_logger(user_paths.LOG_FILE)
-
-    # Config solver
-    config = ConfigLoader().load()
-    ConfigValidator.validate(config)
-
-    # Init Central Repo
-    repo = Repository(config)
-
-    # Create and return context instance
-    return Context(
-        repo,
-        user_paths,
-        config,
-    )
 
 
 def publish(args, context: Context):
@@ -116,8 +80,12 @@ def scan(args, context: Context):
 def main():
 
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument("--force", action="store_true", help="Wipe Local State Clean")
-    parent_parser.add_argument("--no-gui", action="store_true", help="Launch without gui")
+    parent_parser.add_argument(
+        "--force", action="store_true", help="Wipe Local State Clean"
+    )
+    parent_parser.add_argument(
+        "--no-gui", action="store_true", help="Launch without gui"
+    )
 
     parser = argparse.ArgumentParser(
         prog="NukeKit", description="--- Nuke Gizmo and Script manager ---"
@@ -152,6 +120,9 @@ def main():
     parser_scan.set_defaults(func=scan)  # Associate a function
 
     args = parser.parse_args()
+
+    # Init logger
+    init_logger()
 
     context = get_context()
 

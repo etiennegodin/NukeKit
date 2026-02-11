@@ -120,7 +120,9 @@ class Manifest:
         if self.write_manifest(data):
             # Updates current status
             self.data = data
-            logger.info(f"Successfully added {asset.name} v{asset.version} to repo manifest")
+            logger.info(
+                f"Successfully added {asset.name} v{asset.version} to repo manifest"
+            )
             return True
         else:
             return False
@@ -153,4 +155,7 @@ class Manifest:
 
 
 def _sort(d: dict):
-    return {k: _sort(v) if isinstance(v, dict) else v for k, v in sorted(d.items(), reverse=True)}
+    return {
+        k: _sort(v) if isinstance(v, dict) else v
+        for k, v in sorted(d.items(), reverse=True)
+    }
