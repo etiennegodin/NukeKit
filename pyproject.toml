@@ -1,18 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-[tool.black]
-line-length = 88
-target-version = ["py310"]
-
-[tool.ruff]
-line-length = 88
-target-version = "py310"
-select = ["E", "F", "I"]
-fix = true
 
 [project]
 name = "nukekit"
@@ -32,9 +23,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "black",
-    "ruff",
-    "pre-commit"
-
+    "ruff"
 ]
 ui = [
     "PyQt5>=5.15.0",  # Or PySide6
@@ -43,3 +32,19 @@ ui = [
 
 [project.scripts]   # <-- entry point CLI
 nukekit = "nukekit.cli:main"
+
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I"]
+fix = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
