@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -29,6 +29,12 @@ dev = [
 ]
 ui = [
     "PyQt5>=5.15.0",  # Or PySide6
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    # Add any other sphinx extensions you are using here
 ]
 
 
