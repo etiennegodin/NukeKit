@@ -16,3 +16,4 @@ dependencies:
       - PyQt5
       - shortuuid
       - rich
+      - simple_term_menu

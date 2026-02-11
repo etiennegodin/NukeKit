@@ -16,7 +16,8 @@ dependencies = [
  "python-dotenv",
  "shortuuid",
  "pyaml",
- "rich"
+ "rich",
+ "simple_term_menu"
 ]
 
 [project.optional-dependencies]
