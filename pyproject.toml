@@ -34,7 +34,11 @@ docs = [
     "sphinx>=7.0",
     "sphinx-rtd-theme",
     "sphinx-autodoc-typehints",
-    # Add any other sphinx extensions you are using here
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",  # Adds links to highlighted source code
 ]
 
 
