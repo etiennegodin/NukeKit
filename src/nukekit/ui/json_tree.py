@@ -1,6 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 ROLE_OBJECT = Qt.UserRole + 1
 

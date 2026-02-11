@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-import shutil
+
 import logging
+import shutil
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .assets import Asset
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-class Installer():
+class Installer:
     def __init__(self, context:Context):
         self.context = context
 
@@ -31,13 +32,13 @@ class Installer():
         :rtype: bool
         """
         installed = False
-        #Force back type if read from string 
+        #Force back type if read from string
         source_path = asset.get_remote_path(self.context.repo)
         destination_path = self.context.user_paths.NUKE_KIT_DIR
 
         try:
             shutil.copy2(source_path, destination_path)
-        except shutil.SameFileError as e :
+        except shutil.SameFileError:
             logger.error("Source and destination represent the same file.")
         except PermissionError:
             logger.error("Permission denied.")
@@ -50,7 +51,6 @@ class Installer():
             asset.set_install_status("local")
             self.context.local_manifest.update(asset)
             installed = True
-            
+
         finally:
             return installed
-        

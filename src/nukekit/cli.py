@@ -75,7 +75,7 @@ def publish(args, context:Context):
     if asset is not None:
         publisher.publish_asset(asset)
     else: 
-        print("Asset publish aborted")      
+        context.logger.info("Asset publish aborted")      
 
 def install(args, context:Context):
     """

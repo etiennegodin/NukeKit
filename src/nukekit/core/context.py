@@ -1,15 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Literal
-import logging 
-from typing import Any, Dict
+
+import logging
 from dataclasses import dataclass
 from enum import Enum
+from typing import TYPE_CHECKING, Any, Literal
 
 from .manifest import Manifest
 
 if TYPE_CHECKING:
+    from ..utils.paths import UserPaths
     from .repository import Repository
-    from ..utils.paths import UserPaths 
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class AppMode(str, Enum):
 APP_MODE = Literal["publish","install","scan"]
 
 @dataclass
-class Context():
+class Context:
     """
     Main class for session context
         
@@ -42,7 +42,7 @@ class Context():
     """
     repo: Repository
     user_paths: UserPaths
-    config: Dict[str, Any ]
+    config: dict[str, Any ]
     repo_manifest: Manifest = None
     local_manifest: Manifest = None
     local_state: Manifest = None
@@ -50,14 +50,14 @@ class Context():
 
 
     def __post_init__(self):
-        # Read cached manifests from disk  
+        # Read cached manifests from disk
         self.repo_manifest = Manifest.from_file(self.repo.MANIFEST)
         self.local_manifest = Manifest.from_file(self.user_paths.CACHED_MANIFEST)
 
-        # Create local state manifest from scanner 
+        # Create local state manifest from scanner
         self.local_state = Manifest.from_scanner(self)
 
-        # Set specific install status for repo assets 
+        # Set specific install status for repo assets
 
     def _set_install_status(self):
 
@@ -98,7 +98,7 @@ class Context():
                 versions = assets_dict[asset_name]
                 local_versions = list(assets_dict[asset_name].keys() & remote_assets_dict[asset_name].keys())
 
-                for versions, asset in versions.items():     
+                for versions, asset in versions.items():
                     if asset.version in local_versions:
                         assets_dict[asset.name][asset.version].set_publish_status("synced")
             data[asset_category] = assets_dict
@@ -128,7 +128,7 @@ class Context():
                         elif asset.version in local_data[asset.type][asset.name].keys():
                             scanned_data[asset.type][asset.name][asset.version] = local_data[asset.type][asset.name][asset.version]
                             continue
-                        # New version not in local state 
+                        # New version not in local state
                         scanned_data[asset.type][asset.name][asset.version] = asset
 
         self.local_state.data = scanned_data

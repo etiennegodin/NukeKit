@@ -1,17 +1,18 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Self
-import json 
+
+import json
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING, Self
 
 from .assets import ASSET_REGISTRY
-from .versioning import Version
-from .serialization import dump_json, load_json
 from .scanner import Scanner
+from .serialization import dump_json, load_json
+from .versioning import Version
 
 if TYPE_CHECKING:
-    from .context import Context
     from .assets import Asset
+    from .context import Context
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +20,11 @@ logger = logging.getLogger(__name__)
 class Manifest:
 
     def __init__(self, data:dict = None, root:Path = None):
-        self.ROOT = root 
+        self.ROOT = root
         self.data = data
         self.write_manifest()
 
-        
+
     @classmethod
     def from_file(cls, path:Path) -> Self:
         """Create Manifest from a file path"""
@@ -37,7 +38,7 @@ class Manifest:
         scanner = Scanner(context)
         scanner.scan_local()
         return cls(data=scanner.data, root = context.user_paths.STATE_FILE)
-    
+
     @classmethod
     def _new_empty_manifest(self) -> dict:
         return {type_: {} for type_ in ASSET_REGISTRY.keys()}
@@ -51,17 +52,17 @@ class Manifest:
         :rtype: dict
         """
         if path is not None:
-            manifest_path = path 
-        else: 
+            manifest_path = path
+        else:
             manifest_path = self.ROOT
 
         if not manifest_path.exists():
             logger.warning(f"{manifest_path} does not exist, returning empty manifest")
             return self._new_empty_manifest()
         try:
-            with open(manifest_path, "r") as file:
+            with open(manifest_path) as file:
                 data = load_json(manifest_path)
-                return _sort(data)        
+                return _sort(data)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse manifest {manifest_path}: {e}")
             return self._new_empty_manifest()
@@ -91,7 +92,7 @@ class Manifest:
         # Sort outgoing dict
         data = _sort(data)
 
-        # Write to disk 
+        # Write to disk
         try:
             dump_json(data, self.ROOT)
         except Exception as e:
@@ -99,7 +100,7 @@ class Manifest:
         else:
             if verbose:
                 logger.info(f"Successfully wrote {self.ROOT}")
-            
+
     def update(self, asset:Asset) -> bool:
         """
         Reads current manifest, adds asset and writes out updated manifest. 
@@ -117,11 +118,11 @@ class Manifest:
             data[asset.type][asset.name] = {asset.version: asset}
         else:
             # Existing asset, add to asset"s dict
-            data[asset.type][asset.name][asset.version] = asset  
-        
+            data[asset.type][asset.name][asset.version] = asset
+
         if self.write_manifest(data):
             # Updates current status
-            self.data = data 
+            self.data = data
             logger.info(f"Successfully added {asset.name} v{asset.version} to repo manifest")
             return True
         else:
@@ -141,18 +142,18 @@ class Manifest:
         if isinstance(asset,Asset):
             try:
                 asset_versions_list = list(asset.name in data[asset.type].keys())
-            except Exception as e:
+            except Exception:
                 logger.error(f"Could not find {asset.name} in {self.name} manifest")
                 raise
             else:
                 return Version.highest_version(asset_versions_list)
-            
+
         else:
-            # Handle unexpected type 
+            # Handle unexpected type
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
             logger.error(msg)
             raise NotImplementedError(msg)
- 
+
 
 
 def _sort(d:dict):

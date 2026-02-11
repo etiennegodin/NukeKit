@@ -1,10 +1,13 @@
 from __future__ import annotations
+
 import sys
+
 from PyQt5.QtWidgets import QApplication
 
+from ..core.context import Context
 from .main_window import MainWindow
 from .presenter import MainPresenter
-from ..core.context import Context
+
 
 def launch(context:Context):
     app = QApplication(sys.argv)

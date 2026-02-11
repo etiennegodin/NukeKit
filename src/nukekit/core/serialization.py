@@ -1,12 +1,12 @@
 from __future__ import annotations
+
 import json
 import logging
 from enum import Enum
 from pathlib import Path
 
-from .assets import ASSET_REGISTRY
+from .assets import ASSET_REGISTRY, AssetStatus
 from .versioning import Version
-from .assets import AssetStatus
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def universal_decoder(dct):
     return dct
 class UniversalEncoder(json.JSONEncoder):
     def default(self, obj):
-        # Handle Version as str rather than dict 
+        # Handle Version as str rather than dict
         if isinstance(obj, Version):
             return str(obj)
         #Handle dataclasses
@@ -77,5 +77,5 @@ def dumps_json(data) -> str:
     return json.dumps(data, indent=4, cls=UniversalEncoder)
 
 def load_json(path:Path) -> dict:
-    with open(path, "r") as file:
+    with open(path) as file:
         return json.load(file, object_hook=universal_decoder)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -31,13 +32,13 @@ class Scanner:
 
         assets = self._sort(assets)
         return assets
-    
+
     def _sort(self, d:dict):
         return {
             k: self._sort(v) if isinstance(v, dict) else v
             for k, v in sorted(d.items(), reverse=True)
         }
-    
+
     def scan_local(self, verbose:bool = False) -> dict:
         self.data = self._scan(self.user_paths.NUKE_DIR)
         return self.data

@@ -1,8 +1,9 @@
 
-from .main_window import MainWindow
-from .json_tree import JsonTreeBuilder, ROLE_OBJECT
-from ..core.context import Context, AppMode
 from ..core.assets import Asset
+from ..core.context import AppMode, Context
+from .json_tree import ROLE_OBJECT, JsonTreeBuilder
+from .main_window import MainWindow
+
 
 class MainPresenter:
     def __init__(self, ctx: Context, view: MainWindow):

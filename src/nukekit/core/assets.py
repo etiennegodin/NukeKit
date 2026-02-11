@@ -1,19 +1,20 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Literal, Self
-import logging
-from enum import Enum
-from pathlib import Path
-from datetime import datetime
-from dataclasses import dataclass
 
 import getpass
+import logging
+from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import TYPE_CHECKING, Literal
+
 import shortuuid
 
 from .versioning import Version
 
 if TYPE_CHECKING:
-    from .repository import Repository
     from .context import Context
+    from .repository import Repository
 
 
 logger = logging.getLogger(__name__)
@@ -32,8 +33,8 @@ INSTALL_STATUS = Literal["non_local", "local"]
 PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
 @dataclass
-class Asset():
-    name:str 
+class Asset:
+    name:str
     version: Version = None
     source_path:Path = None
     status:AssetStatus = None
@@ -49,11 +50,11 @@ class Asset():
     def _set_author(self):
         if self.author is None:
             self.author = getpass.getuser()
-    
+
     def _set_uuid(self):
         unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
-   
+
     def ensure_message(self):
         """Prompt user for changelog if not provided."""
         while True:
@@ -63,7 +64,7 @@ class Asset():
             if message:
                 break
             else:
-                print("\033[1A\033[K", end="") 
+                print("\033[1A\033[K", end="")
 
         self.message = message
 
@@ -76,7 +77,7 @@ class Asset():
     def get_remote_path(self, repo:Repository) -> Path:
         """Get the path where this asset should be stored in the repository."""
         repo_path = repo.get_asset_subdir(self.type) / self.name
-        # Create asset folder if first publish 
+        # Create asset folder if first publish
         if not repo_path.exists():
             repo_path.mkdir(exist_ok=True)
         return repo_path / f"{self.name}_v{self.version}.gizmo"
@@ -98,17 +99,17 @@ class Asset():
             "type": self.type,
             "source_path": str(self.source_path) if self.source_path else None,
         }
-    
+
     def __str__(self) -> str:
         return f"{self.name}_v{self.version}"
-    
+
     def __eq__(self, other: object) -> bool:
         """Assets are equal if they have same name, version, and type."""
         if not isinstance(other, Asset):
             return NotImplemented
         return (
-            self.name == other.name 
-            and self.version == other.version 
+            self.name == other.name
+            and self.version == other.version
             and self.type == other.type
         )
 
@@ -116,10 +117,10 @@ class Asset():
         """Make Asset hashable for use in sets/dicts."""
         return hash((self.name, str(self.version), self.type))
 
-    
+
     def __str__(self):
         return f"{self.name}_v{self.version}"
-    
+
     @classmethod
     def from_path(
         cls,
@@ -143,7 +144,7 @@ class Asset():
         if isinstance(asset_path, str):
             asset_path = Path(asset_path)
 
-        # Get stem & suffix 
+        # Get stem & suffix
         asset_stem = asset_path.stem
         asset_suffix = asset_path.suffix
 
@@ -158,12 +159,12 @@ class Asset():
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_class = ASSET_SUFFIXES.get(asset_suffix) 
+        asset_class = ASSET_SUFFIXES.get(asset_suffix)
         if asset_class is None:
             raise TypeError(f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ")
 
         # Check if asset is a copy from repo
-        try: 
+        try:
             return context.repo_manifest.data[cls.type][asset_name][asset_version]
         except KeyError:
             # Asset doesn't exist in repo, create new one

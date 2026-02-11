@@ -1,6 +1,7 @@
 from __future__ import annotations
-import shutil
+
 import logging
+import shutil
 from pathlib import Path
 from typing import Literal
 
@@ -32,4 +33,4 @@ class UserPaths:
         """Create local dirs if thy don"t exist. Called once"""
         cls.BASE_DIR.mkdir(exist_ok=True)
         cls.NUKE_KIT_DIR.mkdir(parents=True, exist_ok=True)
-    
+

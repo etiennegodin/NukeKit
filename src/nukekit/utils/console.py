@@ -1,9 +1,9 @@
 import logging
+from typing import Any, Literal, get_args, get_origin
 
 from rich import print
 from rich.tree import Tree
 from simple_term_menu import TerminalMenu
-from typing import Literal, get_args, get_origin, Any, TYPE_CHECKING
 
 from ..core.assets import Asset
 
@@ -31,7 +31,7 @@ def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
 
         if options[menu_entry_index] == "Return":
             break
-        try: 
+        try:
             key = options[menu_entry_index]
             value = d[key]
         except (ValueError, IndexError):
@@ -55,9 +55,9 @@ def print_data(data:dict, label:str = "Manifest"):
     :param label: Top level label for this branch of the tree 
     :type label: str
     """
-    
+
     format_string = "| {:<12} | {:<8} | {:<10} |"
-    
+
     def recursive_tree(d:dict, t:Tree, stop:str):
         for key, value in d.items():
             if key == stop:
@@ -69,9 +69,9 @@ def print_data(data:dict, label:str = "Manifest"):
             if isinstance(value, dict):
                 recursive_tree(value, sub_tree)
 
-    # Initilize tree 
+    # Initilize tree
     tree = Tree(label)
-    
+
     # Loop through asset categories and create a tree from recursive exploration
     for category, assets_dict in data.items():
         category_tree = tree.add(category)
@@ -114,10 +114,9 @@ def user_input_choice(question:str, options:list[str] = ["y","n"], type:RETURN_T
         if user_input_choice in options:
             correct = True
         else:
-            print("\033[1A\033[K", end="") 
+            print("\033[1A\033[K", end="")
 
     if type == "bool":
         return user_input_choice == "y"
     return user_input_choice
 
-    

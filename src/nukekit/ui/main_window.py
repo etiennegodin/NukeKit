@@ -1,23 +1,22 @@
 from __future__ import annotations
-import json
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt
+
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import (
-    QMainWindow,
-    QWidget,
-    QTreeView,
-    QPlainTextEdit,
-    QVBoxLayout,
+    QButtonGroup,
     QHBoxLayout,
     QLabel,
-    QSplitter,
+    QMainWindow,
+    QPlainTextEdit,
     QRadioButton,
-    QButtonGroup,
+    QSplitter,
+    QTreeView,
+    QVBoxLayout,
+    QWidget,
 )
 
 from ..core.assets import Asset
 from ..core.serialization import dumps_json
+
 
 class MainWindow(QMainWindow):
     def __init__(self):

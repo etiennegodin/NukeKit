@@ -1,6 +1,6 @@
 __all__ = [
     'Asset',
-    'Gizmo', 
+    'Gizmo',
     'Script',
     'Context',
     'Repository',

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import logging
 import os
 from pathlib import Path
@@ -22,7 +23,7 @@ class Repository:
         self.SUBFOLDERS = config['repository']["subfolder"]
         self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
-    
+
     def ensure(self) -> bool:
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok= True)

@@ -1,21 +1,22 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-import shutil
-import logging
-from pathlib import Path
 
+import logging
+import shutil
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ..utils.console import user_input_choice
 from .assets import Asset
 from .installer import Installer
 from .versioning import VERSION_CLASSES
-from ..utils.console import user_input_choice
 
 if TYPE_CHECKING:
-    from .versioning import Version
     from .context import Context
+    from .versioning import Version
 
 logger = logging.getLogger(__name__)
 
-class Publisher():
+class Publisher:
     def __init__(self, context:Context):
         self.context = context
 
@@ -38,26 +39,26 @@ class Publisher():
 
         if asset.type == "Script":
             raise NotImplementedError
-        
+
         asset = self._resolve_version(asset)
-        
+
         # Ensures message
         asset.ensure_message()
 
         # Ensures metadata
         asset.ensure_metadata()
-            
+
         if self._publish_to_repo(asset):
-            # Sync and install published asset to local assets 
+            # Sync and install published asset to local assets
             return self._sync_after_publish(asset)
-        
-        return False 
+
+        return False
 
     def _sync_after_publish(self, asset) -> bool:
         """Install asset locally after successful publish."""
         installer = Installer(self.context)
         return installer.install_asset(asset)
-    
+
     def _resolve_version(self, asset:Asset) -> Asset:
         while True:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
@@ -66,7 +67,7 @@ class Publisher():
             if latest_version is Version.from_string("0.0.0") or asset.version > latest_version:
                 break
 
-            # Version Logic: Conflict/Exists 
+            # Version Logic: Conflict/Exists
             to_update = False
 
             # If same version ask to update
@@ -79,18 +80,18 @@ class Publisher():
                 else:
                     raise UserWarning("Cannot publish over existing asset, aborting publish")
 
-            # If lower version ask to update 
+            # If lower version ask to update
             elif latest_version > asset.version:
                 if user_input_choice(
                     f"A newer version of {asset} already exists in repo ({latest_version}). \n"
                     "Do you want to update it?"
                 ):
-                    # Promote current asset version to latest version and flag to update 
+                    # Promote current asset version to latest version and flag to update
                     asset.version = latest_version
                     to_update = True
                 else:
                     raise UserWarning("Cannot publish a lower version than existing asset, aborting publish")
-            
+
             # Handle the Decision
             if to_update:
                 asset = self._version_up(asset)
@@ -98,7 +99,7 @@ class Publisher():
 
 
         return asset
-        
+
     def _version_up(self,asset:Asset) -> Asset:
         """Increment asset version based on user choice."""
         version_update = user_input_choice(
@@ -107,7 +108,7 @@ class Publisher():
             type="str"
         )
         asset.version.version_up(version_update)
-        return asset 
+        return asset
 
     def _publish_to_repo(self,asset:Asset)-> bool:
         """
@@ -117,7 +118,7 @@ class Publisher():
             True if successful, False otherwise
         """
         published = False
-        destination_path = asset.get_remote_path(self.context.repo) 
+        destination_path = asset.get_remote_path(self.context.repo)
 
         try:
             shutil.copy2(asset.source_path, destination_path)
@@ -125,8 +126,8 @@ class Publisher():
             asset.set_publish_status("published")
             self.context.repo_manifest.update(asset)
             published = True
-            
-        except shutil.SameFileError as e :
+
+        except shutil.SameFileError:
             logger.error("Source and destination represent the same file.")
         except PermissionError:
             logger.error("Permission denied.")
@@ -135,5 +136,5 @@ class Publisher():
         except Exception as e:
             logger.error(f"An error occurred: {e}")
 
-        finally:   
+        finally:
             return published
