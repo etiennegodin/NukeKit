@@ -28,7 +28,7 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
     while True:
         d = stringify_keys(d)
         options = list(d.keys())
-        
+
         options.append("Return")
         terminal_menu = TerminalMenu(options, title=level_name)
         menu_entry_index = terminal_menu.show()

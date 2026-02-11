@@ -5,10 +5,10 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from .console import user_input_choice
 from .assets import Asset
+from .console import user_input_choice
 from .installer import Installer
-from .versioning import VERSION_CLASSES, Version
+from .versioning import VERSION_CLASSES
 
 if TYPE_CHECKING:
     from .context import Context
@@ -65,10 +65,7 @@ class Publisher:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
             logger.debug(latest_version)
             # New asset or newer than repo nothing to resolve
-            if (
-                latest_version is None or
-                asset.version > latest_version
-            ):
+            if latest_version is None or asset.version > latest_version:
                 logger.info(f"{asset.name} is a new publish")
                 break
 

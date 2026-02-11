@@ -5,11 +5,10 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
-from .assets import ASSET_REGISTRY
+from .assets import ASSET_REGISTRY, Asset
 from .scanner import Scanner
 from .serialization import dump_json, load_json
 from .versioning import Version
-from .assets import Asset
 
 if TYPE_CHECKING:
     from .context import Context
@@ -61,7 +60,7 @@ class Manifest:
         try:
             with open(manifest_path):
                 data = load_json(manifest_path)
-                
+
                 return _sort(data)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse manifest {manifest_path}: {e}")
@@ -147,7 +146,7 @@ class Manifest:
                 raise
             else:
                 asset_versions_list = list(data[asset.type][asset.name].keys())
-                # Check if list is empty 
+                # Check if list is empty
                 if asset_versions_list:
                     return Version.highest_version(asset_versions_list)
                 else:

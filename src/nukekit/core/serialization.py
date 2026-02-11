@@ -43,9 +43,8 @@ def key_to_version(obj):
         try:
             Version.from_string(x)
             return True
-        except:
+        except Exception:
             return False
-            pas
 
     if isinstance(obj, dict):
         return {

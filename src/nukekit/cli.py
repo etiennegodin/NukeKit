@@ -4,11 +4,11 @@ from pathlib import Path
 
 from nukekit import ui
 
+from .core.console import choose_menu, print_data
 from .core.context import Context, get_context
 from .core.installer import Installer
 from .core.publisher import Publisher
 from .core.scanner import Scanner
-from .core.console import choose_menu, print_data
 from .utils.logger import init_logger
 from .utils.paths import UserPaths
 
