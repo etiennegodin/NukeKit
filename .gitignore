@@ -21,3 +21,9 @@ build/
 .env
 *.log
 .nukekit/
+*.md
+!README.md
+
+# Sphinx build output
+docs/build/
+_build/
