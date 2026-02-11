@@ -26,7 +26,7 @@ class Version:
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
-            raise ValueError(e)
+            raise e
         return cls(ver.major, ver.minor, ver.patch)
 
     @classmethod
@@ -36,7 +36,7 @@ class Version:
     def version_up(self, type_name:VERSION_CLASSES):
         """
         Increment version number.
-        
+
         Args:
             type_name: Type of version increment ('major', 'minor', or 'patch')
         """
@@ -52,7 +52,7 @@ class Version:
     @classmethod
     def highest_version(cls, version_list: list[str|tuple|Version]) -> Version:
         """
-        Returns highest version for a versions list 
+        Returns highest version for a versions list
 
         :param version_list: List of versions to compare
         :type version_list: list[str | tuple | Version]

@@ -1,21 +1,20 @@
-import os
 import argparse
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-from .core.context import Context
-from .core.repository import Repository
-from .core.publisher import Publisher
-from .core.installer import Installer
+from nukekit import ui
 
-from nukekit import ui 
-from .utils.logger import init_logger
 from .core.config import ConfigLoader, ConfigValidator
-from .utils.paths import UserPaths
+from .core.context import Context
+from .core.installer import Installer
+from .core.publisher import Publisher
+from .core.repository import Repository
 from .core.scanner import Scanner
-from .utils.console import print_data, choose_menu
-
+from .utils.console import choose_menu, print_data
+from .utils.logger import init_logger
+from .utils.paths import UserPaths
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
@@ -23,19 +22,19 @@ LOG_PATH = ROOT_FOLDER / "nukekit.log"
 def get_context() -> Context:
     """
     Initialize context for this session
-    
+
     :return: Context instance for current session
     :rtype: Context
     """
 
-    # Load .env 
+    # Load .env
     load_dotenv()
 
-    #Setup user paths 
+    #Setup user paths
     USER_PATHS = UserPaths()
 
     # Init logger
-    logger = init_logger(USER_PATHS.LOG_FILE)
+    init_logger(USER_PATHS.LOG_FILE)
 
     # Config solver
     CONFIG = ConfigLoader().load()
@@ -44,7 +43,7 @@ def get_context() -> Context:
 
     # Init Central Repo
     REPO = Repository(CONFIG)
-    
+
     # Create and return context instance
     return Context(REPO,
                 USER_PATHS,
@@ -53,8 +52,8 @@ def get_context() -> Context:
 
 def publish(args, context:Context):
     """
-    Publish a local asset to remote repository 
-    
+    Publish a local asset to remote repository
+
     :param context: This sessions"s context
     :type context: Context
     """
@@ -67,20 +66,20 @@ def publish(args, context:Context):
     else:
         data = context.get_current_data()
 
-    #Print visual cue for explorer 
+    #Print visual cue for explorer
     print_data(data)
 
     asset = choose_menu(data)
 
     if asset is not None:
         publisher.publish_asset(asset)
-    else: 
-        context.logger.info("Asset publish aborted")      
+    else:
+        context.logger.info("Asset publish aborted")
 
 def install(args, context:Context):
     """
-    Install a remote asset to local nuke directory 
-    
+    Install a remote asset to local nuke directory
+
     :param context: This sessions"s context
     :type context: Context
     """
@@ -96,11 +95,11 @@ def install(args, context:Context):
 
 def scan(args, context:Context):
     """
-    Scan nuke directory and print available assets to console  
-    
+    Scan nuke directory and print available assets to console
+
     :param context: This sessions"s context
     :type context: Context
-    """  
+    """
     context.set_mode("scan")
     scanner = Scanner(context)
     if args.location == "local":
@@ -117,7 +116,7 @@ def main():
 
     parser = argparse.ArgumentParser(prog="NukeKit",
                     description="--- Nuke Gizmo and Script manager ---")
-    
+
 
     subparsers = parser.add_subparsers(help="Available subcommands")
 
@@ -145,10 +144,10 @@ def main():
 
     # Call the function associated with the subcommand
     if hasattr(args, "func"):
-        # Dev force clean state 
+        # Dev force clean state
         if args.force:
             UserPaths.clean()
-        # Create context 
+        # Create context
         args.func(args, context)
     else:
         context.set_mode("publish")

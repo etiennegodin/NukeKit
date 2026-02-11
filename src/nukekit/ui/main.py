@@ -16,7 +16,7 @@ def launch(context:Context):
     window.resize(900, 500)
     window.show()
 
-    presenter = MainPresenter(context, window)
+    MainPresenter(context, window)
 
     sys.exit(app.exec())
 

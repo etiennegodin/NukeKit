@@ -24,7 +24,7 @@ class Installer:
     def install_asset(self, asset:Asset) -> bool:
         """
         Docstring for install_asset
-        
+
         :param self: Description
         :param asset: Description
         :type asset: Asset
@@ -52,5 +52,4 @@ class Installer:
             self.context.local_manifest.update(asset)
             installed = True
 
-        finally:
-            return installed
+        return installed

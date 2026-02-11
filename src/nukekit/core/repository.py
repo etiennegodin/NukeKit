@@ -11,7 +11,7 @@ class Repository:
     def __init__(self, config:dict):
         """
         Initialize repository from config dictionary.
-        
+
         Args:
             config: Dictionary from config to configure repository
         """
@@ -37,13 +37,13 @@ class Repository:
     def get_asset_subdir(self,asset_type:str) -> Path:
         """
         Get subdirectory for given asset type.
-        
+
         Args:
             asset_type: Type of asset (e.g., 'Gizmo', 'Script')
-            
+
         Returns:
             Path to the subdirectory
-            
+
         Raises:
             FileNotFoundError: If subdirectory doesn't exist
         """

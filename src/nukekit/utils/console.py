@@ -13,9 +13,9 @@ RETURN_TYPES = Literal["bool", "str"]
 
 def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
     """
-    Interactive terminal selection menu    
+    Interactive terminal selection menu
 
-    :param d: Data to explore 
+    :param d: Data to explore
     :type d: dict
     :param level_name: Name for menu/sub-menu
     :type level_name: str
@@ -48,11 +48,11 @@ def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
 
 def print_data(data:dict, label:str = "Manifest"):
     """
-    Print input dictionnary as tree in terminal 
-    
+    Print input dictionnary as tree in terminal
+
     :param data: Data to displauy
     :type data: dict
-    :param label: Top level label for this branch of the tree 
+    :param label: Top level label for this branch of the tree
     :type label: str
     """
 
@@ -74,8 +74,8 @@ def print_data(data:dict, label:str = "Manifest"):
 
     # Loop through asset categories and create a tree from recursive exploration
     for category, assets_dict in data.items():
-        category_tree = tree.add(category)
-        for asset_name, asset_data in assets_dict.items():
+        tree.add(category)
+        for asset_name, _asset_data in assets_dict.items():
             asset_tree = tree.add(asset_name)
             recursive_tree(assets_dict, asset_tree, asset_name)
 
@@ -92,7 +92,7 @@ def _format_options_list(options:Any):
         options = list(get_args(options))
     return options
 
-def user_input_choice(question:str, options:list[str] = ["y","n"], type:RETURN_TYPES = "bool")-> bool | str:
+def user_input_choice(question:str, options:list[str] = None, type:RETURN_TYPES = "bool")-> bool | str:
     """
     Ask user a question with options answers in terminal. Loops until correct answer is given.
 
@@ -105,12 +105,14 @@ def user_input_choice(question:str, options:list[str] = ["y","n"], type:RETURN_T
     :return: Returns bool if y/n, str from options
     :rtype: bool | str
     """
+    if options is None:
+        options = ["y", "n"]
     correct = False
     question = _add_question_mark(question)
     options = _format_options_list(options)
 
     while not correct:
-        user_input_choice = input(f"{question} {[o for o in options]} ")
+        user_input_choice = input(f"{question} {list(options)} ")
         if user_input_choice in options:
             correct = True
         else:

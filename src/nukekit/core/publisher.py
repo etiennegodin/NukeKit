@@ -23,13 +23,13 @@ class Publisher:
     def publish_asset(self, asset:Path|Asset) -> bool:
         """
         Publish an asset to the remote repository.
-        
+
         Args:
             asset: Path to asset file or Asset instance
-            
+
         Returns:
             True if publish successful, False if aborted
-            
+
         Raises:
             NotImplementedError: If asset type is Script
         """
@@ -113,7 +113,7 @@ class Publisher:
     def _publish_to_repo(self,asset:Asset)-> bool:
         """
         Copy asset file to repository.
-        
+
         Returns:
             True if successful, False otherwise
         """
@@ -136,5 +136,4 @@ class Publisher:
         except Exception as e:
             logger.error(f"An error occurred: {e}")
 
-        finally:
-            return published
+        return published

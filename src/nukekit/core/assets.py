@@ -4,7 +4,7 @@ import getpass
 import logging
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 ASSET_TYPES = Literal["Gizmo", "Script"]
 
-class AssetStatus(str, Enum):
+class AssetStatus(StrEnum):
     LOCAL = "local"
     NON_LOCAL = "non_local"
     UNPUBLISHED = "unpublished"
@@ -129,14 +129,14 @@ class Asset:
     ) -> Asset :
         """
         Create Asset instance from file path.
-        
+
         Args:
             context: Current session context
             asset_path: Path to the asset file
-            
+
         Returns:
             Asset instance (Gizmo or Script)
-            
+
         Raises:
             TypeError: If file extension is not supported
         """
