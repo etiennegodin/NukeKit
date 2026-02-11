@@ -50,3 +50,6 @@ fix = true
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/nukekit --cov-report=term-missing --cov-report=html"
