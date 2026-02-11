@@ -15,7 +15,8 @@ dependencies = [
  "semver",
  "python-dotenv",
  "shortuuid",
- "pyaml"
+ "pyaml",
+ "rich"
 ]
 
 [project.optional-dependencies]
@@ -23,7 +24,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "black",
-    "ruff"
+    "ruff",
 ]
 ui = [
     "PyQt5>=5.15.0",  # Or PySide6
