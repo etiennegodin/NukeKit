@@ -10,6 +10,8 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+htmlcov/
+.coverage
 
 # IDE
 .vscode/
@@ -21,3 +23,10 @@ build/
 .env
 *.log
 .nukekit/
+*.md
+!README.md
+
+
+# Sphinx build output
+docs/build/
+_build/
