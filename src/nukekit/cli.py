@@ -31,23 +31,23 @@ def get_context() -> Context:
     load_dotenv()
 
     #Setup user paths
-    USER_PATHS = UserPaths()
+    user_paths = UserPaths()
 
     # Init logger
-    init_logger(USER_PATHS.LOG_FILE)
+    init_logger(user_paths.LOG_FILE)
 
     # Config solver
-    CONFIG = ConfigLoader().load()
-    ConfigValidator.validate(CONFIG)
+    config = ConfigLoader().load()
+    ConfigValidator.validate(config)
 
 
     # Init Central Repo
-    REPO = Repository(CONFIG)
+    repo = Repository(config)
 
     # Create and return context instance
-    return Context(REPO,
-                USER_PATHS,
-                CONFIG,
+    return Context(repo,
+                user_paths,
+                config,
                 )
 
 def publish(args, context:Context):

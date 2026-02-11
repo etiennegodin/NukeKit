@@ -117,10 +117,6 @@ class Asset:
         """Make Asset hashable for use in sets/dicts."""
         return hash((self.name, str(self.version), self.type))
 
-
-    def __str__(self):
-        return f"{self.name}_v{self.version}"
-
     @classmethod
     def from_path(
         cls,
