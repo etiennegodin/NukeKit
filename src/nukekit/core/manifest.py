@@ -9,9 +9,9 @@ from .assets import ASSET_REGISTRY
 from .scanner import Scanner
 from .serialization import dump_json, load_json
 from .versioning import Version
+from .assets import Asset
 
 if TYPE_CHECKING:
-    from .assets import Asset
     from .context import Context
 
 logger = logging.getLogger(__name__)
@@ -61,6 +61,7 @@ class Manifest:
         try:
             with open(manifest_path):
                 data = load_json(manifest_path)
+                
                 return _sort(data)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse manifest {manifest_path}: {e}")
@@ -127,7 +128,7 @@ class Manifest:
         else:
             return False
 
-    def get_latest_asset_version(self, asset: Asset) -> Version:
+    def get_latest_asset_version(self, asset: Asset) -> Version | None:
         """
         Parses the manifest and returns the highest version for this asset.
 
@@ -145,8 +146,12 @@ class Manifest:
                 logger.error(f"Could not find {asset.name} in {self.ROOT} manifest")
                 raise
             else:
-                return Version.highest_version(list(data[asset.type].keys()))
-
+                asset_versions_list = list(data[asset.type][asset.name].keys())
+                # Check if list is empty 
+                if asset_versions_list:
+                    return Version.highest_version(asset_versions_list)
+                else:
+                    return None
         else:
             # Handle unexpected type
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from typing import Literal, Self
+from operator import attrgetter
 
 import semver
 
@@ -62,14 +63,18 @@ class Version:
         :rtype: Version
         """
         # Temp version as lowest possible
-        latest = Version.from_string("0.0.0")
+        version_list_obj = []
         for v in version_list:
             # Handle multiple cases
             if isinstance(v, str):
-                v = Version.from_string(v)
-            if isinstance(v, tuple):
-                v = Version.from_tuple(v)
+                version_list_obj.append(Version.from_string(v))
+            elif isinstance(v, tuple):
+                version_list_obj.append(Version.from_tuple(v))
+            else:
+                version_list_obj.append(v)
 
+        latest = sorted(version_list_obj)[0]
+        for v in version_list_obj:
             # Compare
             if v > latest:
                 latest = v

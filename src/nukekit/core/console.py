@@ -5,7 +5,8 @@ from rich import print
 from rich.tree import Tree
 from simple_term_menu import TerminalMenu
 
-from ..core.assets import Asset
+from .assets import Asset
+from .serialization import stringify_keys
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,9 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
     """
     value = None
     while True:
+        d = stringify_keys(d)
         options = list(d.keys())
+        
         options.append("Return")
         terminal_menu = TerminalMenu(options, title=level_name)
         menu_entry_index = terminal_menu.show()

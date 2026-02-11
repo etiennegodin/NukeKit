@@ -5,14 +5,14 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ..utils.console import user_input_choice
+from .console import user_input_choice
 from .assets import Asset
 from .installer import Installer
-from .versioning import VERSION_CLASSES
+from .versioning import VERSION_CLASSES, Version
 
 if TYPE_CHECKING:
     from .context import Context
-    from .versioning import Version
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,12 +63,13 @@ class Publisher:
     def _resolve_version(self, asset: Asset) -> Asset:
         while True:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
-
+            logger.debug(latest_version)
             # New asset or newer than repo nothing to resolve
             if (
-                latest_version is Version.from_string("0.0.0")
-                or asset.version > latest_version
+                latest_version is None or
+                asset.version > latest_version
             ):
+                logger.info(f"{asset.name} is a new publish")
                 break
 
             # Version Logic: Conflict/Exists
@@ -126,9 +127,9 @@ class Publisher:
         destination_path = asset.get_remote_path(self.context.repo)
 
         try:
+            asset.set_publish_status("published")
             shutil.copy2(asset.source_path, destination_path)
             logger.info(f"Successfully saved {asset} to {destination_path} ")
-            asset.set_publish_status("published")
             self.context.repo_manifest.update(asset)
             published = True
 

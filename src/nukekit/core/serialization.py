@@ -38,6 +38,23 @@ def stringify_keys(obj):
     return obj
 
 
+def key_to_version(obj):
+    def test_version(x):
+        try:
+            Version.from_string(x)
+            return True
+        except:
+            return False
+            pas
+
+    if isinstance(obj, dict):
+        return {
+            Version.from_string(k) if test_version(k) else k: key_to_version(v)
+            for k, v in obj.items()
+        }
+    return obj
+
+
 def universal_decoder(dct):
     # Dynamic: Convert any key that ends with "_path" into a Path object
     for k, v in dct.items():
@@ -129,7 +146,8 @@ def load_json(path: Path) -> dict:
     """
     try:
         with open(path) as file:
-            return json.load(file, object_hook=universal_decoder)
+            data = json.load(file, object_hook=universal_decoder)
+            return key_to_version(data)
     except Exception as e:
         logger.exception(e)
         raise e
