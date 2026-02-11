@@ -42,7 +42,7 @@ class Manifest:
     def _new_empty_manifest(cls) -> dict:
         return {type_: {} for type_ in ASSET_REGISTRY.keys()}
 
-    def read_manifest(self, path: Path|None = None) -> dict:
+    def read_manifest(self, path: Path | None = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.
 
         :param path: Optionnal path to read manifest. Defaults to manifest root
@@ -69,7 +69,7 @@ class Manifest:
             logger.error(f"Unexpected error reading manifest: {e}")
             raise
 
-    def write_manifest(self, data: dict|None = None, verbose: bool = False) -> bool:
+    def write_manifest(self, data: dict | None = None, verbose: bool = False) -> bool:
         """
         Write manifest data to disk.
 
@@ -93,7 +93,7 @@ class Manifest:
 
         # Write to disk
         dump_json(data, self.ROOT)
-        
+
         if verbose:
             logger.info(f"Successfully wrote {self.ROOT}")
         return True

@@ -67,5 +67,3 @@ class ConfigValidator:
             root = Path(config["repository"].get("root", ""))
             if not root.is_absolute():
                 logger.warning(f"Repository root must be absolute path: {root}")
-
-    

@@ -107,7 +107,7 @@ def dumps_json(data) -> str:
         logger.exception(e)
         raise e
     else:
-        return out 
+        return out
 
 
 def load_json(path: Path) -> dict:
