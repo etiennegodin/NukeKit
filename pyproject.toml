@@ -43,4 +43,3 @@ ui = [
 
 [project.scripts]   # <-- entry point CLI
 nukekit = "nukekit.cli:main"
-

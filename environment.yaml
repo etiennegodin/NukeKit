@@ -16,5 +16,3 @@ dependencies:
       - PyQt5
       - shortuuid
       - rich
-
-

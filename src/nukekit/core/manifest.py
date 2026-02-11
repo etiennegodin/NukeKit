@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class Manifest:
-
     def __init__(self, data: dict, root: Path):
         self.ROOT = root
         self.data = data

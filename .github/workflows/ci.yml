@@ -1,0 +1,14 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install ruff black pytest
+      - name: Run Linting
+        run: ruff check .
+      - name: Run Tests
+        run: pytest

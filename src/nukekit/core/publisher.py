@@ -87,7 +87,8 @@ class Publisher:
             # If lower version ask to update
             elif latest_version > asset.version:
                 if user_input_choice(
-                    f"A newer version of {asset} already exists in repo ({latest_version}). \n"
+                    f"A newer version of {asset} already exists in repo"
+                    f"({latest_version}). \n"
                     "Do you want to update it?"
                 ):
                     # Promote current asset version to latest version and flag to update
@@ -95,7 +96,8 @@ class Publisher:
                     to_update = True
                 else:
                     raise UserWarning(
-                        "Cannot publish a lower version than existing asset, aborting publish"
+                        "Cannot publish a lower version than existing asset,"
+                        "aborting publish"
                     )
 
             # Handle the Decision

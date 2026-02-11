@@ -157,7 +157,9 @@ class Asset:
         asset_class = ASSET_SUFFIXES.get(asset_suffix)
         if asset_class is None:
             raise TypeError(
-                f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} "
+                "\nProvided asset tpye is not a supported.\n"
+                "Please submit a file with this type"
+                f"{[str(k) for k in ASSET_SUFFIXES.keys()]} "
             )
 
         # Check if asset is a copy from repo

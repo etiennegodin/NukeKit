@@ -40,7 +40,7 @@ nukekit publish --local
 nukekit install
 ```
 
-### Scanning 
+### Scanning
 ```bash
 # Scan local Nuke directory
 nukekit scan local
@@ -49,7 +49,7 @@ nukekit scan local
 nukekit scan remote
 ```
 
-## Configuration 
+## Configuration
 Edit `~/.nukekit/config.yaml`:
 ```yaml
 repository:
@@ -68,11 +68,10 @@ user:
 NukeKit/
 ├── src/nukekit/
 │   ├── core/          # Business logic
-│   ├── ui/            # GUI components  
+│   ├── ui/            # GUI components
 │   ├── utils/         # Utilities
 │   └── cli.py         # CLI entry point
 ├── test/              # Test suite
 ├── config/            # Default configs
 └── examples/          # Example assets
 ```
-

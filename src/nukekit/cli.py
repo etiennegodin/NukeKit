@@ -78,7 +78,6 @@ def scan(args, context: Context):
 
 
 def main():
-
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument(
         "--force", action="store_true", help="Wipe Local State Clean"
