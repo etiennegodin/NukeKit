@@ -20,8 +20,8 @@ class ConfigLoader:
         config_path = os.getenv(cls.NUKEKIT_CONFIG_PATH)
         if config_path is not None:
             env_path = Path(config_path)
-        if env_path.exists():
-            return Path(env_path)
+            if env_path.exists():
+                return Path(env_path)
 
         # Read from this package as fallback
         package_root = Path(__file__).parents[3]
