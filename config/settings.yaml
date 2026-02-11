@@ -1,16 +1,8 @@
 repository:
-  root: "/home/etienne/central_repo"
+  root: "${HOME}/nukekit_repo"
   subfolder:
     - Gizmo
     - Script
 
 user:
   nuke_dir: "~/.nuke"
-
-publishing:
-  require_changelog: true
-  auto_increment_patch: false
-  
-validation:
-  check_dependencies: true
-  warn_on_deprecated: true

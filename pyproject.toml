@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -12,10 +12,41 @@ description = "Nuke gizmo/script publishing system"
 authors = [{ name="Etienne Godin", email="etiennegodin@duck.com" }]
 
 dependencies = [
- 'semver',
- 'pytest'
+ "semver",
+ "python-dotenv",
+ "shortuuid",
+ "pyaml",
+ "rich",
+ "simple_term_menu"
 ]
 
-[project.Script]   # <-- entry point CLI
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+]
+ui = [
+    "PyQt5>=5.15.0",  # Or PySide6
+]
+
+
+[project.scripts]   # <-- entry point CLI
 nukekit = "nukekit.cli:main"
 
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I"]
+fix = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true

@@ -1,54 +1,53 @@
 from __future__ import annotations
+
 import logging
-
+import os
 from pathlib import Path
-from typing import Literal
-
-path_types = Literal['str', 'Path']
 
 logger = logging.getLogger(__name__)
 
-class Repository:
 
-    def __init__(self, repo_dict:dict):
+class Repository:
+    def __init__(self, config: dict):
         """
-        Object representation of remote repository 
-        
-        :param repo_dict: Dictionnary from config to configure repository
-        :type repo_dict: dict
+        Initialize repository from config dictionary.
+
+        Args:
+            config: Dictionary from config to configure repository
         """
-        
-        self.ROOT = Path(repo_dict['root'])
-        self.SUBFOLDERS = repo_dict['subfolder']
+        root = config["repository"]["root"]
+        root = os.path.expandvars(root)
+        root = os.path.expanduser(root)
+
+        self.ROOT = Path(root)
+        self.SUBFOLDERS = config["repository"]["subfolder"]
         self.MANIFEST = self.ROOT / "manifest.json"
         self.ensure()
-    
-    def ensure(self)->bool:
+
+    def ensure(self) -> bool:
         if not self.ROOT.exists():
-            self.ROOT.mkdir(exist_ok= True)
-            logger.info(f'Created central repo at {self.ROOT}')
+            self.ROOT.mkdir(exist_ok=True)
             for s in self.SUBFOLDERS:
-                Path(f"{self.ROOT}/{s}").mkdir(exist_ok= True)
+                (self.ROOT / s).mkdir(exist_ok=True, parents=True)
+
+            logger.info(f"Created central repo at {self.ROOT}")
             return True
         return False
-    
-    def build_from_manifest():
-        pass
 
-    def get_subdir(self,asset_type:str)->Path:
-        subdir = Path(f"{self.ROOT}/{asset_type}")
-        if subdir.exists() and not None:
-            return subdir
-        else:
-            raise FileNotFoundError(f"Path {subdir} could not be found")
+    def get_asset_subdir(self, asset_type: str) -> Path:
+        """
+        Get subdirectory for given asset type.
 
-    def list_assets(self, asset_type:str, output_type:path_types = 'Path'):
-        if asset_type:
-            subdir = self.get_subdir(asset_type)
-            assets_dir = [p for p in subdir.iterdir() if p.is_dir()]
-            if output_type == 'str':
-                return [folder.name for folder in assets_dir]
-            else:
-                return assets_dir
-        else:
-            raise Exception
+        Args:
+            asset_type: Type of asset (e.g., 'Gizmo', 'Script')
+
+        Returns:
+            Path to the subdirectory
+
+        Raises:
+            FileNotFoundError: If subdirectory doesn't exist
+        """
+        subdir = self.ROOT / asset_type
+        if not subdir.exists():
+            raise FileNotFoundError(f"Path {subdir} does not exists")
+        return subdir

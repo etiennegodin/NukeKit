@@ -1,12 +1,10 @@
 from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class Validator():
+class Validator:
     def __init__(self):
         pass
-
-
-

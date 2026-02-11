@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 ROLE_OBJECT = Qt.UserRole + 1
+
 
 class JsonTreeBuilder:
     @staticmethod
@@ -26,7 +26,7 @@ class JsonTreeBuilder:
                 for version, asset in asset_versions.items():
                     print(asset)
                     version_item = QStandardItem(version)
-                    info_item = QStandardItem(f"{asset.changelog}")
+                    info_item = QStandardItem(f"{asset.message}")
                     type_item = QStandardItem("Gizmo")
 
                     # Store actual object
