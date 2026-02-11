@@ -6,12 +6,6 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-import os
-import sys
-
-# We go up two levels to 'docs', then 'root', then down into 'src'
-sys.path.insert(0, os.path.abspath("../../src"))
-
 
 project = "NukeKit"
 copyright = "2026, egodin"
