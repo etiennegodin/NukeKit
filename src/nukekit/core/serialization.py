@@ -70,16 +70,61 @@ class UniversalEncoder(json.JSONEncoder):
 
 
 def dump_json(data, path: Path):
+    """_summary_
+
+    Args:
+        data (_type_): _description_
+        path (Path): _description_
+
+    Raises:
+        e: _description_
+    """
     data = stringify_keys(data)
-    with open(path, "w") as f:
-        json.dump(data, f, indent=4, cls=UniversalEncoder)
+    try:
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4, cls=UniversalEncoder)
+    except Exception as e:
+        logger.exception(f"Error writing manifest to {path}: {e}")
+        raise e
 
 
 def dumps_json(data) -> str:
+    """_summary_
+
+    Args:
+        data (_type_): _description_
+
+    Raises:
+        e: _description_
+
+    Returns:
+        str: _description_
+    """
     data = stringify_keys(data)
-    return json.dumps(data, indent=4, cls=UniversalEncoder)
+    try:
+        out = json.dumps(data, indent=4, cls=UniversalEncoder)
+    except Exception as e:
+        logger.exception(e)
+        raise e
+    else:
+        return out 
 
 
 def load_json(path: Path) -> dict:
-    with open(path) as file:
-        return json.load(file, object_hook=universal_decoder)
+    """_summary_
+
+    Args:
+        path (Path): _description_
+
+    Raises:
+        e: _description_
+
+    Returns:
+        dict: _description_
+    """
+    try:
+        with open(path) as file:
+            return json.load(file, object_hook=universal_decoder)
+    except Exception as e:
+        logger.exception(e)
+        raise e

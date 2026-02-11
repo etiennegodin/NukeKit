@@ -48,7 +48,7 @@ class Repository:
         Raises:
             FileNotFoundError: If subdirectory doesn't exist
         """
-        subdir = self.ROOT / {asset_type}
+        subdir = self.ROOT / asset_type
         if not subdir.exists():
             raise FileNotFoundError(f"Path {subdir} does not exists")
         return subdir

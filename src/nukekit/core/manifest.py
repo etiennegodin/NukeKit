@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class Manifest:
 
-    def __init__(self, data: dict = None, root: Path = None):
+    def __init__(self, data: dict, root: Path):
         self.ROOT = root
         self.data = data
         self.write_manifest()
@@ -42,7 +42,7 @@ class Manifest:
     def _new_empty_manifest(cls) -> dict:
         return {type_: {} for type_ in ASSET_REGISTRY.keys()}
 
-    def read_manifest(self, path: Path = None) -> dict:
+    def read_manifest(self, path: Path|None = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.
 
         :param path: Optionnal path to read manifest. Defaults to manifest root
@@ -69,7 +69,7 @@ class Manifest:
             logger.error(f"Unexpected error reading manifest: {e}")
             raise
 
-    def write_manifest(self, data: dict = None, verbose: bool = False) -> bool:
+    def write_manifest(self, data: dict|None = None, verbose: bool = False) -> bool:
         """
         Write manifest data to disk.
 
@@ -85,20 +85,18 @@ class Manifest:
             try:
                 data = self.data
             except Exception as e:
-                logger.error(f"Error loading manifest data from {self.name}: {e}")
+                logger.error(f"Error loading manifest data from {self.ROOT}: {e}")
                 raise
 
         # Sort outgoing dict
         data = _sort(data)
 
         # Write to disk
-        try:
-            dump_json(data, self.ROOT)
-        except Exception as e:
-            logger.exception(f"Error writing manifest to {self.ROOT}: {e}")
-        else:
-            if verbose:
-                logger.info(f"Successfully wrote {self.ROOT}")
+        dump_json(data, self.ROOT)
+        
+        if verbose:
+            logger.info(f"Successfully wrote {self.ROOT}")
+        return True
 
     def update(self, asset: Asset) -> bool:
         """
@@ -140,12 +138,12 @@ class Manifest:
 
         if isinstance(asset, Asset):
             try:
-                asset_versions_list = list(asset.name in data[asset.type].keys())
+                asset.name in data[asset.type].keys()
             except Exception:
-                logger.error(f"Could not find {asset.name} in {self.name} manifest")
+                logger.error(f"Could not find {asset.name} in {self.ROOT} manifest")
                 raise
             else:
-                return Version.highest_version(asset_versions_list)
+                return Version.highest_version(list(data[asset.type].keys()))
 
         else:
             # Handle unexpected type

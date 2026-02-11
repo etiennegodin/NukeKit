@@ -17,7 +17,9 @@ class ConfigLoader:
     @classmethod
     def resolve(cls) -> Path:
         # Read from .env
-        env_path = Path(os.getenv(cls.NUKEKIT_CONFIG_PATH))
+        config_path = os.getenv(cls.NUKEKIT_CONFIG_PATH)
+        if config_path is not None:
+            env_path = Path(config_path)
         if env_path.exists():
             return Path(env_path)
 
@@ -49,28 +51,21 @@ class ConfigValidator:
     }
 
     @classmethod
-    def validate(cls, config: dict) -> bool:
+    def validate(cls, config: dict):
         """Validate config. Returns (is_valid, errors)."""
-        warnings = []
         # Check required sections
         for section, keys in cls.REQUIRED_KEYS.items():
             if section not in config:
-                logger.error(f"Missing required section in config: {section}")
-                quit()
-                continue
+                raise KeyError(f"Missing required section in config: {section}")
 
             for key in keys:
                 if key not in config[section]:
-                    logger.error(f"Missing required key in config: {section}.{key}")
-                    quit()
+                    raise KeyError(f"Missing required key in config: {section}.{key}")
 
         # Validate paths
         if "repository" in config:
             root = Path(config["repository"].get("root", ""))
             if not root.is_absolute():
-                warnings.append(f"Repository root must be absolute path: {root}")
+                logger.warning(f"Repository root must be absolute path: {root}")
 
-        if len(warnings) == 0:
-            return True
-        [logger.warning(w) for w in warnings]
-        return False
+    

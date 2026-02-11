@@ -22,7 +22,7 @@ class Scanner:
         assets = {}
         for suffix, obj in ASSET_SUFFIXES.items():
             asset_paths = list(path.rglob(f"*{suffix}"))
-            asset_subtype = {}
+            asset_subtype:dict[str,dict] = {}
             for path in asset_paths:
                 asset = Asset.from_path(self.context, path)
                 if asset.name not in asset_subtype.keys():
@@ -45,6 +45,5 @@ class Scanner:
         return self.data
 
     def scan_folder(self, path) -> dict:
-        logger.debug(path)
-        if path is not None:
-            return self._scan(path)
+        return self._scan(path)
+        

@@ -38,14 +38,14 @@ PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 @dataclass
 class Asset:
     name: str
-    version: Version = None
-    source_path: Path = None
-    status: AssetStatus = None
-    message: str = None
-    author: str = None
-    time: str = None
-    id: str = None
-    type: str = None
+    version: Version
+    source_path: Path
+    status: AssetStatus
+    type: str
+    message: str = NotImplemented
+    author: str = NotImplemented
+    time: str = NotImplemented
+    id: str = NotImplemented
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -140,7 +140,7 @@ class Asset:
         # Check if naming matches with enforced versioning
         if "_v" in asset_stem:
             asset_name = asset_stem.split(sep="_v")[0]
-            asset_version = Version(asset_stem.split(sep="_v")[1])
+            asset_version = Version.from_string(asset_stem.split(sep="_v")[1])
         else:
             # No specified version, local asset
             asset_name = asset_stem

@@ -47,10 +47,10 @@ class Context:
     repo: Repository
     user_paths: UserPaths
     config: dict[str, Any]
-    repo_manifest: Manifest = None
-    local_manifest: Manifest = None
-    local_state: Manifest = None
-    mode: AppMode = None
+    repo_manifest: Manifest = NotImplemented
+    local_manifest: Manifest = NotImplemented
+    local_state: Manifest = NotImplemented
+    mode: AppMode = NotImplemented
 
     def __post_init__(self):
         # Read cached manifests from disk
@@ -70,3 +70,5 @@ class Context:
             return self.local_state.data
         elif self.mode == AppMode.INSTALL:
             return self.repo_manifest.data
+        else:
+            raise NotImplementedError(f"App mode {self.mode} is not implemented")

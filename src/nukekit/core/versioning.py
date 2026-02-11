@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 VERSION_CLASSES = Literal["major", "minor", "patch"]
 
 
-@dataclass(frozen=True, order=True)
+@dataclass(order=True)
 class Version:
     """_Semantic version implementation._
 
@@ -33,7 +33,7 @@ class Version:
 
     @classmethod
     def from_tuple(cls, version_tuple: tuple[int, int, int]) -> Self:
-        return cls(".".join(str(val) for val in version_tuple))
+        return cls.from_string(".".join(str(val) for val in version_tuple))
 
     def version_up(self, type_name: VERSION_CLASSES):
         """
@@ -66,7 +66,7 @@ class Version:
         for v in version_list:
             # Handle multiple cases
             if isinstance(v, str):
-                v = Version(v)
+                v = Version.from_string(v)
             if isinstance(v, tuple):
                 v = Version.from_tuple(v)
 

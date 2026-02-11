@@ -69,7 +69,7 @@ def print_data(data: dict, label: str = "Manifest"):
                 break
             sub_tree = t.add(key)
             if isinstance(value, dict):
-                recursive_tree(value, sub_tree)
+                recursive_tree(value, sub_tree, stop)
 
     # Initilize tree
     tree = Tree(label)
@@ -97,19 +97,18 @@ def _format_options_list(options: Any):
 
 
 def user_input_choice(
-    question: str, options: list[str] = None, type: RETURN_TYPES = "bool"
+    question: str, options: Literal|list[str]|None = None, type: RETURN_TYPES = "bool"
 ) -> bool | str:
-    """
-    Ask user a question with options answers in terminal. Loops until correct answer is given.
+    """Ask user a question with options answers in terminal. Loops until correct answer is given.
 
-    :param question: Question to ask
-    :type question: str
-    :param options: Options of correct answers. Defaults to y/n
-    :type options: list[str]
-    :param type: Type of return, either string or bool. Defaults to bool.
-    :type type: RETURN_TYPES
-    :return: Returns bool if y/n, str from options
-    :rtype: bool | str
+
+    Args:
+        question (str): _description_
+        options (list[str] | None, optional): _description_. Defaults to None.
+        type (RETURN_TYPES, optional): _description_. Defaults to "bool".
+
+    Returns:
+        bool | str: _description_
     """
     if options is None:
         options = ["y", "n"]
