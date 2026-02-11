@@ -3,6 +3,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 ROLE_OBJECT = Qt.UserRole + 1
 
+
 class JsonTreeBuilder:
     @staticmethod
     def build_model(data: dict) -> QStandardItemModel:
@@ -17,9 +18,7 @@ class JsonTreeBuilder:
 
             for asset_name, asset_versions in assets.items():
                 asset_item = QStandardItem(asset_name)
-                cat_item.appendRow(
-                    [asset_item, QStandardItem(""), QStandardItem("Asset")]
-                )
+                cat_item.appendRow([asset_item, QStandardItem(""), QStandardItem("Asset")])
                 print(asset_versions)
 
                 for version, asset in asset_versions.items():

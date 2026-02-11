@@ -71,9 +71,7 @@ class MainWindow(QMainWindow):
         self.tree.expandToDepth(2)
 
     def show_asset(self, asset: Asset):
-        self.detail.setPlainText(
-            dumps_json(asset.to_dict())
-        )
+        self.detail.setPlainText(dumps_json(asset.to_dict()))
 
     def show_text(self, text: str):
         self.detail.setPlainText(text)

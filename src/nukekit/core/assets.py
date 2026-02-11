@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 ASSET_TYPES = Literal["Gizmo", "Script"]
 
+
 class AssetStatus(StrEnum):
     LOCAL = "local"
     NON_LOCAL = "non_local"
@@ -29,20 +30,22 @@ class AssetStatus(StrEnum):
     PUBLISHED = "published"
     CACHED = "cached"
 
+
 INSTALL_STATUS = Literal["non_local", "local"]
 PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
+
 @dataclass
 class Asset:
-    name:str
+    name: str
     version: Version = None
-    source_path:Path = None
-    status:AssetStatus = None
-    message:str = None
+    source_path: Path = None
+    status: AssetStatus = None
+    message: str = None
     author: str = None
-    time:str = None
-    id:str = None
-    type:str = None
+    time: str = None
+    id: str = None
+    type: str = None
 
     def _set_time(self):
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -58,9 +61,7 @@ class Asset:
     def ensure_message(self):
         """Prompt user for changelog if not provided."""
         while True:
-            message = input(
-                f"No message found for {self.name}, please enter a message: \n"
-            )
+            message = input(f"No message found for {self.name}, please enter a message: \n")
             if message:
                 break
             else:
@@ -74,7 +75,7 @@ class Asset:
         self._set_author()
         self._set_uuid()
 
-    def get_remote_path(self, repo:Repository) -> Path:
+    def get_remote_path(self, repo: Repository) -> Path:
         """Get the path where this asset should be stored in the repository."""
         repo_path = repo.get_asset_subdir(self.type) / self.name
         # Create asset folder if first publish
@@ -85,7 +86,7 @@ class Asset:
     def set_publish_status(self, status: PUBLISH_STATUS):
         self.status = AssetStatus(status)
 
-    def set_install_status(self,status: INSTALL_STATUS):
+    def set_install_status(self, status: INSTALL_STATUS):
         self.status = AssetStatus(status)
 
     def to_dict(self) -> dict:
@@ -107,22 +108,14 @@ class Asset:
         """Assets are equal if they have same name, version, and type."""
         if not isinstance(other, Asset):
             return NotImplemented
-        return (
-            self.name == other.name
-            and self.version == other.version
-            and self.type == other.type
-        )
+        return self.name == other.name and self.version == other.version and self.type == other.type
 
     def __hash__(self) -> int:
         """Make Asset hashable for use in sets/dicts."""
         return hash((self.name, str(self.version), self.type))
 
     @classmethod
-    def from_path(
-        cls,
-        context:Context,
-        asset_path:Path
-    ) -> Asset :
+    def from_path(cls, context: Context, asset_path: Path) -> Asset:
         """
         Create Asset instance from file path.
 
@@ -157,7 +150,9 @@ class Asset:
         # Get object class from path suffix
         asset_class = ASSET_SUFFIXES.get(asset_suffix)
         if asset_class is None:
-            raise TypeError(f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ")
+            raise TypeError(
+                f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} "
+            )
 
         # Check if asset is a copy from repo
         try:
@@ -165,19 +160,22 @@ class Asset:
         except KeyError:
             # Asset doesn't exist in repo, create new one
             return cls(
-                name = asset_name,
-                version = asset_version,
-                source_path = asset_path,
-                status = AssetStatus.UNPUBLISHED,
-                type = cls.type)
+                name=asset_name,
+                version=asset_version,
+                source_path=asset_path,
+                status=AssetStatus.UNPUBLISHED,
+                type=cls.type,
+            )
+
 
 @dataclass
 class Gizmo(Asset):
-    type:str = "Gizmo"
+    type: str = "Gizmo"
+
 
 @dataclass
 class Script(Asset):
-    type:str = "Script"
+    type: str = "Script"
 
 
 ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}

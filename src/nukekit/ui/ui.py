@@ -1,4 +1,3 @@
-
 # Form implementation generated from reading ui file 'nukekit.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
@@ -73,10 +72,16 @@ class Ui_MainWindow:
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.tabSync.setWhatsThis(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
+        self.tabSync.setWhatsThis(
+            _translate("MainWindow", "<html><head/><body><p><br/></p></body></html>")
+        )
         self.groupBox.setTitle(_translate("MainWindow", "GroupBox"))
         self.label_3.setText(_translate("MainWindow", "TextLabel"))
         self.label_2.setText(_translate("MainWindow", "TextLabel"))
         self.label.setText(_translate("MainWindow", "TextLabel"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabSync), _translate("MainWindow", "Tab 1"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabPublish), _translate("MainWindow", "Tab 2"))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.tabSync), _translate("MainWindow", "Tab 1")
+        )
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.tabPublish), _translate("MainWindow", "Tab 2")
+        )

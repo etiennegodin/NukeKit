@@ -9,6 +9,7 @@ path_types = Literal["str", "Path"]
 
 logger = logging.getLogger(__name__)
 
+
 class UserPaths:
     """Class for all local user paths."""
 
@@ -24,13 +25,12 @@ class UserPaths:
 
     @classmethod
     def clean(cls):
-        shutil.rmtree(cls.BASE_DIR,ignore_errors=True)
-        shutil.rmtree(cls.NUKE_KIT_DIR,ignore_errors=True)
-        logger.warning('Cleaned NukeKit local state')
+        shutil.rmtree(cls.BASE_DIR, ignore_errors=True)
+        shutil.rmtree(cls.NUKE_KIT_DIR, ignore_errors=True)
+        logger.warning("Cleaned NukeKit local state")
 
     @classmethod
     def ensure(cls):
         """Create local dirs if thy don"t exist. Called once"""
         cls.BASE_DIR.mkdir(exist_ok=True)
         cls.NUKE_KIT_DIR.mkdir(parents=True, exist_ok=True)
-

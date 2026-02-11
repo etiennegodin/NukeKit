@@ -13,12 +13,15 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class AppMode(StrEnum):
     PUBLISH = "publish"
     INSTALL = "install"
     SCAN = "scan"
 
-APP_MODE = Literal["publish","install","scan"]
+
+APP_MODE = Literal["publish", "install", "scan"]
+
 
 @dataclass
 class Context:
@@ -40,14 +43,14 @@ class Context:
 
 
     """
+
     repo: Repository
     user_paths: UserPaths
-    config: dict[str, Any ]
+    config: dict[str, Any]
     repo_manifest: Manifest = None
     local_manifest: Manifest = None
     local_state: Manifest = None
-    mode:AppMode = None
-
+    mode: AppMode = None
 
     def __post_init__(self):
         # Read cached manifests from disk

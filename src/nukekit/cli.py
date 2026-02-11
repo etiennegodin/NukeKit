@@ -19,6 +19,7 @@ from .utils.paths import UserPaths
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
 
+
 def get_context() -> Context:
     """
     Initialize context for this session
@@ -30,7 +31,7 @@ def get_context() -> Context:
     # Load .env
     load_dotenv()
 
-    #Setup user paths
+    # Setup user paths
     user_paths = UserPaths()
 
     # Init logger
@@ -40,17 +41,18 @@ def get_context() -> Context:
     config = ConfigLoader().load()
     ConfigValidator.validate(config)
 
-
     # Init Central Repo
     repo = Repository(config)
 
     # Create and return context instance
-    return Context(repo,
-                user_paths,
-                config,
-                )
+    return Context(
+        repo,
+        user_paths,
+        config,
+    )
 
-def publish(args, context:Context):
+
+def publish(args, context: Context):
     """
     Publish a local asset to remote repository
 
@@ -66,7 +68,7 @@ def publish(args, context:Context):
     else:
         data = context.get_current_data()
 
-    #Print visual cue for explorer
+    # Print visual cue for explorer
     print_data(data)
 
     asset = choose_menu(data)
@@ -76,7 +78,8 @@ def publish(args, context:Context):
     else:
         context.logger.info("Asset publish aborted")
 
-def install(args, context:Context):
+
+def install(args, context: Context):
     """
     Install a remote asset to local nuke directory
 
@@ -93,7 +96,8 @@ def install(args, context:Context):
     if asset is not None:
         installer.install_asset(asset)
 
-def scan(args, context:Context):
+
+def scan(args, context: Context):
     """
     Scan nuke directory and print available assets to console
 
@@ -108,35 +112,44 @@ def scan(args, context:Context):
         assets = scanner.scan_folder(context.repo.ROOT)
     print_data(assets)
 
+
 def main():
 
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument("--force", action = "store_true", help = "Wipe Local State Clean")
-    parent_parser.add_argument("--no-gui", action = "store_true", help = "Launch without gui")
+    parent_parser.add_argument("--force", action="store_true", help="Wipe Local State Clean")
+    parent_parser.add_argument("--no-gui", action="store_true", help="Launch without gui")
 
-    parser = argparse.ArgumentParser(prog="NukeKit",
-                    description="--- Nuke Gizmo and Script manager ---")
-
+    parser = argparse.ArgumentParser(
+        prog="NukeKit", description="--- Nuke Gizmo and Script manager ---"
+    )
 
     subparsers = parser.add_subparsers(help="Available subcommands")
 
     # Create the parser for the "publish" command
-    parser_publish = subparsers.add_parser("publish", parents=[parent_parser], help="Record changes to the repository")
-    parser_publish.add_argument("--local", "-l", action= "store_true", help = "Publish from this directory" )
+    parser_publish = subparsers.add_parser(
+        "publish", parents=[parent_parser], help="Record changes to the repository"
+    )
+    parser_publish.add_argument(
+        "--local", "-l", action="store_true", help="Publish from this directory"
+    )
 
-    parser_publish.set_defaults(func=publish) # Associate a function
+    parser_publish.set_defaults(func=publish)  # Associate a function
 
     # Create the parser for the "install" command
-    parser_install = subparsers.add_parser("install", parents=[parent_parser], help="Install asset to nuke directory")
-    parser_install.set_defaults(func=install) # Associate a function
+    parser_install = subparsers.add_parser(
+        "install", parents=[parent_parser], help="Install asset to nuke directory"
+    )
+    parser_install.set_defaults(func=install)  # Associate a function
 
     # Create the parser for the "scan" command
     scan_choices = ["local", "remote"]
-    parser_scan = subparsers.add_parser("scan", parents=[parent_parser], help="Scan directory for assets")
-    parser_scan.add_argument("location", choices= scan_choices, help = "Where to scan" )
+    parser_scan = subparsers.add_parser(
+        "scan", parents=[parent_parser], help="Scan directory for assets"
+    )
+    parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
 
-    #parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
-    parser_scan.set_defaults(func=scan) # Associate a function
+    # parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
+    parser_scan.set_defaults(func=scan)  # Associate a function
 
     args = parser.parse_args()
 
@@ -152,6 +165,7 @@ def main():
     else:
         context.set_mode("publish")
         ui.launch(context)
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,3 @@
-
 from ..core.assets import Asset
 from ..core.context import AppMode, Context
 from .json_tree import ROLE_OBJECT, JsonTreeBuilder
@@ -14,19 +13,15 @@ class MainPresenter:
 
         self.refresh()
 
-        self.view.tree.selectionModel().selectionChanged.connect(
-            self.on_selection_changed
-        )
+        self.view.tree.selectionModel().selectionChanged.connect(self.on_selection_changed)
 
     def refresh(self):
         model = JsonTreeBuilder.build_model(self.ctx.get_current_data())
         self.view.set_model(model)
-        #self.view.set_status(self.ctx.status)
+        # self.view.set_status(self.ctx.status)
 
         # reconnect after model reset
-        self.view.tree.selectionModel().selectionChanged.connect(
-            self.on_selection_changed
-        )
+        self.view.tree.selectionModel().selectionChanged.connect(self.on_selection_changed)
 
     def on_selection_changed(self):
         index = self.view.tree.currentIndex()

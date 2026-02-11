@@ -19,31 +19,30 @@ logger = logging.getLogger(__name__)
 
 class Manifest:
 
-    def __init__(self, data:dict = None, root:Path = None):
+    def __init__(self, data: dict = None, root: Path = None):
         self.ROOT = root
         self.data = data
         self.write_manifest()
 
-
     @classmethod
-    def from_file(cls, path:Path) -> Self:
+    def from_file(cls, path: Path) -> Self:
         """Create Manifest from a file path"""
         root = path
-        data = cls.read_manifest(self = cls,path = root)
-        return cls(data = data,root = root)
+        data = cls.read_manifest(self=cls, path=root)
+        return cls(data=data, root=root)
 
     @classmethod
-    def from_scanner(cls, context:Context) -> Self:
+    def from_scanner(cls, context: Context) -> Self:
         """Create Manifest from scanner results"""
         scanner = Scanner(context)
         scanner.scan_local()
-        return cls(data=scanner.data, root = context.user_paths.STATE_FILE)
+        return cls(data=scanner.data, root=context.user_paths.STATE_FILE)
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:
         return {type_: {} for type_ in ASSET_REGISTRY.keys()}
 
-    def read_manifest(self, path:Path = None) -> dict:
+    def read_manifest(self, path: Path = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.
 
         :param path: Optionnal path to read manifest. Defaults to manifest root
@@ -101,7 +100,7 @@ class Manifest:
             if verbose:
                 logger.info(f"Successfully wrote {self.ROOT}")
 
-    def update(self, asset:Asset) -> bool:
+    def update(self, asset: Asset) -> bool:
         """
         Reads current manifest, adds asset and writes out updated manifest.
 
@@ -128,7 +127,7 @@ class Manifest:
         else:
             return False
 
-    def get_latest_asset_version(self, asset:Asset) -> Version:
+    def get_latest_asset_version(self, asset: Asset) -> Version:
         """
         Parses the manifest and returns the highest version for this asset.
 
@@ -139,7 +138,7 @@ class Manifest:
         """
         data = self.read_manifest()
 
-        if isinstance(asset,Asset):
+        if isinstance(asset, Asset):
             try:
                 asset_versions_list = list(asset.name in data[asset.type].keys())
             except Exception:
@@ -155,12 +154,5 @@ class Manifest:
             raise NotImplementedError(msg)
 
 
-
-def _sort(d:dict):
-    return {
-            k: _sort(v) if isinstance(v, dict) else v
-            for k, v in sorted(d.items(), reverse=True)
-    }
-
-
-
+def _sort(d: dict):
+    return {k: _sort(v) if isinstance(v, dict) else v for k, v in sorted(d.items(), reverse=True)}

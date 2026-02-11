@@ -6,6 +6,7 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+
 class ConfigLoader:
     """
     Resolve and load config for this session
@@ -26,9 +27,11 @@ class ConfigLoader:
         if adjacent.exists():
             return adjacent
 
-        raise FileNotFoundError(f"NukeKit could not find studio config.\n"
+        raise FileNotFoundError(
+            f"NukeKit could not find studio config.\n"
             f"  → Set the {cls.NUKEKIT_CONFIG_PATH} env var to your config path\n"
-            f"  → Or place studio_settings.yaml in {package_root / 'config'}")
+            f"  → Or place studio_settings.yaml in {package_root / 'config'}"
+        )
 
     @classmethod
     def load(cls) -> dict:
@@ -41,8 +44,8 @@ class ConfigValidator:
     """Validate configuration against schema."""
 
     REQUIRED_KEYS = {
-        'repository': ['root', 'subfolder'],
-        'user': ['nuke_dir'],
+        "repository": ["root", "subfolder"],
+        "user": ["nuke_dir"],
     }
 
     @classmethod
@@ -62,8 +65,8 @@ class ConfigValidator:
                     quit()
 
         # Validate paths
-        if 'repository' in config:
-            root = Path(config['repository'].get('root', ''))
+        if "repository" in config:
+            root = Path(config["repository"].get("root", ""))
             if not root.is_absolute():
                 warnings.append(f"Repository root must be absolute path: {root}")
 

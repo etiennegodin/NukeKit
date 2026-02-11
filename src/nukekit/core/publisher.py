@@ -16,11 +16,12 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class Publisher:
-    def __init__(self, context:Context):
+    def __init__(self, context: Context):
         self.context = context
 
-    def publish_asset(self, asset:Path|Asset) -> bool:
+    def publish_asset(self, asset: Path | Asset) -> bool:
         """
         Publish an asset to the remote repository.
 
@@ -59,7 +60,7 @@ class Publisher:
         installer = Installer(self.context)
         return installer.install_asset(asset)
 
-    def _resolve_version(self, asset:Asset) -> Asset:
+    def _resolve_version(self, asset: Asset) -> Asset:
         while True:
             latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
 
@@ -73,8 +74,7 @@ class Publisher:
             # If same version ask to update
             if latest_version == asset.version:
                 if user_input_choice(
-                    f"{asset} already exists in repo. \n"
-                    "Do you want to publish a new version?"
+                    f"{asset} already exists in repo. \n" "Do you want to publish a new version?"
                 ):
                     to_update = True
                 else:
@@ -90,27 +90,24 @@ class Publisher:
                     asset.version = latest_version
                     to_update = True
                 else:
-                    raise UserWarning("Cannot publish a lower version than existing asset, aborting publish")
+                    raise UserWarning(
+                        "Cannot publish a lower version than existing asset, aborting publish"
+                    )
 
             # Handle the Decision
             if to_update:
                 asset = self._version_up(asset)
                 continue
 
-
         return asset
 
-    def _version_up(self,asset:Asset) -> Asset:
+    def _version_up(self, asset: Asset) -> Asset:
         """Increment asset version based on user choice."""
-        version_update = user_input_choice(
-            "Which type of update",
-            VERSION_CLASSES,
-            type="str"
-        )
+        version_update = user_input_choice("Which type of update", VERSION_CLASSES, type="str")
         asset.version.version_up(version_update)
         return asset
 
-    def _publish_to_repo(self,asset:Asset)-> bool:
+    def _publish_to_repo(self, asset: Asset) -> bool:
         """
         Copy asset file to repository.
 

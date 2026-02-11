@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 
 RETURN_TYPES = Literal["bool", "str"]
 
-def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
+
+def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
     """
     Interactive terminal selection menu
 
@@ -26,7 +27,7 @@ def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
     while True:
         options = list(d.keys())
         options.append("Return")
-        terminal_menu = TerminalMenu(options, title= level_name)
+        terminal_menu = TerminalMenu(options, title=level_name)
         menu_entry_index = terminal_menu.show()
 
         if options[menu_entry_index] == "Return":
@@ -46,7 +47,8 @@ def choose_menu(d:dict, level_name:str = "Main menu") -> Asset:
     if value is not None:
         return value
 
-def print_data(data:dict, label:str = "Manifest"):
+
+def print_data(data: dict, label: str = "Manifest"):
     """
     Print input dictionnary as tree in terminal
 
@@ -58,10 +60,10 @@ def print_data(data:dict, label:str = "Manifest"):
 
     format_string = "| {:<12} | {:<8} | {:<10} |"
 
-    def recursive_tree(d:dict, t:Tree, stop:str):
+    def recursive_tree(d: dict, t: Tree, stop: str):
         for key, value in d.items():
             if key == stop:
-                t.add(format_string.format("Status", "Version", "Id" ))
+                t.add(format_string.format("Status", "Version", "Id"))
                 for v in value.values():
                     t.add(format_string.format(v.status.name, v.version, str(v.id)))
                 break
@@ -82,17 +84,21 @@ def print_data(data:dict, label:str = "Manifest"):
     print(tree)
 
 
-def _add_question_mark(question:str)->str:
+def _add_question_mark(question: str) -> str:
     if not question.endswith("?"):
         question += "?"
     return question
 
-def _format_options_list(options:Any):
+
+def _format_options_list(options: Any):
     if get_origin(options) is Literal:
         options = list(get_args(options))
     return options
 
-def user_input_choice(question:str, options:list[str] = None, type:RETURN_TYPES = "bool")-> bool | str:
+
+def user_input_choice(
+    question: str, options: list[str] = None, type: RETURN_TYPES = "bool"
+) -> bool | str:
     """
     Ask user a question with options answers in terminal. Loops until correct answer is given.
 
@@ -121,4 +127,3 @@ def user_input_choice(question:str, options:list[str] = None, type:RETURN_TYPES 
     if type == "bool":
         return user_input_choice == "y"
     return user_input_choice
-

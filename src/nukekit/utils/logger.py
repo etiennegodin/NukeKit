@@ -8,15 +8,13 @@ def init_logger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
 
     file_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s",
-        datefmt='%Y-%m-%d %H:%M:%S'
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    console_formatter = logging.Formatter(
-        '%(levelname)s: %(message)s'
-    )
+    console_formatter = logging.Formatter("%(levelname)s: %(message)s")
 
     # File handler
-    file_handler = logging.FileHandler(log_file, mode = 'w')
+    file_handler = logging.FileHandler(log_file, mode="w")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(file_formatter)
 
@@ -26,7 +24,7 @@ def init_logger(log_file: Path = None, level=logging.DEBUG) -> logging.Logger:
     console_handler.setFormatter(console_formatter)
 
     # Root logger
-    rootlogger = logging.getLogger('nukekit')
+    rootlogger = logging.getLogger("nukekit")
     rootlogger.setLevel(logging.DEBUG)
     rootlogger.addHandler(file_handler)
     rootlogger.addHandler(console_handler)

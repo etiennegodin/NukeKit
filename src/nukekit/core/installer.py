@@ -10,8 +10,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class Installer:
-    def __init__(self, context:Context):
+    def __init__(self, context: Context):
         self.context = context
 
     def install_all(self):
@@ -21,7 +22,7 @@ class Installer:
     def install_from_repo(self):
         raise NotImplementedError("Not implemented")
 
-    def install_asset(self, asset:Asset) -> bool:
+    def install_asset(self, asset: Asset) -> bool:
         """
         Docstring for install_asset
 
@@ -32,7 +33,7 @@ class Installer:
         :rtype: bool
         """
         installed = False
-        #Force back type if read from string
+        # Force back type if read from string
         source_path = asset.get_remote_path(self.context.repo)
         destination_path = self.context.user_paths.NUKE_KIT_DIR
 
