@@ -9,10 +9,10 @@ class Repository:
 
     def __init__(self, config:dict):
         """
-        Object representation of remote repository 
+        Initialize repository from config dictionary.
         
-        :param repo_dict: Dictionnary from config to configure repository
-        :type repo_dict: dict
+        Args:
+            config: Dictionary from config to configure repository
         """
         root = config['repository']['root']
         root = os.path.expandvars(root)
@@ -34,7 +34,19 @@ class Repository:
         return False
 
     def get_asset_subdir(self,asset_type:str) -> Path:
-        subdir = Path(f"{self.ROOT}/{asset_type}")
+        """
+        Get subdirectory for given asset type.
+        
+        Args:
+            asset_type: Type of asset (e.g., 'Gizmo', 'Script')
+            
+        Returns:
+            Path to the subdirectory
+            
+        Raises:
+            FileNotFoundError: If subdirectory doesn't exist
+        """
+        subdir = self.ROOT / {asset_type}
         if not subdir.exists():
             raise FileNotFoundError(f"Path {subdir} does not exists")
         return subdir

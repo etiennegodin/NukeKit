@@ -43,21 +43,101 @@ class Asset():
     id:str = None
     type:str = None
 
+    def _set_time(self):
+        self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
+
+    def _set_author(self):
+        if self.author is None:
+            self.author = getpass.getuser()
+    
+    def _set_uuid(self):
+        unique_id = shortuuid.uuid()[:10]
+        self.id = str(unique_id)
+   
+    def ensure_message(self):
+        """Prompt user for changelog if not provided."""
+        while True:
+            message = input(
+                f"No message found for {self.name}, please enter a message: \n"
+            )
+            if message:
+                break
+            else:
+                print("\033[1A\033[K", end="") 
+
+        self.message = message
+
+    def ensure_metadata(self):
+        """Ensure all metadata fields are set."""
+        self._set_time()
+        self._set_author()
+        self._set_uuid()
+
+    def get_remote_path(self, repo:Repository) -> Path:
+        """Get the path where this asset should be stored in the repository."""
+        repo_path = repo.get_asset_subdir(self.type) / self.name
+        # Create asset folder if first publish 
+        if not repo_path.exists():
+            repo_path.mkdir(exist_ok=True)
+        return repo_path / f"{self.name}_v{self.version}.gizmo"
+
+    def set_publish_status(self, status: PUBLISH_STATUS):
+        self.status = AssetStatus(status)
+
+    def set_install_status(self,status: INSTALL_STATUS):
+        self.status = AssetStatus(status)
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "version": str(self.version),
+            "author": self.author,
+            "id": self.id,
+            "message": self.message,
+            "status": self.status.value if self.status else None,
+            "type": self.type,
+            "source_path": str(self.source_path) if self.source_path else None,
+        }
+    
+    def __str__(self) -> str:
+        return f"{self.name}_v{self.version}"
+    
+    def __eq__(self, other: object) -> bool:
+        """Assets are equal if they have same name, version, and type."""
+        if not isinstance(other, Asset):
+            return NotImplemented
+        return (
+            self.name == other.name 
+            and self.version == other.version 
+            and self.type == other.type
+        )
+
+    def __hash__(self) -> int:
+        """Make Asset hashable for use in sets/dicts."""
+        return hash((self.name, str(self.version), self.type))
+
+    
+    def __str__(self):
+        return f"{self.name}_v{self.version}"
+    
     @classmethod
     def from_path(
         cls,
         context:Context,
         asset_path:Path
-    ) -> Self :
+    ) -> Asset :
         """
-        Construct an Asset from a path
+        Create Asset instance from file path.
         
-        :param context: Current context used to parse remote repository
-        :type context: Context
-        :param asset_path: Path to construct asset from
-        :type asset_path: Path
-        :return: Asset instance constructed
-        :rtype: Self
+        Args:
+            context: Current session context
+            asset_path: Path to the asset file
+            
+        Returns:
+            Asset instance (Gizmo or Script)
+            
+        Raises:
+            TypeError: If file extension is not supported
         """
         # Force Path for stem and suffix methods
         if isinstance(asset_path, str):
@@ -78,82 +158,22 @@ class Asset():
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        try:
-            cls = ASSET_SUFFIXES.get(asset_suffix) 
-        except KeyError:
+        asset_class = ASSET_SUFFIXES.get(asset_suffix) 
+        if asset_class is None:
             raise TypeError(f"\nProvided asset tpye is not a supported.\nPlease submit a file with this type {[str(k) for k in ASSET_SUFFIXES.keys()]} ")
 
-        if cls:
-            # Check if asset is a copy from repo
-            try: 
-                return context.repo_manifest.data[cls.type][asset_name][asset_version]
-            except KeyError:
-                # Asset doesn't exist in repo, create new one
-                return cls(
-                    name = asset_name,
-                    version = asset_version,
-                    source_path = asset_path,
-                    status = AssetStatus.UNPUBLISHED,
-                    type = cls.type)
+        # Check if asset is a copy from repo
+        try: 
+            return context.repo_manifest.data[cls.type][asset_name][asset_version]
+        except KeyError:
+            # Asset doesn't exist in repo, create new one
+            return cls(
+                name = asset_name,
+                version = asset_version,
+                source_path = asset_path,
+                status = AssetStatus.UNPUBLISHED,
+                type = cls.type)
 
-    def ensure_message(self):
-        while True:
-            message = input(f"No message found for {self.name}, please enter a message: \n")
-            if message:
-                break
-            else:
-                print("\033[1A\033[K", end="") 
-
-        self.message = message
-
-    def ensure_metadata(self):
-        """
-        Adds time, author and uuid metadata to asset
-    
-        """
-        self._set_time()
-        self._set_author()
-        self._set_uuid()
-
-    def set_publish_status(self, status: PUBLISH_STATUS):
-        self.status = AssetStatus(status)
-
-    def set_install_status(self,status: INSTALL_STATUS):
-        self.status = AssetStatus(status)
-
-    def get_remote_path(self, repo:Repository) -> Path:
-        repo_path = repo.get_asset_subdir(self.type) / self.name
-        # Create asset folder if first publish 
-        if not repo_path.exists():
-            repo_path.mkdir(exist_ok=True)
-        return repo_path / f"{self.name}_v{self.version}.gizmo"
-
-
-    def to_dict(self) -> dict:
-        return {
-            "name": self.name,
-            "version": str(self.version),
-            "author": self.author,
-            "id": self.id,
-            "message": self.message,
-            "status": self.status.value if self.status else None,
-            "type": self.type,
-            "source_path": str(self.source_path) if self.source_path else None,
-        }
-    
-    def _set_time(self):
-        self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
-
-    def _set_author(self):
-        if self.author is None:
-            self.author = getpass.getuser()
-    
-    def _set_uuid(self):
-        unique_id = shortuuid.uuid()[:10]
-        self.id = str(unique_id)
-    
-    def __str__(self):
-        return f"{self.name}_v{self.version}"
 @dataclass
 class Gizmo(Asset):
     type:str = "Gizmo"

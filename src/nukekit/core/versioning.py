@@ -10,6 +10,11 @@ VERSION_CLASSES = Literal["major", "minor","patch"]
 
 @dataclass(frozen=True, order=True)
 class Version():
+    """_Semantic version implementation._
+
+    Raises:
+        ValueError: _description_
+    """
     major: int 
     minor: int
     patch: int
@@ -19,7 +24,7 @@ class Version():
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
-            raise e
+            raise ValueError(e)
         return cls(ver.major, ver.minor, ver.patch)
 
     @classmethod
@@ -28,11 +33,10 @@ class Version():
     
     def version_up(self, type_name:VERSION_CLASSES):
         """
-        Docstring for version_up
+        Increment version number.
         
-        :param self: Description
-        :param type_name: Description
-        :type type_name: VERSION_ITEM
+        Args:
+            type_name: Type of version increment ('major', 'minor', or 'patch')
         """
         current_val = getattr(self,type_name)
         setattr(self,type_name, current_val+1)

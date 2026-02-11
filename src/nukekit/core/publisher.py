@@ -21,12 +21,16 @@ class Publisher():
 
     def publish_asset(self, asset:Path|Asset) -> bool:
         """
-        Publish and asset to remote repository
+        Publish an asset to the remote repository.
         
-        :param asset: Asset to publish. Asset will be reconstructed if given a path path
-        :type asset: Path | Asset
-        :return: Description
-        :rtype: bool
+        Args:
+            asset: Path to asset file or Asset instance
+            
+        Returns:
+            True if publish successful, False if aborted
+            
+        Raises:
+            NotImplementedError: If asset type is Script
         """
 
         if isinstance(asset, Path):
@@ -50,6 +54,7 @@ class Publisher():
         return False 
 
     def _sync_after_publish(self, asset) -> bool:
+        """Install asset locally after successful publish."""
         installer = Installer(self.context)
         return installer.install_asset(asset)
     
@@ -66,14 +71,20 @@ class Publisher():
 
             # If same version ask to update
             if latest_version == asset.version:
-                if user_input_choice(f"{asset} already exists in repo. \nDo you want to publish a new version?"):
+                if user_input_choice(
+                    f"{asset} already exists in repo. \n"
+                    "Do you want to publish a new version?"
+                ):
                     to_update = True
                 else:
                     raise UserWarning("Cannot publish over existing asset, aborting publish")
 
             # If lower version ask to update 
             elif latest_version > asset.version:
-                if user_input_choice(f"A newer version of {asset} already exists in repo ({latest_version}). \nDo you want to update it?"):
+                if user_input_choice(
+                    f"A newer version of {asset} already exists in repo ({latest_version}). \n"
+                    "Do you want to update it?"
+                ):
                     # Promote current asset version to latest version and flag to update 
                     asset.version = latest_version
                     to_update = True
@@ -85,16 +96,27 @@ class Publisher():
                 asset = self._version_up(asset)
                 continue
 
+
         return asset
         
     def _version_up(self,asset:Asset) -> Asset:
-        version_update = user_input_choice("Which type of update", VERSION_CLASSES, type="str")
+        """Increment asset version based on user choice."""
+        version_update = user_input_choice(
+            "Which type of update",
+            VERSION_CLASSES,
+            type="str"
+        )
         asset.version.version_up(version_update)
         return asset 
 
     def _publish_to_repo(self,asset:Asset)-> bool:
+        """
+        Copy asset file to repository.
+        
+        Returns:
+            True if successful, False otherwise
+        """
         published = False
-
         destination_path = asset.get_remote_path(self.context.repo) 
 
         try:
