@@ -1,7 +1,7 @@
 from .assets import Asset, Gizmo, Script
 from .config import ConfigLoader, ConfigValidator
 from .context import Context
-from .installer import Installer
+from .installer import install_asset
 from .manifest import Manifest
 from .publisher import publish_asset
 from .repository import Repository
@@ -14,7 +14,7 @@ __all__ = [
     "Script",
     "Context",
     "Repository",
-    "Installer",
+    "install_asset",
     "Manifest",
     "Version",
     "Scanner",

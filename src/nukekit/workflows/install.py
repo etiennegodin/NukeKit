@@ -1,4 +1,4 @@
-from ..core import Context, Installer
+from ..core import Context, install_asset
 from ..core.console import choose_menu, print_data
 
 
@@ -12,9 +12,8 @@ def install(args, context: Context):
 
     context.set_mode("install")
     data = context.get_current_data()
-    installer = Installer(context)
 
     print_data(data)
     asset = choose_menu(data)
     if asset is not None:
-        installer.install_asset(asset)
+        install_asset(context, asset)

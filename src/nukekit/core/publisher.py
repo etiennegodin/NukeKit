@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from .assets import Asset
 from .console import user_input_choice
-from .installer import Installer
+from .installer import install_asset
 from .versioning import VERSION_CLASSES
 
 if TYPE_CHECKING:
@@ -54,8 +54,7 @@ def publish_asset(context: Context, asset: Path | Asset) -> bool:
 
 def _sync_after_publish(context: Context, asset) -> bool:
     """Install asset locally after successful publish."""
-    installer = Installer(context)
-    return installer.install_asset(asset)
+    return install_asset(context, asset)
 
 
 def _resolve_version(context: Context, asset: Asset) -> Asset:
