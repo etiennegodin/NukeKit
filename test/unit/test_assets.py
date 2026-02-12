@@ -1,6 +1,6 @@
 import pytest
 from nukekit.core import Asset, Gizmo
-from nukekit.core.context import get_context
+from nukekit.workflows import get_context
 
 
 def test_assets_create_gizmo():

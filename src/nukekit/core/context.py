@@ -5,10 +5,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Literal
 
-from dotenv import load_dotenv
-
 from ..utils.paths import UserPaths
-from .config import ConfigLoader, ConfigValidator
 from .manifest import Manifest
 from .repository import Repository
 
@@ -67,6 +64,11 @@ class Context:
         # Set specific install status for repo assets
 
     def set_mode(self, mode: APP_MODE):
+        """_summary_
+
+        Args:
+            mode (APP_MODE): _description_
+        """
         self.mode = AppMode(mode)
 
     def get_current_data(self) -> dict[str, Any]:
@@ -76,32 +78,3 @@ class Context:
             return self.repo_manifest.data
         else:
             raise NotImplementedError(f"App mode {self.mode} is not implemented")
-
-
-def get_context() -> Context:
-    """
-    Initialize context for this session
-
-    :return: Context instance for current session
-    :rtype: Context
-    """
-
-    # Load .env
-    load_dotenv()
-
-    # Setup user paths
-    user_paths = UserPaths()
-
-    # Config solver
-    config = ConfigLoader().load()
-    ConfigValidator.validate(config)
-
-    # Init Central Repo
-    repo = Repository(config)
-
-    # Create and return context instance
-    return Context(
-        repo,
-        user_paths,
-        config,
-    )

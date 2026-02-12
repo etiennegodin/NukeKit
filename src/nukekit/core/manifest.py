@@ -5,8 +5,9 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+from ..utils import _sort_dict
 from .assets import ASSET_REGISTRY, Asset
-from .scanner import Scanner
+from .scanner import scan_folder
 from .serialization import dump_json, load_json
 from .versioning import Version
 
@@ -32,9 +33,8 @@ class Manifest:
     @classmethod
     def from_scanner(cls, context: Context) -> Self:
         """Create Manifest from scanner results"""
-        scanner = Scanner(context)
-        scanner.scan_local()
-        return cls(data=scanner.data, root=context.user_paths.STATE_FILE)
+        data = scan_folder(context, context.user_paths.NUKE_DIR)
+        return cls(data=data, root=context.user_paths.STATE_FILE)
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:
@@ -60,7 +60,7 @@ class Manifest:
             with open(manifest_path):
                 data = load_json(manifest_path)
 
-                return _sort(data)
+                return _sort_dict(data)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse manifest {manifest_path}: {e}")
             return self._new_empty_manifest()
@@ -88,7 +88,7 @@ class Manifest:
                 raise
 
         # Sort outgoing dict
-        data = _sort(data)
+        data = _sort_dict(data)
 
         # Write to disk
         dump_json(data, self.ROOT)
@@ -155,10 +155,3 @@ class Manifest:
             msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
             logger.error(msg)
             raise NotImplementedError(msg)
-
-
-def _sort(d: dict):
-    return {
-        k: _sort(v) if isinstance(v, dict) else v
-        for k, v in sorted(d.items(), reverse=True)
-    }
