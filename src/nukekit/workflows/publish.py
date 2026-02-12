@@ -1,18 +1,17 @@
 from pathlib import Path
 
-from ..core import Context, Publisher, Scanner
+from ..core import Context, Scanner, publish_asset
 from ..core.console import choose_menu, print_data
 
 
 def publish(args, context: Context):
-    """
-    Publish a local asset to remote repository
+    """_summary_
 
-    :param context: This sessions"s context
-    :type context: Context
+    Args:
+        args (_type_): _description_
+        context (Context): _description_
     """
     context.set_mode("publish")
-    publisher = Publisher(context)
 
     if args.local:
         scanner = Scanner(context)
@@ -26,6 +25,6 @@ def publish(args, context: Context):
     asset = choose_menu(data)
 
     if asset is not None:
-        publisher.publish_asset(asset)
+        publish_asset(context, asset)
     else:
         context.logger.info("Asset publish aborted")

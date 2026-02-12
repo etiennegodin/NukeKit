@@ -17,128 +17,128 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class Publisher:
-    def __init__(self, context: Context):
-        self.context = context
+def publish_asset(context: Context, asset: Path | Asset) -> bool:
+    """_summary_
 
-    def publish_asset(self, asset: Path | Asset) -> bool:
-        """
-        Publish an asset to the remote repository.
+    Args:
+        context (Context): _description_
+        asset (Path | Asset): _description_
 
-        Args:
-            asset: Path to asset file or Asset instance
+    Raises:
+        NotImplementedError: _description_
 
-        Returns:
-            True if publish successful, False if aborted
+    Returns:
+        bool: _description_
+    """
 
-        Raises:
-            NotImplementedError: If asset type is Script
-        """
+    if isinstance(asset, Path):
+        asset = Asset.from_path(context, asset)
 
-        if isinstance(asset, Path):
-            asset = Asset.from_path(self.context, asset)
+    if asset.type == "Script":
+        raise NotImplementedError
 
-        if asset.type == "Script":
-            raise NotImplementedError
+    asset = _resolve_version(context, asset)
 
-        asset = self._resolve_version(asset)
+    # Ensures message
+    asset.ensure_message()
 
-        # Ensures message
-        asset.ensure_message()
+    # Ensures metadata
+    asset.ensure_metadata()
 
-        # Ensures metadata
-        asset.ensure_metadata()
+    if _publish_to_repo(context, asset):
+        # Sync and install published asset to local assets
+        return _sync_after_publish(context, asset)
 
-        if self._publish_to_repo(asset):
-            # Sync and install published asset to local assets
-            return self._sync_after_publish(asset)
+    return False
 
-        return False
 
-    def _sync_after_publish(self, asset) -> bool:
-        """Install asset locally after successful publish."""
-        installer = Installer(self.context)
-        return installer.install_asset(asset)
+def _sync_after_publish(context: Context, asset) -> bool:
+    """Install asset locally after successful publish."""
+    installer = Installer(context)
+    return installer.install_asset(asset)
 
-    def _resolve_version(self, asset: Asset) -> Asset:
-        while True:
-            latest_version = self.context.repo_manifest.get_latest_asset_version(asset)
-            logger.debug(latest_version)
-            # New asset or newer than repo nothing to resolve
-            if latest_version is None or asset.version > latest_version:
-                logger.info(f"{asset.name} is a new publish")
-                break
 
-            # Version Logic: Conflict/Exists
-            to_update = False
+def _resolve_version(context: Context, asset: Asset) -> Asset:
+    while True:
+        latest_version = context.repo_manifest.get_latest_asset_version(asset)
+        logger.debug(latest_version)
+        # New asset or newer than repo nothing to resolve
+        if latest_version is None or asset.version > latest_version:
+            logger.info(f"{asset.name} is a new publish")
+            break
 
-            # If same version ask to update
-            if latest_version == asset.version:
-                if user_input_choice(
-                    f"{asset} already exists in repo. \n"
-                    "Do you want to publish a new version?"
-                ):
-                    to_update = True
-                else:
-                    raise UserWarning(
-                        "Cannot publish over existing asset, aborting publish"
-                    )
+        # Version Logic: Conflict/Exists
+        to_update = False
 
-            # If lower version ask to update
-            elif latest_version > asset.version:
-                if user_input_choice(
-                    f"A newer version of {asset} already exists in repo"
-                    f"({latest_version}). \n"
-                    "Do you want to update it?"
-                ):
-                    # Promote current asset version to latest version and flag to update
-                    asset.version = latest_version
-                    to_update = True
-                else:
-                    raise UserWarning(
-                        "Cannot publish a lower version than existing asset,"
-                        "aborting publish"
-                    )
+        # If same version ask to update
+        if latest_version == asset.version:
+            if user_input_choice(
+                f"{asset} already exists in repo. \n"
+                "Do you want to publish a new version?"
+            ):
+                to_update = True
+            else:
+                raise UserWarning(
+                    "Cannot publish over existing asset, aborting publish"
+                )
 
-            # Handle the Decision
-            if to_update:
-                asset = self._version_up(asset)
-                continue
+        # If lower version ask to update
+        elif latest_version > asset.version:
+            if user_input_choice(
+                f"A newer version of {asset} already exists in repo"
+                f"({latest_version}). \n"
+                "Do you want to update it?"
+            ):
+                # Promote current asset version to latest version and flag to update
+                asset.version = latest_version
+                to_update = True
+            else:
+                raise UserWarning(
+                    "Cannot publish a lower version than existing asset,"
+                    "aborting publish"
+                )
 
-        return asset
+        # Handle the Decision
+        if to_update:
+            asset = _version_up(asset)
+            continue
 
-    def _version_up(self, asset: Asset) -> Asset:
-        """Increment asset version based on user choice."""
-        version_update = user_input_choice(
-            "Which type of update", VERSION_CLASSES, type="str"
-        )
-        asset.version.version_up(version_update)
-        return asset
+    return asset
 
-    def _publish_to_repo(self, asset: Asset) -> bool:
-        """
-        Copy asset file to repository.
 
-        Returns:
-            True if successful, False otherwise
-        """
-        published = False
-        destination_path = asset.get_remote_path(self.context.repo)
+def _version_up(asset: Asset) -> Asset:
+    """Increment asset version based on user choice."""
+    version_update = user_input_choice(
+        "Which type of update", VERSION_CLASSES, type="str"
+    )
+    asset.version.version_up(version_update)
+    return asset
 
-        try:
-            asset.set_publish_status("published")
-            shutil.copy2(asset.source_path, destination_path)
-            logger.info(f"Successfully saved {asset} to {destination_path} ")
-            self.context.repo_manifest.update(asset)
-            published = True
 
-        except shutil.SameFileError:
-            logger.error("Source and destination represent the same file.")
-        except PermissionError:
-            logger.error("Permission denied.")
-        except FileNotFoundError:
-            logger.error("The source file or destination directory was not found.")
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
+def _publish_to_repo(context: Context, asset: Asset) -> bool:
+    """
+    Copy asset file to repository.
 
-        return published
+    Returns:
+        True if successful, False otherwise
+    """
+    published = False
+    destination_path = asset.get_remote_path(context.repo)
+
+    try:
+        asset.set_publish_status("published")
+        shutil.copy2(asset.source_path, destination_path)
+        logger.info(f"Successfully saved {asset} to {destination_path} ")
+        context.repo_manifest.update(asset)
+        published = True
+
+    except shutil.SameFileError:
+        logger.error("Source and destination represent the same file.")
+    except PermissionError:
+        logger.error("Permission denied.")
+    except FileNotFoundError:
+        logger.error("The source file or destination directory was not found.")
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+
+    return published

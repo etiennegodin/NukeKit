@@ -64,6 +64,11 @@ class Context:
         # Set specific install status for repo assets
 
     def set_mode(self, mode: APP_MODE):
+        """_summary_
+
+        Args:
+            mode (APP_MODE): _description_
+        """
         self.mode = AppMode(mode)
 
     def get_current_data(self) -> dict[str, Any]:

@@ -31,8 +31,6 @@ class Scanner:
                     asset_subtype[asset.name][asset.version] = asset
             assets[obj.type] = asset_subtype
 
-        print(assets)
-
         assets = self._sort(assets)
         return assets
 
