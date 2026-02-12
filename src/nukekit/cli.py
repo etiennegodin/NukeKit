@@ -2,82 +2,15 @@ import argparse
 import os
 from pathlib import Path
 
-from nukekit import ui
-
-from .core.console import choose_menu, print_data
-from .core.context import Context, get_context
-from .core.installer import Installer
-from .core.publisher import Publisher
-from .core.scanner import Scanner
-from .utils.logger import init_logger
-from .utils.paths import UserPaths
+from .utils import UserPaths, init_logger
+from .workflows import get_context, install, publish, scan
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
 
 
-def publish(args, context: Context):
-    """
-    Publish a local asset to remote repository
-
-    :param context: This sessions"s context
-    :type context: Context
-    """
-    context.set_mode("publish")
-    publisher = Publisher(context)
-
-    if args.local:
-        scanner = Scanner(context)
-        data = scanner.scan_folder(Path.cwd())
-    else:
-        data = context.get_current_data()
-
-    # Print visual cue for explorer
-    print_data(data)
-
-    asset = choose_menu(data)
-
-    if asset is not None:
-        publisher.publish_asset(asset)
-    else:
-        context.logger.info("Asset publish aborted")
-
-
-def install(args, context: Context):
-    """
-    Install a remote asset to local nuke directory
-
-    :param context: This sessions"s context
-    :type context: Context
-    """
-
-    context.set_mode("install")
-    data = context.get_current_data()
-    installer = Installer(context)
-
-    print_data(data)
-    asset = choose_menu(data)
-    if asset is not None:
-        installer.install_asset(asset)
-
-
-def scan(args, context: Context):
-    """
-    Scan nuke directory and print available assets to console
-
-    :param context: This sessions"s context
-    :type context: Context
-    """
-    context.set_mode("scan")
-    scanner = Scanner(context)
-    if args.location == "local":
-        assets = context.local_state.data
-    elif args.location == "remote":
-        assets = scanner.scan_folder(context.repo.ROOT)
-    print_data(assets)
-
-
 def main():
+    # Setup parsers and arguments
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument(
         "--force", action="store_true", help="Wipe Local State Clean"
@@ -92,30 +25,27 @@ def main():
 
     subparsers = parser.add_subparsers(help="Available subcommands")
 
-    # Create the parser for the "publish" command
+    # Publish
     parser_publish = subparsers.add_parser(
         "publish", parents=[parent_parser], help="Record changes to the repository"
     )
     parser_publish.add_argument(
         "--local", "-l", action="store_true", help="Publish from this directory"
     )
-
     parser_publish.set_defaults(func=publish)  # Associate a function
 
-    # Create the parser for the "install" command
+    # Install
     parser_install = subparsers.add_parser(
         "install", parents=[parent_parser], help="Install asset to nuke directory"
     )
     parser_install.set_defaults(func=install)  # Associate a function
 
-    # Create the parser for the "scan" command
+    # Scan
     scan_choices = ["local", "remote"]
     parser_scan = subparsers.add_parser(
         "scan", parents=[parent_parser], help="Scan directory for assets"
     )
     parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
-
-    # parser_scan.add_argument("--directory", "-dir", help = "Folder to scan" )
     parser_scan.set_defaults(func=scan)  # Associate a function
 
     args = parser.parse_args()
@@ -123,6 +53,7 @@ def main():
     # Init logger
     init_logger()
 
+    # Get app context
     context = get_context()
 
     # Call the function associated with the subcommand
@@ -130,11 +61,10 @@ def main():
         # Dev force clean state
         if args.force:
             UserPaths.clean()
-        # Create context
         args.func(args, context)
     else:
         context.set_mode("publish")
-        ui.launch(context)
+        # ui.launch(context)
 
 
 if __name__ == "__main__":
