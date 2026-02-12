@@ -26,12 +26,14 @@ class Manifest:
     @classmethod
     def from_file(cls, path: Path) -> Self:
         """Create Manifest from a file path"""
+        if isinstance(path, str):
+            path = Path(path)
         root = path
         data = cls.read_manifest(self=cls, path=root)
         return cls(data=data, root=root)
 
     @classmethod
-    def from_scanner(cls, context: Context) -> Self:
+    def from_scanner(cls, context: Context, path: Path) -> Self:
         """Create Manifest from scanner results"""
         data = scan_folder(context, context.user_paths.NUKE_DIR)
         return cls(data=data, root=context.user_paths.STATE_FILE)
