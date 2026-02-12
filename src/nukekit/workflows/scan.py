@@ -1,4 +1,4 @@
-from ..core import Context, Scanner
+from ..core import Context, scan_folder
 from ..core.console import print_data
 
 
@@ -10,9 +10,8 @@ def scan(args, context: Context):
     :type context: Context
     """
     context.set_mode("scan")
-    scanner = Scanner(context)
     if args.location == "local":
         assets = context.local_state.data
     elif args.location == "remote":
-        assets = scanner.scan_folder(context.repo.ROOT)
+        assets = scan_folder(context, context.repo.ROOT)
     print_data(assets)

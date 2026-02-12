@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ..core import Context, Scanner, publish_asset
+from ..core import Context, publish_asset, scan_folder
 from ..core.console import choose_menu, print_data
 
 
@@ -14,8 +14,7 @@ def publish(args, context: Context):
     context.set_mode("publish")
 
     if args.local:
-        scanner = Scanner(context)
-        data = scanner.scan_folder(Path.cwd())
+        data = scan_folder(Path.cwd())
     else:
         data = context.get_current_data()
 

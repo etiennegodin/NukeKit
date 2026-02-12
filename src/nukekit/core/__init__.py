@@ -5,7 +5,7 @@ from .installer import install_asset
 from .manifest import Manifest
 from .publisher import publish_asset
 from .repository import Repository
-from .scanner import Scanner
+from .scanner import scan_folder
 from .versioning import Version
 
 __all__ = [
@@ -17,7 +17,7 @@ __all__ = [
     "install_asset",
     "Manifest",
     "Version",
-    "Scanner",
+    "scan_folder",
     "ConfigLoader",
     "ConfigValidator",
     "publish_asset",
