@@ -3,8 +3,12 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from .assets import AssetType
 
 
 class Repository:
@@ -34,18 +38,17 @@ class Repository:
             return True
         return False
 
-    def get_asset_subdir(self, asset_type: str) -> Path:
-        """
-        Get subdirectory for given asset type.
+    def get_asset_subdir(self, asset_type: AssetType) -> Path:
+        """_summary_
 
         Args:
-            asset_type: Type of asset (e.g., 'Gizmo', 'Script')
-
-        Returns:
-            Path to the subdirectory
+            asset_type (AssetType): _description_
 
         Raises:
-            FileNotFoundError: If subdirectory doesn't exist
+            FileNotFoundError: _description_
+
+        Returns:
+            Path: _description_
         """
         subdir = self.ROOT / asset_type
         if not subdir.exists():

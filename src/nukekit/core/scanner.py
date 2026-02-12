@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 def scan_folder(context: Context, path: Path) -> dict:
     logger.debug(path)
     assets = {}
-    for suffix, obj in ASSET_SUFFIXES.items():
+    for suffix, asset_type in ASSET_SUFFIXES.items():
+        print(suffix)
         asset_paths = list(path.rglob(f"*{suffix}"))
         asset_subtype: dict[str, dict] = {}
         for path in asset_paths:
@@ -25,7 +26,7 @@ def scan_folder(context: Context, path: Path) -> dict:
                 asset_subtype[asset.name] = {}
             if asset.version not in asset_subtype[asset.name].keys():
                 asset_subtype[asset.name][asset.version] = asset
-        assets[obj.type] = asset_subtype
+        assets[asset_type] = asset_subtype
 
     assets = _sort_dict(assets)
     return assets

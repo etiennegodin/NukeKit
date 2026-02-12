@@ -19,7 +19,10 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-ASSET_TYPES = Literal["Gizmo", "Script"]
+
+class AssetType(StrEnum):
+    GIZMO = "Gizmo"
+    SCRIPT = "Script"
 
 
 class AssetStatus(StrEnum):
@@ -34,6 +37,8 @@ class AssetStatus(StrEnum):
 INSTALL_STATUS = Literal["non_local", "local"]
 PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
+ASSET_SUFFIXES = {".gizmo": AssetType.GIZMO, ".nk": AssetType.SCRIPT}
+
 
 @dataclass
 class Asset:
@@ -41,7 +46,7 @@ class Asset:
     version: Version
     source_path: Path
     status: AssetStatus
-    type: str = "Asset"
+    type: AssetType
     message: str = NotImplemented
     author: str = NotImplemented
     time: str = NotImplemented
@@ -154,8 +159,9 @@ class Asset:
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_class = ASSET_SUFFIXES.get(asset_suffix)
-        if asset_class is None:
+        asset_type = ASSET_SUFFIXES.get(asset_suffix)
+
+        if asset_type is None:
             raise TypeError(
                 "\nProvided asset tpye is not a supported.\n"
                 "Please submit a file with this type"
@@ -164,29 +170,13 @@ class Asset:
 
         # Check if asset is a copy from repo
         try:
-            return context.repo_manifest.data[asset_class.type][asset_name][
-                asset_version
-            ]
+            return context.repo_manifest.data[asset_type][asset_name][asset_version]
         except KeyError:
             # Asset doesn't exist in repo, create new one
-            return asset_class(
+            return Asset(
                 name=asset_name,
                 version=asset_version,
                 source_path=asset_path,
                 status=AssetStatus.UNPUBLISHED,
-                type=asset_class.type,
+                type=asset_type,
             )
-
-
-@dataclass
-class Gizmo(Asset):
-    type: str = "Gizmo"
-
-
-@dataclass
-class Script(Asset):
-    type: str = "Script"
-
-
-ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
-ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}

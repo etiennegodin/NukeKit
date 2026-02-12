@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
 from ..utils import _sort_dict
-from .assets import ASSET_REGISTRY, Asset
+from .assets import Asset, AssetType
 from .scanner import scan_folder
 from .serialization import dump_json, load_json
 from .versioning import Version
@@ -38,7 +38,7 @@ class Manifest:
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:
-        return {type_: {} for type_ in ASSET_REGISTRY.keys()}
+        return {a.value: {} for a in AssetType}
 
     def read_manifest(self, path: Path | None = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.

@@ -1,4 +1,4 @@
-from .assets import Asset, Gizmo, Script
+from .assets import Asset, AssetStatus, AssetType
 from .config import ConfigLoader, ConfigValidator
 from .context import Context
 from .installer import install_asset
@@ -10,8 +10,8 @@ from .versioning import Version
 
 __all__ = [
     "Asset",
-    "Gizmo",
-    "Script",
+    "AssetStatus",
+    "AssetType",
     "Context",
     "Repository",
     "install_asset",
