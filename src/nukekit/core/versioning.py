@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Literal, Self
+from typing import Literal
 
 import semver
 
@@ -24,16 +24,17 @@ class Version:
     patch: int
 
     @classmethod
-    def from_string(cls, version_string):
+    def from_tuple(cls, version_tuple: tuple[int, int, int]) -> Version:
+        return cls.from_string(".".join(str(val) for val in version_tuple))
+
+    @classmethod
+    def from_string(cls, version_string) -> Version:
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
             raise e
-        return cls(ver.major, ver.minor, ver.patch)
-
-    @classmethod
-    def from_tuple(cls, version_tuple: tuple[int, int, int]) -> Self:
-        return cls.from_string(".".join(str(val) for val in version_tuple))
+        else:
+            return cls(ver.major, ver.minor, ver.patch)
 
     def version_up(self, type_name: VERSION_CLASSES):
         """

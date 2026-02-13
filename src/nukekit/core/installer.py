@@ -10,19 +10,9 @@ from .repository import Repository
 
 if TYPE_CHECKING:
     from .assets import Asset
-    from .context import EnvContext
     from .manifest import Manifest
 
 logger = logging.getLogger(__name__)
-
-
-def install_all(context: EnvContext):
-    raise NotImplementedError("Not implemented")
-    pass
-
-
-def install_from_repo(env: EnvContext):
-    raise NotImplementedError("Not implemented")
 
 
 def install_asset_from_repo(
@@ -31,15 +21,6 @@ def install_asset_from_repo(
     asset: Asset,
     destination_path: Path | None = None,
 ) -> bool:
-    """
-    Docstring for install_asset
-
-    :param context:EnvContext: Description
-    :param asset: Description
-    :type asset: Asset
-    :return: Description
-    :rtype: bool
-    """
     installed = False
 
     if destination_path is None:
@@ -70,4 +51,4 @@ def install_asset_from_repo(
         local_manifest.add(asset)
         installed = True
 
-        return installed
+    return installed

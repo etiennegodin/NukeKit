@@ -47,17 +47,17 @@ class Asset:
     time: str = NotImplemented
     id: str = NotImplemented
 
-    def _set_time(self):
+    def _set_time(self) -> None:
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
 
-    def _set_author(self):
+    def _set_author(self) -> None:
         self.author = getpass.getuser()
 
-    def _set_uuid(self):
+    def _set_uuid(self) -> None:
         unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
 
-    def ensure_message(self):
+    def ensure_message(self) -> None:
         """Prompt user for changelog if not provided."""
         while True:
             message = input(
@@ -70,16 +70,16 @@ class Asset:
 
         self.message = message
 
-    def ensure_metadata(self):
+    def ensure_metadata(self) -> None:
         """Ensure all metadata fields are set."""
         self._set_time()
         self._set_author()
         self._set_uuid()
 
-    def set_publish_status(self, status: PUBLISH_STATUS):
+    def set_publish_status(self, status: PUBLISH_STATUS) -> None:
         self.status = AssetStatus(status)
 
-    def set_install_status(self, status: INSTALL_STATUS):
+    def set_install_status(self, status: INSTALL_STATUS) -> None:
         self.status = AssetStatus(status)
 
     def to_dict(self) -> dict:
@@ -161,15 +161,3 @@ class Asset:
             status=AssetStatus.UNPUBLISHED,
             type=asset_type,
         )
-
-
-"""
-
-        # Check if asset is a copy from repo
-        try:
-            return context.repo_manifest.data[asset_type][asset_name][asset_version]
-        except KeyError:
-            # Asset doesn't exist in repo, create new one
-
-
-"""

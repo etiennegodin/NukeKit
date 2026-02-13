@@ -20,17 +20,17 @@ class UserPaths:
     LOG_FILE = BASE_DIR / "nukekit.log"
     CACHED_MANIFEST = BASE_DIR / "cached_manifest.json"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.ensure()
 
     @classmethod
-    def clean(cls):
+    def clean(cls) -> None:
         shutil.rmtree(cls.BASE_DIR, ignore_errors=True)
         shutil.rmtree(cls.NUKE_KIT_DIR, ignore_errors=True)
         logger.warning("Cleaned NukeKit local state")
 
     @classmethod
-    def ensure(cls):
+    def ensure(cls) -> None:
         """Create local dirs if thy don"t exist. Called once"""
         cls.BASE_DIR.mkdir(exist_ok=True)
         cls.NUKE_KIT_DIR.mkdir(parents=True, exist_ok=True)
