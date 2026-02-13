@@ -133,7 +133,7 @@ class Manifest:
 
         if self.write_manifest(data):
             # Updates current status
-            self.data = data
+            self.data = self.read_manifest()
             logger.debug(
                 f"Successfully added {asset.name} v{asset.version} to {self.ROOT}"
             )

@@ -31,14 +31,15 @@ class Repository:
         self.manifest = manifest
 
     def ensure(self) -> bool:
+        ensured = False
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok=True)
-            for s in self.SUBFOLDERS:
-                (self.ROOT / s).mkdir(exist_ok=True, parents=True)
-
             logger.info(f"Created central repo at {self.ROOT}")
-            return True
-        return False
+            ensured = True
+        for s in self.SUBFOLDERS:
+            (self.ROOT / s).mkdir(exist_ok=True, parents=True)
+
+        return ensured
 
     def build_asset_path(self, asset: Asset) -> Path:
         if asset.type not in self.SUBFOLDERS:

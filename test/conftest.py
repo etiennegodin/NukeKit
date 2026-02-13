@@ -1,13 +1,24 @@
 import pytest
+from nukekit.core import Asset
 
 
 @pytest.fixture
 def sample_gizmo_path(tmp_path):
-    asset = tmp_path / "tool_v0.1.0.gizmo"
-    asset.write_text("Test")
-    return asset
+    asset_path = tmp_path / "tool_v0.1.0.gizmo"
+    asset_path.write_text("Test")
+    return asset_path
 
 
 @pytest.fixture
 def sample_config(tmp_path) -> dict:
-    return {"repository": {"root": tmp_path, "subfolder": ["Gizmo", "Script"]}}
+    repo_root = tmp_path / "repo"
+    return {
+        "repository": {"root": repo_root, "subfolder": ["Gizmo", "Script"]},
+        "user": {"nuke_dir": "~/.nuke"},
+    }
+
+
+@pytest.fixture
+def sample_asset(sample_gizmo_path):
+    asset = Asset.from_path(sample_gizmo_path)
+    return asset

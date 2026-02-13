@@ -1,9 +1,16 @@
-from nukekit.core import Asset, Manifest, Repository
+from nukekit.core import Manifest, Repository
 
 
 def test_repo_creation(sample_config):
     repo = Repository(sample_config)
     assert repo
+
+
+def test_repo_folder_creation(sample_config):
+    repo = Repository(sample_config)
+    folder = repo.ROOT / "Gizmo"
+    assert folder.exists()
+    assert folder.is_dir()
 
 
 def test_repo_add_manifest(tmp_path, sample_config):
@@ -13,11 +20,7 @@ def test_repo_add_manifest(tmp_path, sample_config):
     assert repo.manifest == manifest
 
 
-def test_asset_no_version(tmp_path):
-    assert Asset.from_path(tmp_path / "asset.gizmo")
-
-
-def test_asset_same(sample_gizmo_path):
-    a1 = Asset.from_path(sample_gizmo_path)
-    a2 = Asset.from_path(sample_gizmo_path)
-    assert a1 == a2
+def test_repo_build_asset_path(sample_config, sample_asset):
+    repo = Repository(sample_config)
+    path = repo.build_asset_path(sample_asset)
+    assert path == repo.ROOT / "Gizmo" / "tool" / f"{sample_asset}.gizmo"
