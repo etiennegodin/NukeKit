@@ -6,14 +6,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 import shortuuid
 
 from .versioning import Version
-
-if TYPE_CHECKING:
-    pass
 
 logger = logging.getLogger(__name__)
 

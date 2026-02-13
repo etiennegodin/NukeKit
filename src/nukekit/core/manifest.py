@@ -3,16 +3,12 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
 
-from ..utils import _sort_dict, deep_merge
+from ..utils import UserPaths, _sort_dict, deep_merge
 from .assets import Asset, AssetType
 from .scanner import scan_folder
 from .serialization import dump_json, load_json
 from .versioning import Version
-
-if TYPE_CHECKING:
-    from ..utils import UserPaths
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +20,7 @@ class Manifest:
         self.write_manifest()
 
     @classmethod
-    def from_json(cls, path: Path) -> Self:
+    def from_json(cls, path: Path) -> Manifest:
         """Create Manifest from a file path"""
         if isinstance(path, str):
             path = Path(path)
@@ -33,13 +29,27 @@ class Manifest:
         return cls(data=data, root=root)
 
     @classmethod
-    def from_local_state(cls, user_paths: UserPaths, manifest: Manifest) -> Self:
+    def from_local_state(
+        cls,
+        input_path: Path | UserPaths = UserPaths.NUKE_DIR,
+        manifest: Manifest | None = None,
+    ) -> Manifest:
         """Create Manifest from scanner results"""
-        data = scan_folder(user_paths.NUKE_DIR)
-        # Pull metadata from cached manifests
-        data = manifest.compare_dict(data)
 
-        return cls(data=data, root=user_paths.STATE_FILE)
+        # Allow for custom output path from
+        if isinstance(input_path, Path):
+            if not input_path.is_dir():
+                raise TypeError("Provided path for scanner is not a dir")
+            output_path = input_path / "local_state.json"
+        elif isinstance(input_path, UserPaths):
+            output_path = input_path.STATE_FILE
+        data = scan_folder(input_path)
+
+        # Pull metadata from cached manifests
+        if manifest is not None:
+            data = manifest.compare_dict(data)
+
+        return cls(data=data, root=output_path)
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:
