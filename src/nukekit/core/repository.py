@@ -3,12 +3,11 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING
+
+from .assets import ASSET_SUFFIXES, Asset
+from .manifest import Manifest
 
 logger = logging.getLogger(__name__)
-
-if TYPE_CHECKING:
-    from .assets import AssetType
 
 
 class Repository:
@@ -25,8 +24,11 @@ class Repository:
 
         self.ROOT = Path(root)
         self.SUBFOLDERS = config["repository"]["subfolder"]
-        self.MANIFEST = self.ROOT / "manifest.json"
+        self.MANIFEST_PATH = self.ROOT / "manifest.json"
         self.ensure()
+
+    def add_manifest(self, manifest: Manifest):
+        self.manifest = manifest
 
     def ensure(self) -> bool:
         if not self.ROOT.exists():
@@ -38,19 +40,11 @@ class Repository:
             return True
         return False
 
-    def get_asset_subdir(self, asset_type: AssetType) -> Path:
-        """_summary_
+    def build_asset_path(self, asset: Asset) -> Path:
+        if asset.type not in self.SUBFOLDERS:
+            raise FileNotFoundError(f"Path {self.ROOT / asset.type} not found in repo")
 
-        Args:
-            asset_type (AssetType): _description_
-
-        Raises:
-            FileNotFoundError: _description_
-
-        Returns:
-            Path: _description_
-        """
-        subdir = self.ROOT / asset_type
-        if not subdir.exists():
-            raise FileNotFoundError(f"Path {subdir} does not exists")
-        return subdir
+        suffix = next(
+            (key for key, val in ASSET_SUFFIXES.items() if val == asset.type), None
+        )
+        return self.ROOT / asset.type / f"{asset}{suffix}"

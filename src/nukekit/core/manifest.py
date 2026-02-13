@@ -24,7 +24,7 @@ class Manifest:
         self.write_manifest()
 
     @classmethod
-    def from_file(cls, path: Path) -> Self:
+    def from_json(cls, path: Path) -> Self:
         """Create Manifest from a file path"""
         if isinstance(path, str):
             path = Path(path)
@@ -33,7 +33,7 @@ class Manifest:
         return cls(data=data, root=root)
 
     @classmethod
-    def from_scanner(cls, user_paths: UserPaths) -> Self:
+    def from_local_state(cls, user_paths: UserPaths) -> Self:
         """Create Manifest from scanner results"""
         data = scan_folder(user_paths.NUKE_DIR)
         return cls(data=data, root=user_paths.STATE_FILE)
@@ -99,13 +99,13 @@ class Manifest:
             logger.info(f"Successfully wrote {self.ROOT}")
         return True
 
-    def update(self, asset: Asset) -> bool:
+    def add(self, asset: Asset) -> bool:
         """
         Reads current manifest, adds asset and writes out updated manifest.
 
         :param asset: Asset object to add to manifest
         :type asset: Asset
-        :return: Confirmation of successfull update
+        :return: Confirmation of successfull add
         :rtype: bool
         """
 
@@ -121,8 +121,8 @@ class Manifest:
         if self.write_manifest(data):
             # Updates current status
             self.data = data
-            logger.info(
-                f"Successfully added {asset.name} v{asset.version} to repo manifest"
+            logger.debug(
+                f"Successfully added {asset.name} v{asset.version} to {self.ROOT}"
             )
             return True
         else:
@@ -137,23 +137,20 @@ class Manifest:
         :return: Version instance of latest asset"s version
         :rtype: Version
         """
+
         data = self.read_manifest()
 
-        if isinstance(asset, Asset):
-            try:
-                asset.name in data[asset.type].keys()
-            except Exception:
-                logger.error(f"Could not find {asset.name} in {self.ROOT} manifest")
-                raise
-            else:
-                asset_versions_list = list(data[asset.type][asset.name].keys())
-                # Check if list is empty
-                if asset_versions_list:
-                    return Version.highest_version(asset_versions_list)
-                else:
-                    return None
+        try:
+            data[asset.type][asset.name]
+        except Exception:
+            # Asset is not in manifest.
+            return None
         else:
-            # Handle unexpected type
-            msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
-            logger.error(msg)
-            raise NotImplementedError(msg)
+            # Asset is in manifest, get list of all versions.
+            asset_versions_list = list(data[asset.type][asset.name].keys())
+            if len(asset_versions_list) > 1:
+                # If list has at least two version, sort and return highest value
+                return Version.highest_version(asset_versions_list)
+            else:
+                # Only one version
+                return asset_versions_list[0]

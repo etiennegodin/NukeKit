@@ -1,13 +1,13 @@
-from ..core import Context, install_asset
+from ..core import EnvContext, installer
 from ..core.console import choose_menu, print_data
 
 
-def install(args, context: Context):
+def install(args, context: EnvContext):
     """
     Install a remote asset to local nuke directory
 
     :param context: This sessions"s context
-    :type context: Context
+    :type context: EnvContext
     """
 
     context.set_mode("install")
@@ -16,4 +16,4 @@ def install(args, context: Context):
     print_data(data)
     asset = choose_menu(data)
     if asset is not None:
-        install_asset(context, asset)
+        installer.install_asset(context, asset)

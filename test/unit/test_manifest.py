@@ -9,5 +9,5 @@ def test_manifest_creation_error():
 
 def test_new_manifest(tmp_path):
     file_path = tmp_path / "temp.json"
-    m = Manifest.from_file(file_path)
+    m = Manifest.from_json(file_path)
     assert m.data == {"Gizmo": {}, "Script": {}}

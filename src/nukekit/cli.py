@@ -4,7 +4,16 @@ from pathlib import Path
 
 from .core import envContextBuilder
 from .utils import UserPaths, init_logger
-from .workflows import install, publish, scan
+from .workflows import publish
+
+
+def install():
+    pass
+
+
+def scan():
+    pass
+
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"

@@ -13,8 +13,7 @@ import shortuuid
 from .versioning import Version
 
 if TYPE_CHECKING:
-    from .repository import Repository
-
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -80,14 +79,6 @@ class Asset:
         self._set_time()
         self._set_author()
         self._set_uuid()
-
-    def get_remote_path(self, repo: Repository) -> Path:
-        """Get the path where this asset should be stored in the repository."""
-        repo_path = repo.get_asset_subdir(self.type) / self.name
-        # Create asset folder if first publish
-        if not repo_path.exists():
-            repo_path.mkdir(exist_ok=True)
-        return repo_path / f"{self.name}_v{self.version}.gizmo"
 
     def set_publish_status(self, status: PUBLISH_STATUS):
         self.status = AssetStatus(status)

@@ -4,27 +4,32 @@ import logging
 import shutil
 from typing import TYPE_CHECKING
 
+from .repository import Repository
+
 if TYPE_CHECKING:
     from .assets import Asset
-    from .context import Context
+    from .context import EnvContext
+    from .manifest import Manifest
 
 logger = logging.getLogger(__name__)
 
 
-def install_all(context: Context):
+def install_all(context: EnvContext):
     raise NotImplementedError("Not implemented")
     pass
 
 
-def install_from_repo(context: Context):
+def install_from_repo(env: EnvContext):
     raise NotImplementedError("Not implemented")
 
 
-def install_asset(context: Context, asset: Asset) -> bool:
+def install_asset_from_repo(
+    env: EnvContext, repo: Repository, local_manifest: Manifest, asset: Asset
+) -> bool:
     """
     Docstring for install_asset
 
-    :param context:Context: Description
+    :param context:EnvContext: Description
     :param asset: Description
     :type asset: Asset
     :return: Description
@@ -32,8 +37,8 @@ def install_asset(context: Context, asset: Asset) -> bool:
     """
     installed = False
     # Force back type if read from string
-    source_path = asset.get_remote_path(context.repo)
-    destination_path = context.user_paths.NUKE_KIT_DIR
+    source_path = repo.build_asset_path(asset)
+    destination_path = env.user_paths.NUKE_KIT_DIR
 
     try:
         shutil.copy2(source_path, destination_path)
@@ -46,9 +51,9 @@ def install_asset(context: Context, asset: Asset) -> bool:
     except Exception as e:
         logger.error(f"An error occurred: {e}")
     else:
-        logger.info(f"Successfully saved {asset} to {destination_path} ")
+        logger.info(f"Successfully installed {asset} to local nuke folder")
         asset.set_install_status("local")
-        context.local_manifest.update(asset)
+        local_manifest.add(asset)
         installed = True
 
         return installed
