@@ -27,5 +27,7 @@ def scan_folder(path: Path) -> dict:
                 asset_subtype[asset.name][asset.version] = asset
         assets[asset_type] = asset_subtype
 
+    # Compare against
     assets = _sort_dict(assets)
+
     return assets

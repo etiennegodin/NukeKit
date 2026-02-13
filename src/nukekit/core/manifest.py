@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
-from ..utils import _sort_dict
+from ..utils import _sort_dict, deep_merge
 from .assets import Asset, AssetType
 from .scanner import scan_folder
 from .serialization import dump_json, load_json
@@ -33,9 +33,12 @@ class Manifest:
         return cls(data=data, root=root)
 
     @classmethod
-    def from_local_state(cls, user_paths: UserPaths) -> Self:
+    def from_local_state(cls, user_paths: UserPaths, manifest: Manifest) -> Self:
         """Create Manifest from scanner results"""
         data = scan_folder(user_paths.NUKE_DIR)
+        # Pull metadata from cached manifests
+        data = manifest.compare_dict(data)
+
         return cls(data=data, root=user_paths.STATE_FILE)
 
     @classmethod
@@ -154,3 +157,8 @@ class Manifest:
             else:
                 # Only one version
                 return asset_versions_list[0]
+
+    def compare_dict(self, other: dict | Manifest) -> Manifest:
+        if isinstance(other, Manifest):
+            other = other.data
+        return deep_merge(self.data, other)

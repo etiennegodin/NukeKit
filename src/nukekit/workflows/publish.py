@@ -23,7 +23,7 @@ def publish(args, env: EnvContext):
     repo = Repository(env.config)
     repo.add_manifest(Manifest.from_json(repo.MANIFEST_PATH))
     local_manifest = Manifest.from_json(env.user_paths.CACHED_MANIFEST)
-    local_state_manifest = Manifest.from_local_state(env.user_paths)
+    local_state_manifest = Manifest.from_local_state(env.user_paths, local_manifest)
 
     if args.local:
         data = scanner.scan_folder(Path.cwd())

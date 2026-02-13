@@ -42,11 +42,10 @@ def main():
     parser_install.set_defaults(func=install)  # Associate a function
 
     # Scan
-    scan_choices = ["local", "remote"]
     parser_scan = subparsers.add_parser(
         "scan", parents=[parent_parser], help="Scan directory for assets"
     )
-    parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
+    # parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
     parser_scan.set_defaults(func=scan)  # Associate a function
 
     args = parser.parse_args()

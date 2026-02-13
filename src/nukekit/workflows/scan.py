@@ -3,7 +3,6 @@ from ..core import (
     Manifest,
     Repository,
     console,
-    scanner,
 )
 
 
@@ -17,11 +16,6 @@ def scan(args, env: EnvContext):
 
     repo = Repository(env.config)
     repo.add_manifest(Manifest.from_json(repo.MANIFEST_PATH))
-    local_state_manifest = Manifest.from_local_state(env.user_paths)
-
-    if args.location == "local":
-        assets = local_state_manifest.data
-    elif args.location == "remote":
-        assets = scanner.scan_folder(repo.ROOT)
-
-    console.print_data(assets)
+    local_manifest = Manifest.from_json(env.user_paths.CACHED_MANIFEST)
+    local_state_manifest = Manifest.from_local_state(env.user_paths, local_manifest)
+    console.print_data(local_state_manifest.data)

@@ -1,5 +1,5 @@
 from .logger import init_logger
-from .misc import _sort_dict
+from .misc import _sort_dict, deep_merge
 from .paths import UserPaths
 
-__all__ = ["init_logger", "UserPaths", "_sort_dict"]
+__all__ = ["init_logger", "UserPaths", "_sort_dict", "deep_merge"]
