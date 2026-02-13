@@ -43,10 +43,7 @@ nukekit install
 ### Scanning
 ```bash
 # Scan local Nuke directory
-nukekit scan local
-
-# Scan remote repository
-nukekit scan remote
+nukekit scan 
 ```
 
 ## Configuration
