@@ -13,7 +13,6 @@ import shortuuid
 from .versioning import Version
 
 if TYPE_CHECKING:
-    from .context import Context
     from .repository import Repository
 
 
@@ -126,7 +125,7 @@ class Asset:
         return hash((self.name, str(self.version), self.type))
 
     @classmethod
-    def from_path(cls, context: Context, asset_path: Path) -> Asset:
+    def from_path(cls, asset_path: Path) -> Asset:
         """
         Create Asset instance from file path.
 
@@ -168,15 +167,22 @@ class Asset:
                 f"{[str(k) for k in ASSET_SUFFIXES.keys()]} "
             )
 
+        return Asset(
+            name=asset_name,
+            version=asset_version,
+            source_path=asset_path,
+            status=AssetStatus.UNPUBLISHED,
+            type=asset_type,
+        )
+
+
+"""
+
         # Check if asset is a copy from repo
         try:
             return context.repo_manifest.data[asset_type][asset_name][asset_version]
         except KeyError:
             # Asset doesn't exist in repo, create new one
-            return Asset(
-                name=asset_name,
-                version=asset_version,
-                source_path=asset_path,
-                status=AssetStatus.UNPUBLISHED,
-                type=asset_type,
-            )
+
+
+"""

@@ -2,8 +2,9 @@ import argparse
 import os
 from pathlib import Path
 
+from .core import envContextBuilder
 from .utils import UserPaths, init_logger
-from .workflows import get_context, install, publish, scan
+from .workflows import install, publish, scan
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
@@ -54,16 +55,17 @@ def main():
     init_logger()
 
     # Get app context
-    context = get_context()
+    env = envContextBuilder()
 
     # Call the function associated with the subcommand
     if hasattr(args, "func"):
         # Dev force clean state
         if args.force:
             UserPaths.clean()
-        args.func(args, context)
+        args.func(args, env)
     else:
-        context.set_mode("publish")
+        pass
+        # context.set_mode("publish")
         # ui.launch(context)
 
 

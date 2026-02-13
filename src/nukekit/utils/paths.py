@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserPaths:
-    """Class for all local user paths."""
+    """Class for all local user paths. Ensured at creation"""
 
     BASE_DIR = Path.home() / ".nukekit"
     NUKE_DIR = Path.home() / ".nuke"

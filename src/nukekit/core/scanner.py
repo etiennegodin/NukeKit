@@ -8,20 +8,19 @@ from ..utils import _sort_dict
 from .assets import ASSET_SUFFIXES, Asset
 
 if TYPE_CHECKING:
-    from .context import Context
+    pass
 
 logger = logging.getLogger(__name__)
 
 
-def scan_folder(context: Context, path: Path) -> dict:
+def scan_folder(path: Path) -> dict:
     logger.debug(path)
     assets = {}
     for suffix, asset_type in ASSET_SUFFIXES.items():
-        print(suffix)
         asset_paths = list(path.rglob(f"*{suffix}"))
         asset_subtype: dict[str, dict] = {}
         for path in asset_paths:
-            asset = Asset.from_path(context, path)
+            asset = Asset.from_path(path)
             if asset.name not in asset_subtype.keys():
                 asset_subtype[asset.name] = {}
             if asset.version not in asset_subtype[asset.name].keys():

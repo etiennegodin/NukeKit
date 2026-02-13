@@ -12,7 +12,7 @@ from .serialization import dump_json, load_json
 from .versioning import Version
 
 if TYPE_CHECKING:
-    from .context import Context
+    from ..utils import UserPaths
 
 logger = logging.getLogger(__name__)
 
@@ -33,10 +33,10 @@ class Manifest:
         return cls(data=data, root=root)
 
     @classmethod
-    def from_scanner(cls, context: Context, path: Path) -> Self:
+    def from_scanner(cls, user_paths: UserPaths) -> Self:
         """Create Manifest from scanner results"""
-        data = scan_folder(context, context.user_paths.NUKE_DIR)
-        return cls(data=data, root=context.user_paths.STATE_FILE)
+        data = scan_folder(user_paths.NUKE_DIR)
+        return cls(data=data, root=user_paths.STATE_FILE)
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:

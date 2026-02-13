@@ -1,6 +1,6 @@
 from .assets import Asset, AssetStatus, AssetType
 from .config import ConfigLoader, ConfigValidator
-from .context import Context
+from .context import envContextBuilder
 from .installer import install_asset
 from .manifest import Manifest
 from .publisher import publish_asset
@@ -12,7 +12,7 @@ __all__ = [
     "Asset",
     "AssetStatus",
     "AssetType",
-    "Context",
+    "envContextBuilder",
     "Repository",
     "install_asset",
     "Manifest",
