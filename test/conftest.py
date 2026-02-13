@@ -1,5 +1,5 @@
 import pytest
-from nukekit.core import Asset
+from nukekit.core import Asset, Manifest, Repository, publisher
 
 
 @pytest.fixture
@@ -22,3 +22,17 @@ def sample_config(tmp_path) -> dict:
 def sample_asset(sample_gizmo_path):
     asset = Asset.from_path(sample_gizmo_path)
     return asset
+
+
+@pytest.fixture
+def sample_empty_repo(sample_config):
+    repo = Repository(sample_config)
+    manifest = Manifest.from_json(repo.MANIFEST_PATH)
+    repo.add_manifest(manifest)
+    return repo
+
+
+@pytest.fixture
+def sample_repo(sample_empty_repo, sample_asset):
+    publisher.publish_asset_to_repo(sample_empty_repo, sample_asset)
+    return sample_empty_repo

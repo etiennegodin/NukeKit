@@ -1,12 +1,12 @@
-from nukekit.core import Manifest, Repository, publisher
+from nukekit.core import Asset, Repository, publisher
 
 
-def test_publish_asset(sample_asset, sample_config):
-    repo = Repository(sample_config)
-    manifest = Manifest.from_json(repo.MANIFEST_PATH)
-    repo.add_manifest(manifest)
-    publisher.publish_asset_to_repo(repo, sample_asset)
+def test_publish_asset(sample_asset: Asset, sample_empty_repo: Repository):
+    assert publisher.publish_asset_to_repo(sample_empty_repo, sample_asset)
     assert (
         sample_asset
-        == repo.manifest.data["Gizmo"][sample_asset.name][sample_asset.version]
+        == sample_empty_repo.manifest.data["Gizmo"][sample_asset.name][
+            sample_asset.version
+        ]
     )
+    assert sample_empty_repo.manifest.ROOT.exists()

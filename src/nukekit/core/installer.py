@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import logging
 import shutil
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+from ..utils import UserPaths
 from .repository import Repository
 
 if TYPE_CHECKING:
@@ -24,7 +26,10 @@ def install_from_repo(env: EnvContext):
 
 
 def install_asset_from_repo(
-    env: EnvContext, repo: Repository, local_manifest: Manifest, asset: Asset
+    repo: Repository,
+    local_manifest: Manifest,
+    asset: Asset,
+    destination_path: Path | None = None,
 ) -> bool:
     """
     Docstring for install_asset
@@ -36,9 +41,16 @@ def install_asset_from_repo(
     :rtype: bool
     """
     installed = False
+
+    if destination_path is None:
+        destination_path = UserPaths.NUKE_KIT_DIR
+    elif isinstance(destination_path, str):
+        destination_path = Path(destination_path)
+    elif not isinstance(destination_path, Path):
+        raise TypeError("Destination path not valid")
+
     # Force back type if read from string
     source_path = repo.build_asset_path(asset)
-    destination_path = env.user_paths.NUKE_KIT_DIR
     logger.debug(source_path)
     logger.debug(destination_path)
     try:
