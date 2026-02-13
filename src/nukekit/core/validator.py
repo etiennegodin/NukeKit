@@ -6,5 +6,5 @@ logger = logging.getLogger(__name__)
 
 
 class Validator:
-    def __init__(self):
+    def __init__(self) -> None:
         pass

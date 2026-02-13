@@ -2,8 +2,9 @@ import argparse
 import os
 from pathlib import Path
 
+from .core import envContextBuilder
 from .utils import UserPaths, init_logger
-from .workflows import get_context, install, publish, scan
+from .workflows import install, publish, scan
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
@@ -41,29 +42,29 @@ def main():
     parser_install.set_defaults(func=install)  # Associate a function
 
     # Scan
-    scan_choices = ["local", "remote"]
     parser_scan = subparsers.add_parser(
         "scan", parents=[parent_parser], help="Scan directory for assets"
     )
-    parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
+    # parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
     parser_scan.set_defaults(func=scan)  # Associate a function
 
     args = parser.parse_args()
 
+    # Get app context
+    env = envContextBuilder()
+
     # Init logger
     init_logger()
-
-    # Get app context
-    context = get_context()
 
     # Call the function associated with the subcommand
     if hasattr(args, "func"):
         # Dev force clean state
         if args.force:
             UserPaths.clean()
-        args.func(args, context)
+        args.func(args, env)
     else:
-        context.set_mode("publish")
+        pass
+        # context.set_mode("publish")
         # ui.launch(context)
 
 

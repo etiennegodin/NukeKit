@@ -2,74 +2,54 @@ from __future__ import annotations
 
 import logging
 import shutil
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from .assets import Asset
 from .console import user_input_choice
-from .installer import install_asset
 from .versioning import VERSION_CLASSES
 
 if TYPE_CHECKING:
-    from .context import Context
+    from . import Manifest, Repository
 
 
 logger = logging.getLogger(__name__)
 
 
-def publish_asset(context: Context, asset: Path | Asset) -> bool:
-    """_summary_
+def publish_asset_to_repo(repo: Repository, asset: Asset) -> bool:
+    published = False
+    destination_path = repo.build_asset_path(asset)
 
-    Args:
-        context (Context): _description_
-        asset (Path | Asset): _description_
+    try:
+        asset.set_publish_status("published")
+        shutil.copy2(asset.source_path, destination_path)
+        logger.info(f"Successfully saved {destination_path}")
+        repo.manifest.add(asset)
+        published = True
 
-    Raises:
-        NotImplementedError: _description_
+    except shutil.SameFileError:
+        logger.error("Source and destination represent the same file.")
+    except PermissionError:
+        logger.error("Permission denied.")
+    except FileNotFoundError:
+        logger.error("The source file or destination directory was not found.")
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
 
-    Returns:
-        bool: _description_
-    """
-
-    if isinstance(asset, Path):
-        asset = Asset.from_path(context, asset)
-
-    if asset.type == "Script":
-        raise NotImplementedError
-
-    asset = _resolve_version(context, asset)
-
-    # Ensures message
-    asset.ensure_message()
-
-    # Ensures metadata
-    asset.ensure_metadata()
-
-    if _publish_to_repo(context, asset):
-        # Sync and install published asset to local assets
-        return _sync_after_publish(context, asset)
-
-    return False
+    return published
 
 
-def _sync_after_publish(context: Context, asset) -> bool:
-    """Install asset locally after successful publish."""
-    return install_asset(context, asset)
-
-
-def _resolve_version(context: Context, asset: Asset) -> Asset:
+def resolve_version(repo_manifest: Manifest, asset: Asset) -> Asset:
     while True:
-        latest_version = context.repo_manifest.get_latest_asset_version(asset)
-        logger.debug(latest_version)
+        latest_version = repo_manifest.get_latest_asset_version(asset)
         # New asset or newer than repo nothing to resolve
         if latest_version is None or asset.version > latest_version:
-            logger.info(f"{asset.name} is a new publish")
+            logger.info(f"{asset.name} not found in repo. New publish.")
             break
 
         # Version Logic: Conflict/Exists
         to_update = False
 
-        # If same version ask to update
+        # If same version ask to add
         if latest_version == asset.version:
             if user_input_choice(
                 f"{asset} already exists in repo. \n"
@@ -81,14 +61,14 @@ def _resolve_version(context: Context, asset: Asset) -> Asset:
                     "Cannot publish over existing asset, aborting publish"
                 )
 
-        # If lower version ask to update
+        # If lower version ask to add
         elif latest_version > asset.version:
             if user_input_choice(
                 f"A newer version of {asset} already exists in repo"
                 f"({latest_version}). \n"
-                "Do you want to update it?"
+                "Do you want to add it?"
             ):
-                # Promote current asset version to latest version and flag to update
+                # Promote current asset version to latest version and flag to add
                 asset.version = latest_version
                 to_update = True
             else:
@@ -107,37 +87,6 @@ def _resolve_version(context: Context, asset: Asset) -> Asset:
 
 def _version_up(asset: Asset) -> Asset:
     """Increment asset version based on user choice."""
-    version_update = user_input_choice(
-        "Which type of update", VERSION_CLASSES, type="str"
-    )
+    version_update = user_input_choice("Which type of add", VERSION_CLASSES, type="str")
     asset.version.version_up(version_update)
     return asset
-
-
-def _publish_to_repo(context: Context, asset: Asset) -> bool:
-    """
-    Copy asset file to repository.
-
-    Returns:
-        True if successful, False otherwise
-    """
-    published = False
-    destination_path = asset.get_remote_path(context.repo)
-
-    try:
-        asset.set_publish_status("published")
-        shutil.copy2(asset.source_path, destination_path)
-        logger.info(f"Successfully saved {asset} to {destination_path} ")
-        context.repo_manifest.update(asset)
-        published = True
-
-    except shutil.SameFileError:
-        logger.error("Source and destination represent the same file.")
-    except PermissionError:
-        logger.error("Permission denied.")
-    except FileNotFoundError:
-        logger.error("The source file or destination directory was not found.")
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
-
-    return published

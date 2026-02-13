@@ -3,16 +3,12 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
 
-from ..utils import _sort_dict
-from .assets import ASSET_REGISTRY, Asset
+from ..utils import UserPaths, _sort_dict, deep_merge
+from .assets import Asset, AssetType
 from .scanner import scan_folder
 from .serialization import dump_json, load_json
 from .versioning import Version
-
-if TYPE_CHECKING:
-    from .context import Context
 
 logger = logging.getLogger(__name__)
 
@@ -24,21 +20,40 @@ class Manifest:
         self.write_manifest()
 
     @classmethod
-    def from_file(cls, path: Path) -> Self:
+    def from_json(cls, path: Path) -> Manifest:
         """Create Manifest from a file path"""
+        if isinstance(path, str):
+            path = Path(path)
         root = path
         data = cls.read_manifest(self=cls, path=root)
         return cls(data=data, root=root)
 
     @classmethod
-    def from_scanner(cls, context: Context) -> Self:
+    def from_local_state(
+        cls,
+        input_path: Path | UserPaths = UserPaths.NUKE_DIR,
+        manifest: Manifest | None = None,
+    ) -> Manifest:
         """Create Manifest from scanner results"""
-        data = scan_folder(context, context.user_paths.NUKE_DIR)
-        return cls(data=data, root=context.user_paths.STATE_FILE)
+
+        # Allow for custom output path from
+        if isinstance(input_path, Path):
+            if not input_path.is_dir():
+                raise TypeError("Provided path for scanner is not a dir")
+            output_path = input_path / "local_state.json"
+        elif isinstance(input_path, UserPaths):
+            output_path = input_path.STATE_FILE
+        data = scan_folder(input_path)
+
+        # Pull metadata from cached manifests
+        if manifest is not None:
+            data = manifest.compare_dict(data)
+
+        return cls(data=data, root=output_path)
 
     @classmethod
     def _new_empty_manifest(cls) -> dict:
-        return {type_: {} for type_ in ASSET_REGISTRY.keys()}
+        return {a.value: {} for a in AssetType}
 
     def read_manifest(self, path: Path | None = None) -> dict:
         """Read and return manifest data. Returns empty dict if file doesn"t exist.
@@ -97,13 +112,13 @@ class Manifest:
             logger.info(f"Successfully wrote {self.ROOT}")
         return True
 
-    def update(self, asset: Asset) -> bool:
+    def add(self, asset: Asset) -> bool:
         """
         Reads current manifest, adds asset and writes out updated manifest.
 
         :param asset: Asset object to add to manifest
         :type asset: Asset
-        :return: Confirmation of successfull update
+        :return: Confirmation of successfull add
         :rtype: bool
         """
 
@@ -118,9 +133,9 @@ class Manifest:
 
         if self.write_manifest(data):
             # Updates current status
-            self.data = data
-            logger.info(
-                f"Successfully added {asset.name} v{asset.version} to repo manifest"
+            self.data = self.read_manifest()
+            logger.debug(
+                f"Successfully added {asset.name} v{asset.version} to {self.ROOT}"
             )
             return True
         else:
@@ -135,23 +150,25 @@ class Manifest:
         :return: Version instance of latest asset"s version
         :rtype: Version
         """
+
         data = self.read_manifest()
 
-        if isinstance(asset, Asset):
-            try:
-                asset.name in data[asset.type].keys()
-            except Exception:
-                logger.error(f"Could not find {asset.name} in {self.ROOT} manifest")
-                raise
-            else:
-                asset_versions_list = list(data[asset.type][asset.name].keys())
-                # Check if list is empty
-                if asset_versions_list:
-                    return Version.highest_version(asset_versions_list)
-                else:
-                    return None
+        try:
+            data[asset.type][asset.name]
+        except Exception:
+            # Asset is not in manifest.
+            return None
         else:
-            # Handle unexpected type
-            msg = f"{type(asset)} type for get_latest_asset_versions is not supported"
-            logger.error(msg)
-            raise NotImplementedError(msg)
+            # Asset is in manifest, get list of all versions.
+            asset_versions_list = list(data[asset.type][asset.name].keys())
+            if len(asset_versions_list) > 1:
+                # If list has at least two version, sort and return highest value
+                return Version.highest_version(asset_versions_list)
+            else:
+                # Only one version
+                return asset_versions_list[0]
+
+    def compare_dict(self, other: dict | Manifest) -> Manifest:
+        if isinstance(other, Manifest):
+            other = other.data
+        return deep_merge(self.data, other)

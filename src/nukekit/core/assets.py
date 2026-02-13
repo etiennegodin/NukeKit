@@ -6,20 +6,18 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 import shortuuid
 
 from .versioning import Version
 
-if TYPE_CHECKING:
-    from .context import Context
-    from .repository import Repository
-
-
 logger = logging.getLogger(__name__)
 
-ASSET_TYPES = Literal["Gizmo", "Script"]
+
+class AssetType(StrEnum):
+    GIZMO = "Gizmo"
+    SCRIPT = "Script"
 
 
 class AssetStatus(StrEnum):
@@ -34,6 +32,8 @@ class AssetStatus(StrEnum):
 INSTALL_STATUS = Literal["non_local", "local"]
 PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
+ASSET_SUFFIXES = {".gizmo": AssetType.GIZMO, ".nk": AssetType.SCRIPT}
+
 
 @dataclass
 class Asset:
@@ -41,24 +41,23 @@ class Asset:
     version: Version
     source_path: Path
     status: AssetStatus
-    type: str = "Asset"
+    type: AssetType
     message: str = NotImplemented
     author: str = NotImplemented
     time: str = NotImplemented
     id: str = NotImplemented
 
-    def _set_time(self):
+    def _set_time(self) -> None:
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
 
-    def _set_author(self):
-        if self.author is None:
-            self.author = getpass.getuser()
+    def _set_author(self) -> None:
+        self.author = getpass.getuser()
 
-    def _set_uuid(self):
+    def _set_uuid(self) -> None:
         unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
 
-    def ensure_message(self):
+    def ensure_message(self) -> None:
         """Prompt user for changelog if not provided."""
         while True:
             message = input(
@@ -71,24 +70,16 @@ class Asset:
 
         self.message = message
 
-    def ensure_metadata(self):
+    def ensure_metadata(self) -> None:
         """Ensure all metadata fields are set."""
         self._set_time()
         self._set_author()
         self._set_uuid()
 
-    def get_remote_path(self, repo: Repository) -> Path:
-        """Get the path where this asset should be stored in the repository."""
-        repo_path = repo.get_asset_subdir(self.type) / self.name
-        # Create asset folder if first publish
-        if not repo_path.exists():
-            repo_path.mkdir(exist_ok=True)
-        return repo_path / f"{self.name}_v{self.version}.gizmo"
-
-    def set_publish_status(self, status: PUBLISH_STATUS):
+    def set_publish_status(self, status: PUBLISH_STATUS) -> None:
         self.status = AssetStatus(status)
 
-    def set_install_status(self, status: INSTALL_STATUS):
+    def set_install_status(self, status: INSTALL_STATUS) -> None:
         self.status = AssetStatus(status)
 
     def to_dict(self) -> dict:
@@ -121,7 +112,7 @@ class Asset:
         return hash((self.name, str(self.version), self.type))
 
     @classmethod
-    def from_path(cls, context: Context, asset_path: Path) -> Asset:
+    def from_path(cls, asset_path: Path) -> Asset:
         """
         Create Asset instance from file path.
 
@@ -154,39 +145,19 @@ class Asset:
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_class = ASSET_SUFFIXES.get(asset_suffix)
-        if asset_class is None:
+        asset_type = ASSET_SUFFIXES.get(asset_suffix)
+
+        if asset_type is None:
             raise TypeError(
                 "\nProvided asset tpye is not a supported.\n"
                 "Please submit a file with this type"
                 f"{[str(k) for k in ASSET_SUFFIXES.keys()]} "
             )
 
-        # Check if asset is a copy from repo
-        try:
-            return context.repo_manifest.data[asset_class.type][asset_name][
-                asset_version
-            ]
-        except KeyError:
-            # Asset doesn't exist in repo, create new one
-            return asset_class(
-                name=asset_name,
-                version=asset_version,
-                source_path=asset_path,
-                status=AssetStatus.UNPUBLISHED,
-                type=asset_class.type,
-            )
-
-
-@dataclass
-class Gizmo(Asset):
-    type: str = "Gizmo"
-
-
-@dataclass
-class Script(Asset):
-    type: str = "Script"
-
-
-ASSET_REGISTRY = {"Gizmo": Gizmo, "Script": Script}
-ASSET_SUFFIXES = {".gizmo": Gizmo, ".nk": Script}
+        return Asset(
+            name=asset_name,
+            version=asset_version,
+            source_path=asset_path,
+            status=AssetStatus.UNPUBLISHED,
+            type=asset_type,
+        )

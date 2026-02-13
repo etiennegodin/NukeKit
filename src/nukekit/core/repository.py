@@ -4,6 +4,9 @@ import logging
 import os
 from pathlib import Path
 
+from .assets import ASSET_SUFFIXES, Asset
+from .manifest import Manifest
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,33 +24,31 @@ class Repository:
 
         self.ROOT = Path(root)
         self.SUBFOLDERS = config["repository"]["subfolder"]
-        self.MANIFEST = self.ROOT / "manifest.json"
+        self.MANIFEST_PATH = self.ROOT / "manifest.json"
         self.ensure()
 
+    def add_manifest(self, manifest: Manifest):
+        self.manifest = manifest
+
     def ensure(self) -> bool:
+        ensured = False
         if not self.ROOT.exists():
             self.ROOT.mkdir(exist_ok=True)
-            for s in self.SUBFOLDERS:
-                (self.ROOT / s).mkdir(exist_ok=True, parents=True)
-
             logger.info(f"Created central repo at {self.ROOT}")
-            return True
-        return False
+            ensured = True
+        for s in self.SUBFOLDERS:
+            (self.ROOT / s).mkdir(exist_ok=True, parents=True)
 
-    def get_asset_subdir(self, asset_type: str) -> Path:
-        """
-        Get subdirectory for given asset type.
+        return ensured
 
-        Args:
-            asset_type: Type of asset (e.g., 'Gizmo', 'Script')
+    def build_asset_path(self, asset: Asset) -> Path:
+        if asset.type not in self.SUBFOLDERS:
+            raise FileNotFoundError(f"Path {self.ROOT / asset.type} not found in repo")
 
-        Returns:
-            Path to the subdirectory
+        # Force asset subfolder creation
+        (self.ROOT / asset.type / asset.name).mkdir(exist_ok=True)
 
-        Raises:
-            FileNotFoundError: If subdirectory doesn't exist
-        """
-        subdir = self.ROOT / asset_type
-        if not subdir.exists():
-            raise FileNotFoundError(f"Path {subdir} does not exists")
-        return subdir
+        suffix = next(
+            (key for key, val in ASSET_SUFFIXES.items() if val == asset.type), None
+        )
+        return self.ROOT / asset.type / asset.name / f"{asset}{suffix}"

@@ -63,16 +63,10 @@ def print_data(data: dict, label: str = "Manifest"):
 
     format_string = "| {:<12} | {:<8} | {:<10} |"
 
-    def recursive_tree(d: dict, t: Tree, stop: str):
-        for key, value in d.items():
-            if key == stop:
-                t.add(format_string.format("Status", "Version", "Id"))
-                for v in value.values():
-                    t.add(format_string.format(v.status.name, v.version, str(v.id)))
-                break
-            sub_tree = t.add(key)
-            if isinstance(value, dict):
-                recursive_tree(value, sub_tree, stop)
+    def recursive_tree(d: dict, t: Tree):
+        t.add(format_string.format("Status", "Version", "Id"))
+        for versions, asset in d.items():
+            t.add(format_string.format(asset.status.name, asset.version, str(asset.id)))
 
     # Initilize tree
     tree = Tree(label)
@@ -82,7 +76,7 @@ def print_data(data: dict, label: str = "Manifest"):
         tree.add(category)
         for asset_name, _asset_data in assets_dict.items():
             asset_tree = tree.add(asset_name)
-            recursive_tree(assets_dict, asset_tree, asset_name)
+            recursive_tree(_asset_data, asset_tree)
 
     print(tree)
 

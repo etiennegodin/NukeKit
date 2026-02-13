@@ -5,7 +5,7 @@ import logging
 from enum import Enum
 from pathlib import Path
 
-from .assets import ASSET_REGISTRY, AssetStatus
+from .assets import Asset, AssetStatus, AssetType
 from .versioning import Version
 
 logger = logging.getLogger(__name__)
@@ -63,13 +63,14 @@ def universal_decoder(dct):
             dct[k] = Version.from_string(v)
         elif isinstance(v, str) and k == "status":
             dct[k] = AssetStatus(v)
+        elif isinstance(v, str) and k == "type":
+            dct[k] = AssetType(v)
 
     # After fixing paths, handle dataclass reconstruction
     if "__type__" in dct:
         type_name = dct.pop("__type__")
-        cls = ASSET_REGISTRY.get(type_name)
-        if cls:
-            return cls(**dct)
+        if type_name == "Asset":
+            return Asset(**dct)
     return dct
 
 
