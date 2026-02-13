@@ -54,8 +54,7 @@ class Asset:
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
 
     def _set_author(self):
-        if self.author is None:
-            self.author = getpass.getuser()
+        self.author = getpass.getuser()
 
     def _set_uuid(self):
         unique_id = shortuuid.uuid()[:10]

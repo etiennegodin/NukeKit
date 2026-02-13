@@ -1,17 +1,27 @@
-from ..core import EnvContext, scanner
-from ..core.console import print_data
+from ..core import (
+    EnvContext,
+    Manifest,
+    Repository,
+    console,
+    scanner,
+)
 
 
-def scan(args, context: EnvContext):
+def scan(args, env: EnvContext):
     """
     Scan nuke directory and print available assets to console
 
     :param context: This sessions"s context
     :type context: EnvContext
     """
-    context.set_mode("scan")
+
+    repo = Repository(env.config)
+    repo.add_manifest(Manifest.from_json(repo.MANIFEST_PATH))
+    local_state_manifest = Manifest.from_local_state(env.user_paths)
+
     if args.location == "local":
-        assets = context.local_state.data
+        assets = local_state_manifest.data
     elif args.location == "remote":
-        assets = scanner.scan_folder(context, context.repo.ROOT)
-    print_data(assets)
+        assets = scanner.scan_folder(repo.ROOT)
+
+    console.print_data(assets)

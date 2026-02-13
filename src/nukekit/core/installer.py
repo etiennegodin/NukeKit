@@ -39,7 +39,8 @@ def install_asset_from_repo(
     # Force back type if read from string
     source_path = repo.build_asset_path(asset)
     destination_path = env.user_paths.NUKE_KIT_DIR
-
+    logger.debug(source_path)
+    logger.debug(destination_path)
     try:
         shutil.copy2(source_path, destination_path)
     except shutil.SameFileError:
@@ -48,6 +49,7 @@ def install_asset_from_repo(
         logger.error("Permission denied.")
     except FileNotFoundError:
         logger.error("The source file or destination directory was not found.")
+
     except Exception as e:
         logger.error(f"An error occurred: {e}")
     else:

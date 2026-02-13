@@ -44,7 +44,10 @@ class Repository:
         if asset.type not in self.SUBFOLDERS:
             raise FileNotFoundError(f"Path {self.ROOT / asset.type} not found in repo")
 
+        # Force asset subfolder creation
+        (self.ROOT / asset.type / asset.name).mkdir(exist_ok=True)
+
         suffix = next(
             (key for key, val in ASSET_SUFFIXES.items() if val == asset.type), None
         )
-        return self.ROOT / asset.type / f"{asset}{suffix}"
+        return self.ROOT / asset.type / asset.name / f"{asset}{suffix}"
