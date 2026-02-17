@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import json
 import logging
+from dataclasses import dataclass, field
 from pathlib import Path
 
-from ..utils import UserPaths, _sort_dict, deep_merge
+from ..utils import _sort_dict, deep_merge
 from .assets import Asset, AssetType
 from .scanner import scan_folder
 from .serialization import dump_json, load_json
@@ -13,104 +13,112 @@ from .versioning import Version
 logger = logging.getLogger(__name__)
 
 
-class Manifest:
-    def __init__(self, data: dict, root: Path):
-        self.ROOT = root
-        self.data = data
-        self.write_manifest()
+class ManifestStore:
+    """
+    Persistence layer for manifests.
 
-    @classmethod
-    def from_json(cls, path: Path) -> Manifest:
+    Handles loading/saving manifests from/to various sources:
+    - JSON files
+    - Filesystem scanning
+    - Merging cached data
+    """
+
+    @staticmethod
+    def load_from_json(path: Path) -> Manifest:
         """Create Manifest from a file path"""
-        if isinstance(path, str):
-            path = Path(path)
-        root = path
-        data = cls.read_manifest(self=cls, path=root)
-        return cls(data=data, root=root)
+        if not path.exists():
+            logger.warning(f"Manifest file {path} not found, returning empty")
+            return Manifest(source_path=path)
 
-    @classmethod
-    def from_local_state(
-        cls,
-        input_path: Path | UserPaths = UserPaths.NUKE_DIR,
-        manifest: Manifest | None = None,
-    ) -> Manifest:
-        """Create Manifest from scanner results"""
-
-        # Allow for custom output path from
-        if isinstance(input_path, Path):
-            if not input_path.is_dir():
-                raise TypeError("Provided path for scanner is not a dir")
-            output_path = input_path / "local_state.json"
-        elif isinstance(input_path, UserPaths):
-            output_path = input_path.STATE_FILE
-        data = scan_folder(input_path)
-
-        # Pull metadata from cached manifests
-        if manifest is not None:
-            data = manifest.compare_dict(data)
-
-        return cls(data=data, root=output_path)
-
-    @classmethod
-    def _new_empty_manifest(cls) -> dict:
-        return {a.value: {} for a in AssetType}
-
-    def read_manifest(self, path: Path | None = None) -> dict:
-        """Read and return manifest data. Returns empty dict if file doesn"t exist.
-
-        :param path: Optionnal path to read manifest. Defaults to manifest root
-        :type path: Path
-        :return: Data from manifest json file. Defaults to empty if not found.
-        :rtype: dict
-        """
-        if path is not None:
-            manifest_path = path
-        else:
-            manifest_path = self.ROOT
-
-        if not manifest_path.exists():
-            logger.warning(f"{manifest_path} does not exist, returning empty manifest")
-            return self._new_empty_manifest()
         try:
-            with open(manifest_path):
-                data = load_json(manifest_path)
-
-                return _sort_dict(data)
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse manifest {manifest_path}: {e}")
-            return self._new_empty_manifest()
+            data = load_json(path)
+            return Manifest.from_dict(data)
         except Exception as e:
-            logger.error(f"Unexpected error reading manifest: {e}")
+            logger.error(f"Failed to load manifest from {path}: {e}")
             raise
 
-    def write_manifest(self, data: dict | None = None, verbose: bool = False) -> bool:
-        """
-        Write manifest data to disk.
+    @staticmethod
+    def save_to_json(manifest: Manifest, path: Path) -> None:
+        # Ensure parent directory exists
+        path.parent.mkdir(parents=True, exist_ok=True)
 
-        :param data: Data to write on disk. If empty defaults to manifest"s data.
-        :type data: dict
-        :param verbose: Add a logger liner confirming successfull write
-        :type verbose: bool
-        :return: Confirmation of successfull write
-        :rtype: bool
-        """
-
-        if data is None:
-            try:
-                data = self.data
-            except Exception as e:
-                logger.error(f"Error loading manifest data from {self.ROOT}: {e}")
-                raise
-
-        # Sort outgoing dict
-        data = _sort_dict(data)
+        # Sort for consistent output
+        sorted_data = _sort_dict(manifest.to_dict())
 
         # Write to disk
-        dump_json(data, self.ROOT)
+        dump_json(sorted_data, path)
+        logger.debug(f"Saved manifest to {path}")
 
-        if verbose:
-            logger.info(f"Successfully wrote {self.ROOT}")
-        return True
+    @staticmethod
+    def from_local_state(
+        scan_path: Path,
+        cached_manifest: Manifest | None = None,
+    ) -> Manifest:
+        """
+        Create manifest by scanning filesystem.
+
+        If cached_manifest is provided, merges metadata from cache
+        (like author, changelog, etc.) with newly scanned assets.
+
+        Args:
+            scan_path: Directory to scan for assets
+            cached_manifest: Optional cached manifest to merge with
+
+        Returns:
+            Manifest created from filesystem scan
+        """
+
+        # Allow for custom output path from
+        if isinstance(scan_path, Path):
+            if not scan_path.is_dir():
+                raise TypeError("Provided path for scanner is not a dir")
+        scanned_data = scan_folder(scan_path)
+        scanned_manifest = Manifest.from_dict(scanned_data)
+
+        # If we have cached data, merge it
+        if cached_manifest:
+            scanned_manifest = scanned_manifest.merge(cached_manifest)
+
+        return scanned_manifest
+
+    @staticmethod
+    def ensure_manifest_file(path: Path) -> Manifest:
+        """
+        Load manifest or create empty one if it doesn't exist.
+
+        Args:
+            path: Path to manifest file
+
+        Returns:
+            Loaded or new empty manifest
+        """
+        if path.exists():
+            return ManifestStore.load_from_json(path)
+        else:
+            # Create new empty manifest and save it
+            manifest = Manifest(source_path=path)
+            ManifestStore.save_to_json(manifest, path)
+            logger.info(f"Created new manifest at {path}")
+            return manifest
+
+
+@dataclass
+class Manifest:
+    """
+    Domain object representing a collection of versioned assets.
+    """
+
+    data: dict[str, dict[str, dict[str, Asset]]] = field(
+        default_factory=lambda: {t.value: {} for t in AssetType}
+    )
+
+    # Metadata about this manifest (optional)
+    source_path: Path | None = None
+
+    @classmethod
+    def from_dict(cls, data: dict, source_path: Path | None = None) -> "Manifest":
+        """Create manifest from dictionary."""
+        return cls(data=data, source_path=source_path)
 
     def add(self, asset: Asset) -> bool:
         """
@@ -168,7 +176,59 @@ class Manifest:
                 # Only one version
                 return asset_versions_list[0]
 
-    def compare_dict(self, other: dict | Manifest) -> Manifest:
-        if isinstance(other, Manifest):
-            other = other.data
-        return deep_merge(self.data, other)
+    def merge(self, other: "Manifest") -> "Manifest":
+        """
+        Merge another manifest into this one.
+        Returns a NEW manifest (immutable operation).
+        """
+        merged_data = deep_merge(self.data, other.data)
+        return Manifest(data=merged_data)
+
+    def to_dict(self) -> dict:
+        """Convert to JSON-serializable dict."""
+        return self.data
+
+    def get_asset(
+        self,
+        asset: Asset,
+    ) -> Asset | None:
+        """Get specific asset by name and version."""
+        try:
+            return self.data[asset.type.name][asset.name][asset.version]
+        except KeyError:
+            return None
+
+    def has_asset(
+        self,
+        asset: Asset,
+    ) -> bool:
+        """Check if asset exists in manifest."""
+        try:
+            asset_dict = self.data[asset.type.name][asset.name]
+            if asset.version is None:
+                return True  # Any version exists
+            return asset.version in asset_dict
+        except KeyError:
+            return False
+
+    def __len__(self) -> int:
+        """Return total number of asset versions."""
+        return sum(
+            len(versions)
+            for asset_type in self.data.values()
+            for versions in asset_type.values()
+        )
+
+    def __repr__(self) -> str:
+        return f"Manifest(assets={len(self)}, source={self.source_path})"
+
+
+# Convenience functions (optional)
+def load_manifest(path: Path) -> Manifest:
+    """Load manifest from JSON file."""
+    return ManifestStore.load_from_json(path)
+
+
+def save_manifest(manifest: Manifest, path: Path) -> None:
+    """Save manifest to JSON file."""
+    ManifestStore.save_to_json(manifest, path)
