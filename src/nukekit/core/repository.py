@@ -75,6 +75,11 @@ class Repository:
 
     def get_type_directory(self, asset_type: AssetType) -> Path:
         """Get directory for given asset type."""
+        if isinstance(asset_type, str):
+            try:
+                asset_type = AssetType(asset_type)
+            except Exception as e:
+                raise e
         return self.root / asset_type.value
 
     def list_asset_directories(self, asset_type: AssetType) -> list[Path]:
@@ -86,6 +91,8 @@ class Repository:
         type_dir = self.get_type_directory(asset_type)
         if not type_dir.exists():
             return []
+
+        return [p for p in type_dir.iterdir() if p.is_dir()]
 
     def exists(self) -> bool:
         """Check if repository root exists."""

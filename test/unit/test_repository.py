@@ -22,3 +22,8 @@ def test_repo_build_asset_path(sample_config, sample_asset):
     repo = Repository.from_config(sample_config)
     path = repo.get_asset_path(sample_asset)
     assert path == repo.root / "Gizmo" / "tool" / f"{sample_asset}.gizmo"
+
+
+def test_repo_list_asset_directories(sample_config):
+    repo = Repository.from_config(sample_config)
+    assert repo.list_asset_directories("Gizmo") == []
