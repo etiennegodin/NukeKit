@@ -10,14 +10,12 @@ from .repository import Repository
 
 if TYPE_CHECKING:
     from .assets import Asset
-    from .manifest import Manifest
 
 logger = logging.getLogger(__name__)
 
 
 def install_asset_from_repo(
     repo: Repository,
-    local_manifest: Manifest,
     asset: Asset,
     destination_path: Path | None = None,
 ) -> bool:
@@ -48,7 +46,6 @@ def install_asset_from_repo(
     else:
         logger.info(f"Successfully installed {asset} to local nuke folder")
         asset.set_install_status("local")
-        local_manifest.add(asset)
         installed = True
 
     return installed

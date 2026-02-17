@@ -1,20 +1,44 @@
-import pytest
 from nukekit.core import Manifest
 
 
-def test_manifest_creation_error():
-    with pytest.raises(TypeError):
-        Manifest()
+def test_manifest_empty():
+    manifest = Manifest()
+    manifest.data == {"Gizmo": {}, "Script": {}}
 
 
-def test_new_manifest(tmp_path):
-    file_path = tmp_path / "temp.json"
-    m = Manifest.from_json(file_path)
-    assert m.data == {"Gizmo": {}, "Script": {}}
+def test_manifest_from_dict():
+    data = {"key": "value"}
+    Manifest.from_dict(data)
 
 
-def test_manifest_local_state(tmp_path):
-    local = tmp_path / "local"
-    local.mkdir()
-    manifest = Manifest.from_local_state(local)
-    assert manifest.ROOT == local / "local_state.json"
+def test_manifest_add_asset(sample_asset):
+    manifest = Manifest()
+    manifest.add_asset(sample_asset)
+    # assert manifest.has_asset(sample_asset)
+
+
+def test_manifest_has_asset(sample_asset):
+    manifest = Manifest()
+    manifest.add_asset(sample_asset)
+    assert manifest.has_asset(sample_asset)
+
+
+def test_manifest_get_asset(sample_asset):
+    manifest = Manifest()
+    manifest.add_asset(sample_asset)
+    assert manifest.get_asset(sample_asset) == sample_asset
+
+
+def test_manifest_len(sample_asset):
+    manifest = Manifest()
+    manifest.add_asset(sample_asset)
+    assert len(manifest) == 1
+
+
+def test_manifest_latest_asset_version(sample_asset):
+    asset2 = sample_asset
+    asset2.version.version_up("minor")
+    manifest = Manifest()
+    manifest.add_asset(sample_asset)
+    manifest.add_asset(asset2)
+    assert manifest.get_latest_asset_version(sample_asset) == asset2.version

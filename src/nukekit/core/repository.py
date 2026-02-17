@@ -61,7 +61,7 @@ class Repository:
 
         logger.debug(f"Ensured repository structure at {self.root}")
 
-    def build_asset_path(self, asset: Asset) -> Path:
+    def get_asset_path(self, asset: Asset) -> Path:
         if asset.type not in self.asset_types:
             raise FileNotFoundError(f"Path {self.root / asset.type} not found in repo")
 

@@ -50,7 +50,7 @@ class ManifestStore:
         logger.debug(f"Saved manifest to {path}")
 
     @staticmethod
-    def from_local_state(
+    def load_from_filesystem(
         scan_path: Path,
         cached_manifest: Manifest | None = None,
     ) -> Manifest:
@@ -120,55 +120,24 @@ class Manifest:
         """Create manifest from dictionary."""
         return cls(data=data, source_path=source_path)
 
-    def add(self, asset: Asset) -> bool:
-        """
-        Reads current manifest, adds asset and writes out updated manifest.
+    def add_asset(self, asset: Asset) -> None:
+        """Add or update an asset in the manifest."""
 
-        :param asset: Asset object to add to manifest
-        :type asset: Asset
-        :return: Confirmation of successfull add
-        :rtype: bool
-        """
-
-        data = self.read_manifest()
-
-        if asset.name not in data[asset.type]:
+        if asset.name not in self.data[asset.type]:
             # New asset
-            data[asset.type][asset.name] = {asset.version: asset}
-        else:
-            # Existing asset, add to asset"s dict
-            data[asset.type][asset.name][asset.version] = asset
+            self.data[asset.type][asset.name] = {}
 
-        if self.write_manifest(data):
-            # Updates current status
-            self.data = self.read_manifest()
-            logger.debug(
-                f"Successfully added {asset.name} v{asset.version} to {self.ROOT}"
-            )
-            return True
-        else:
-            return False
+        self.data[asset.type][asset.name][asset.version] = asset
 
     def get_latest_asset_version(self, asset: Asset) -> Version | None:
-        """
-        Parses the manifest and returns the highest version for this asset.
-
-        :param asset: Asset to return latest version
-        :type asset: Asset
-        :return: Version instance of latest asset"s version
-        :rtype: Version
-        """
-
-        data = self.read_manifest()
-
         try:
-            data[asset.type][asset.name]
+            self.data[asset.type][asset.name]
         except Exception:
             # Asset is not in manifest.
             return None
         else:
             # Asset is in manifest, get list of all versions.
-            asset_versions_list = list(data[asset.type][asset.name].keys())
+            asset_versions_list = list(self.data[asset.type][asset.name].keys())
             if len(asset_versions_list) > 1:
                 # If list has at least two version, sort and return highest value
                 return Version.highest_version(asset_versions_list)
@@ -194,7 +163,7 @@ class Manifest:
     ) -> Asset | None:
         """Get specific asset by name and version."""
         try:
-            return self.data[asset.type.name][asset.name][asset.version]
+            return self.data[asset.type.value][asset.name][asset.version]
         except KeyError:
             return None
 
@@ -204,7 +173,7 @@ class Manifest:
     ) -> bool:
         """Check if asset exists in manifest."""
         try:
-            asset_dict = self.data[asset.type.name][asset.name]
+            asset_dict = self.data[asset.type.value][asset.name]
             if asset.version is None:
                 return True  # Any version exists
             return asset.version in asset_dict

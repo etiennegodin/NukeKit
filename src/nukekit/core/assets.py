@@ -57,7 +57,7 @@ class Asset:
         unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
 
-    def ensure_message(self) -> None:
+    def _ensure_message(self) -> None:
         """Prompt user for changelog if not provided."""
         while True:
             message = input(
@@ -75,6 +75,7 @@ class Asset:
         self._set_time()
         self._set_author()
         self._set_uuid()
+        self._ensure_message()
 
     def set_publish_status(self, status: PUBLISH_STATUS) -> None:
         self.status = AssetStatus(status)

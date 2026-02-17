@@ -9,21 +9,18 @@ from .console import user_input_choice
 from .versioning import VERSION_CLASSES
 
 if TYPE_CHECKING:
-    from . import Manifest, Repository
+    from . import Manifest
 
 
 logger = logging.getLogger(__name__)
 
 
-def publish_asset_to_repo(repo: Repository, asset: Asset) -> bool:
+def publish_asset_to_repo(source_path, destination_path) -> bool:
     published = False
-    destination_path = repo.build_asset_path(asset)
 
     try:
-        asset.set_publish_status("published")
-        shutil.copy2(asset.source_path, destination_path)
+        shutil.copy2(source_path, destination_path)
         logger.info(f"Successfully saved {destination_path}")
-        repo.manifest.add(asset)
         published = True
 
     except shutil.SameFileError:
