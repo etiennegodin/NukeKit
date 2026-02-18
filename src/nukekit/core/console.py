@@ -14,16 +14,6 @@ RETURN_TYPES = Literal["bool", "str"]
 
 
 def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
-    """
-    Interactive terminal selection menu
-
-    :param d: Data to explore
-    :type d: dict
-    :param level_name: Name for menu/sub-menu
-    :type level_name: str
-    :return: Asset instance from selected option
-    :rtype: Asset
-    """
     value = None
     while True:
         d = stringify_keys(d)
@@ -48,7 +38,13 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
         if value is not None:
             return value
     if value is not None:
-        return value
+        if isinstance(value, Asset):
+            return value
+        raise TypeError(f"Provided asset is not of type {Asset}")
+
+    else:
+        logger.info("Asset install aborted.")
+        quit()
 
 
 def print_data(data: dict, label: str = "Manifest"):

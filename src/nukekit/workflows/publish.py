@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from ..core import (
-    Asset,
     EnvContext,
     Manifest,
     ManifestStore,
@@ -14,12 +13,6 @@ from ..core import (
 
 
 def publish(args, env: EnvContext):
-    """_summary_
-
-    Args:
-        args (_type_): _description_
-        context (EnvContext): _description_
-    """
     # 1. Setup repository (directory structure)
     repo = Repository.from_config(env.config)
 
@@ -40,12 +33,6 @@ def publish(args, env: EnvContext):
     console.print_data(local_state)
     asset = console.choose_menu(local_state)
 
-    if asset is None:
-        publisher.logger.info("Asset publish aborted.")
-        quit()
-    elif not isinstance(asset, Asset):
-        raise TypeError(f"Provided asset is not of type {Asset}")
-
     # 5. Resolve version
     asset = publisher.resolve_version(repo.manifest, asset)
 
@@ -64,6 +51,6 @@ def publish(args, env: EnvContext):
     ManifestStore.save_to_json(repo_manifest, repo.manifest_path)
 
     # 10. Install locally and update local manifest
-    installer.install_asset_from_repo(env, repo, asset)
+    installer.install_asset_from_repo(repo, asset)
     cached_manifest.add_asset(asset)
     ManifestStore.save_to_json(cached_manifest, env.user_paths.CACHED_MANIFEST)

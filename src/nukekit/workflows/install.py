@@ -1,7 +1,6 @@
 from ..core import (
-    Asset,
     EnvContext,
-    Manifest,
+    ManifestStore,
     Repository,
     console,
     installer,
@@ -9,23 +8,20 @@ from ..core import (
 
 
 def install(args, env: EnvContext):
-    """
-    Install a remote asset to local nuke directory
+    # 1. Setup repository (directory structure)
+    repo = Repository.from_config(env.config)
 
-    :param context: This sessions"s context
-    :type context: EnvContext
-    """
+    # 2. Load manifests (persistence layer)
+    repo_manifest = ManifestStore.load_from_json(repo.manifest_path)
+    cached_manifest = ManifestStore.load_from_json(env.user_paths.CACHED_MANIFEST)
 
-    repo = Repository(env.config)
-    repo.add_manifest(Manifest.from_json(repo.MANIFEST_PATH))
-    local_manifest = Manifest.from_json(env.user_paths.CACHED_MANIFEST)
+    # 3. User chooses asset
+    asset = console.choose_menu(repo_manifest.data)
 
-    asset = console.choose_menu(repo.manifest.data)
+    # 4. Install locally
+    installer.install_asset_from_repo(repo, asset)
+    asset.set_install_status("local")
 
-    if asset is None:
-        installer.logger.info("Asset install aborted.")
-        quit()
-    elif not isinstance(asset, Asset):
-        raise TypeError(f"Provided asset is not of type {Asset}")
-
-    installer.install_asset_from_repo(env, repo, local_manifest, asset)
+    # 5. Update local manifest and save
+    cached_manifest.add_asset(asset)
+    ManifestStore.save_to_json(cached_manifest, env.user_paths.CACHED_MANIFEST)
