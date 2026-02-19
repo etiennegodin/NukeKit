@@ -1,4 +1,4 @@
-from .config import ConfigLoader, ConfigValidator
+from .config import ConfigLoader
 from .logger import init_logger
 from .misc import _sort_dict, deep_merge
 from .paths import UserPaths

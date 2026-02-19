@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from ..core import Manifest, ManifestStore, Repository
 from ..core.exceptions import ConfigurationError
-from ..utils import ConfigValidator, UserPaths, init_logger
+from ..utils import UserPaths, init_logger
 
 
 @dataclass
@@ -52,7 +52,7 @@ class Dependencies:
             logger = init_logger()
 
         # Validate config
-        ConfigValidator.validate(config)
+        cls._validate_config(config)
 
         # Create core components
         repository = Repository.from_config(config)
