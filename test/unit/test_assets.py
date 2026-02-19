@@ -42,4 +42,4 @@ def test_asset_metadata(sample_asset):
 
 
 def test_asset_get_file_name(sample_asset):
-    assert sample_asset.get_file_name() == "tool_v0.1.0.gizmo "
+    assert sample_asset.get_file_name() == "tool_v0.1.0.gizmo"
