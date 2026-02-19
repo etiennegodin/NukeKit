@@ -5,7 +5,7 @@ from ..core import (
 )
 
 
-def scan(args, env: EnvContext):
+def scan_workflow(args, env: EnvContext):
     """
     Scan nuke directory and print available assets to console
 

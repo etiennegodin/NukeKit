@@ -7,12 +7,12 @@ from ..core import (
 )
 
 
-def install(args, env: EnvContext):
+def install_workflow(args, env: EnvContext):
     # 1. Setup repository (directory structure)
-    repo = Repository.from_config(env.config)
+    repository = Repository.from_config(env.config)
 
     # 2. Load manifests (persistence layer)
-    repo_manifest = ManifestStore.load_from_json(repo.manifest_path)
+    repo_manifest = ManifestStore.load_from_json(repository.manifest_path)
     cached_manifest = ManifestStore.load_from_json(env.user_paths.CACHED_MANIFEST)
 
     # 3. User chooses asset
@@ -20,7 +20,8 @@ def install(args, env: EnvContext):
 
     # 4. Install locally
     copy.copy_asset(
-        repo.get_asset_path(asset), env.user_paths.NUKE_KIT_DIR / asset.get_file_name()
+        repository.get_asset_path(asset),
+        env.user_paths.NUKE_KIT_DIR / asset.get_file_name(),
     )
     asset.set_install_status("local")
 

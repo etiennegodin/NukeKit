@@ -51,7 +51,7 @@ class ConfigValidator:
     }
 
     @classmethod
-    def validate(cls, config: dict):
+    def validate(cls, config: dict) -> None:
         """Validate config. Returns (is_valid, errors)."""
         # Check required sections
         for section, keys in cls.REQUIRED_KEYS.items():

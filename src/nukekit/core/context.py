@@ -4,8 +4,8 @@ import logging
 from dataclasses import dataclass
 from enum import StrEnum
 
+from ..utils.config import ConfigLoader, ConfigValidator
 from ..utils.paths import UserPaths
-from .config import ConfigLoader, ConfigValidator
 
 logger = logging.getLogger(__name__)
 

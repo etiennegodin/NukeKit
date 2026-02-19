@@ -1,18 +1,19 @@
+from ..utils.config import ConfigLoader, ConfigValidator
 from . import console, copy, scanner
 from .assets import Asset, AssetStatus, AssetType
-from .config import ConfigLoader, ConfigValidator
-from .context import EnvContext, envContextBuilder
+
+# from .context import EnvContext, envContextBuilder
 from .manifest import Manifest
 from .manifest_store import ManifestStore
 from .repository import Repository
+from .validator import AssetValidator
 from .versioning import Version
 
 __all__ = [
     "Asset",
     "AssetStatus",
+    "AssetValidator",
     "AssetType",
-    "EnvContext",
-    "envContextBuilder",
     "Repository",
     "Manifest",
     "ManifestStore",

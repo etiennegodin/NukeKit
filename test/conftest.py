@@ -11,7 +11,7 @@ def sample_gizmo_path(tmp_path):
 
 @pytest.fixture
 def sample_config(tmp_path) -> dict:
-    repo_root = tmp_path / "repo"
+    repo_root = tmp_path / "repository"
     return {
         "repository": {"root": repo_root, "subfolder": ["Gizmo", "Script"]},
         "user": {"nuke_dir": "~/.nuke"},

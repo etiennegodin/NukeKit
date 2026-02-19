@@ -2,9 +2,9 @@ import argparse
 import os
 from pathlib import Path
 
-from .core import envContextBuilder
-from .utils import UserPaths, init_logger
-from .workflows import install, publish, scan
+from .app import Dependencies
+from .utils import ConfigLoader
+from .workflows import install, publish_workflow, scan
 
 ROOT_FOLDER = Path(os.getcwd())
 LOG_PATH = ROOT_FOLDER / "nukekit.log"
@@ -33,7 +33,7 @@ def main():
     parser_publish.add_argument(
         "--local", "-l", action="store_true", help="Publish from this directory"
     )
-    parser_publish.set_defaults(func=publish)  # Associate a function
+    parser_publish.set_defaults(func=publish_workflow)  # Associate a function
 
     # Install
     parser_install = subparsers.add_parser(
@@ -50,18 +50,13 @@ def main():
 
     args = parser.parse_args()
 
-    # Get app context
-    env = envContextBuilder()
+    config = ConfigLoader()
 
-    # Init logger
-    init_logger()
+    deps = Dependencies.create(config)
 
     # Call the function associated with the subcommand
     if hasattr(args, "func"):
-        # Dev force clean state
-        if args.force:
-            UserPaths.clean()
-        args.func(args, env)
+        args.func(args, deps)
     else:
         pass
         # context.set_mode("publish")

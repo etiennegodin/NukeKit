@@ -9,19 +9,22 @@ from .versioning import VERSION_CLASSES, Version
 logger = logging.getLogger(__name__)
 
 
-class Validator:
+class AssetValidator:
     name_format = ""
     file_size = ""
 
     def __init__(self) -> None:
         pass
 
+    def validate_asset(self):
+        return True
+
 
 def resolve_version(latest_version: Version, asset: Asset) -> Asset:
     while True:
-        # New asset or newer than repo nothing to resolve
+        # New asset or newer than repository nothing to resolve
         if latest_version is None or asset.version > latest_version:
-            logger.info(f"{asset.name} not found in repo. New publish.")
+            logger.info(f"{asset.name} not found in repository. New publish.")
             break
 
         # Version Logic: Conflict/Exists
@@ -30,7 +33,7 @@ def resolve_version(latest_version: Version, asset: Asset) -> Asset:
         # If same version ask to add
         if latest_version == asset.version:
             if user_input_choice(
-                f"{asset} already exists in repo. \n"
+                f"{asset} already exists in repository. \n"
                 "Do you want to publish a new version?"
             ):
                 to_update = True
@@ -42,7 +45,7 @@ def resolve_version(latest_version: Version, asset: Asset) -> Asset:
         # If lower version ask to add
         elif latest_version > asset.version:
             if user_input_choice(
-                f"A newer version of {asset} already exists in repo"
+                f"A newer version of {asset} already exists in repository"
                 f"({latest_version}). \n"
                 "Do you want to add it?"
             ):
