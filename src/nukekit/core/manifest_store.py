@@ -24,13 +24,15 @@ class ManifestStore:
     @staticmethod
     def load_from_json(path: Path) -> Manifest:
         """Create Manifest from a file path"""
+        if path.is_dir():
+            raise TypeError("Provided path is a dir")
         if not path.exists():
             logger.warning(f"Manifest file {path} not found, returning empty")
             return Manifest(source_path=path)
 
         try:
             data = load_json(path)
-            return Manifest.from_dict(data)
+            return Manifest.from_dict(data, source_path=path)
         except Exception as e:
             logger.error(f"Failed to load manifest from {path}: {e}")
             raise

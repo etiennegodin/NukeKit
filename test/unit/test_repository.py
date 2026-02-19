@@ -7,7 +7,7 @@ def test_repo_from_config(sample_config):
 
 
 def test_repo_creation(tmp_path):
-    repo = Repository(tmp_path, [a for a in AssetType])
+    repo = Repository(tmp_path / "repo", [a for a in AssetType])
     assert repo
 
 

@@ -1,5 +1,5 @@
 import pytest
-from nukekit.core import Asset, Manifest, Repository, copy
+from nukekit.core import Asset, AssetType, Repository
 
 
 @pytest.fixture
@@ -24,15 +24,7 @@ def sample_asset(sample_gizmo_path):
     return asset
 
 
-@pytest.fixture
-def sample_empty_repo(sample_config):
-    repo = Repository(sample_config)
-    manifest = Manifest.from_json(repo.MANIFEST_PATH)
-    repo.add_manifest(manifest)
-    return repo
-
-
-@pytest.fixture
-def sample_repo(sample_empty_repo, sample_asset):
-    copy.copy_asset(sample_empty_repo, sample_asset)
-    return sample_empty_repo
+@pytest.fixture(scope="session")
+def sample_repo(tmp_path_factory):
+    repo_dir = tmp_path_factory.mktemp("shared_repository")
+    return Repository(repo_dir, list(AssetType))
