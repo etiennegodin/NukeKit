@@ -155,9 +155,9 @@ class Asset:
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_type = AssetType[AssetSuffix(asset_suffix).name]
-
-        if asset_type is None:
+        try:
+            asset_type = AssetType[AssetSuffix(asset_suffix).name]
+        except ValueError:
             raise TypeError(
                 "\nProvided asset tpye is not a supported.\n"
                 "Please submit a file with this type"
