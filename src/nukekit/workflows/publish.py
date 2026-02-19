@@ -30,11 +30,11 @@ def publish(args, env: EnvContext):
         )
 
     # 4. User chooses asset
-    console.print_data(local_state)
-    asset = console.choose_menu(local_state)
+    console.print_data(local_state.data)
+    asset = console.choose_menu(local_state.data)
 
     # 5. Resolve version
-    asset = resolve_version(repo.manifest, asset)
+    asset = resolve_version(repo_manifest.get_latest_asset_version(asset), asset)
 
     # 6. Ensure metadata
     asset.ensure_metadata()

@@ -3,7 +3,7 @@ from ..core import (
     ManifestStore,
     Repository,
     console,
-    installer,
+    copy,
 )
 
 
@@ -19,7 +19,9 @@ def install(args, env: EnvContext):
     asset = console.choose_menu(repo_manifest.data)
 
     # 4. Install locally
-    installer.install_asset_from_repo(repo, asset)
+    copy.copy_asset(
+        repo.get_asset_path(asset), env.user_paths.NUKE_KIT_DIR / asset.get_file_name()
+    )
     asset.set_install_status("local")
 
     # 5. Update local manifest and save
