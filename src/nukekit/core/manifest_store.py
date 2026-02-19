@@ -72,6 +72,7 @@ class ManifestStore:
         if isinstance(scan_path, Path):
             if not scan_path.is_dir():
                 raise TypeError("Provided path for scanner is not a dir")
+
         scanned_data = scan_folder(scan_path)
         scanned_manifest = Manifest.from_dict(scanned_data)
 
