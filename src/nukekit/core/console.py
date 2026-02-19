@@ -6,6 +6,7 @@ from rich.tree import Tree
 from simple_term_menu import TerminalMenu
 
 from .assets import Asset
+from .exceptions import InvalidAssetError
 from .serialization import stringify_keys
 
 logger = logging.getLogger(__name__)
@@ -40,11 +41,10 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
     if value is not None:
         if isinstance(value, Asset):
             return value
-        raise TypeError(f"Provided asset is not of type {Asset}")
+        raise InvalidAssetError("Selection is not a valid asset", {value: type(value)})
 
     else:
-        logger.info("Asset install aborted.")
-        quit()
+        return None
 
 
 def print_data(data: dict, label: str = "Manifest"):

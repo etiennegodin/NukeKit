@@ -49,7 +49,7 @@ def main():
 
         # Create dependencies
         try:
-            deps = Dependencies.create(config)
+            deps = Dependencies.create(config, logger=logger)
         except ConfigurationError as e:
             console.print(f"[red]Configuration error: {e}[/red]")
             sys.exit(1)

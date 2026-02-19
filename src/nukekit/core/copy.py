@@ -18,7 +18,6 @@ def copy_asset(source_path: Path, destination_path: Path) -> bool:
 
     try:
         shutil.copy2(source_path, destination_path)
-        logger.info(f"Successfully saved {destination_path}")
         copied = True
     except shutil.SameFileError:
         logger.error("Source and destination represent the same file.")

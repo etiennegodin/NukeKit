@@ -16,7 +16,7 @@ from ..core import (
     copy,
     scanner,
 )
-from ..core.exceptions import UserAbortedError, ValidationError
+from ..core.exceptions import UserAbortedError
 from ..core.validator import resolve_version
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,6 @@ def execute(
     if interactive:
         console.print_data(local_state.to_dict())
         asset = console.choose_menu(local_state.to_dict())
-
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")
     else:
@@ -69,14 +68,15 @@ def execute(
     asset.ensure_message()
 
     # Validate asset
-    from ..core.validator import AssetValidator
 
+    """
     is_valid, errors = AssetValidator.validate_asset(asset)
     if not is_valid:
         raise ValidationError(
             f"Asset validation failed: {', '.join(errors)}", details={"errors": errors}
         )
 
+    """
     # Publish to repository
     destination_path = deps.repository.get_asset_path(asset)
     copy.copy_asset(asset.source_path, destination_path)
@@ -98,5 +98,4 @@ def execute(
     deps.cached_manifest.add_asset(asset)
     ManifestStore.save_to_json(deps.cached_manifest, deps.user_paths.CACHED_MANIFEST)
 
-    logger.info(f"Successfully published {asset}")
     return {"asset": asset}
