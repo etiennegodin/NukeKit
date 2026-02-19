@@ -15,9 +15,18 @@ from .versioning import Version
 logger = logging.getLogger(__name__)
 
 
+class AssetSuffix(StrEnum):
+    GIZMO = ".gizmo"
+    SCRIPT = ".nk"
+
+
 class AssetType(StrEnum):
     GIZMO = "Gizmo"
     SCRIPT = "Script"
+
+    @property
+    def suffix(self) -> AssetSuffix:
+        return AssetSuffix(self.name)
 
 
 class AssetStatus(StrEnum):
@@ -32,8 +41,6 @@ class AssetStatus(StrEnum):
 INSTALL_STATUS = Literal["non_local", "local"]
 PUBLISH_STATUS = Literal["unpublished", "synced", "published"]
 
-ASSET_SUFFIXES = {".gizmo": AssetType.GIZMO, ".nk": AssetType.SCRIPT}
-
 
 @dataclass
 class Asset:
@@ -42,10 +49,10 @@ class Asset:
     source_path: Path
     status: AssetStatus
     type: AssetType
-    message: str = NotImplemented
-    author: str = NotImplemented
-    time: str = NotImplemented
-    id: str = NotImplemented
+    message: str = None
+    author: str = None
+    time: str = None
+    id: str = None
 
     def _set_time(self) -> None:
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
@@ -57,7 +64,7 @@ class Asset:
         unique_id = shortuuid.uuid()[:10]
         self.id = str(unique_id)
 
-    def _ensure_message(self) -> None:
+    def ensure_message(self) -> None:
         """Prompt user for changelog if not provided."""
         while True:
             message = input(
@@ -75,13 +82,15 @@ class Asset:
         self._set_time()
         self._set_author()
         self._set_uuid()
-        self._ensure_message()
 
     def set_publish_status(self, status: PUBLISH_STATUS) -> None:
         self.status = AssetStatus(status)
 
     def set_install_status(self, status: INSTALL_STATUS) -> None:
         self.status = AssetStatus(status)
+
+    def get_file_name(self):
+        return f"{self}{self.type.suffix}"
 
     def to_dict(self) -> dict:
         return {
@@ -146,13 +155,13 @@ class Asset:
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_type = ASSET_SUFFIXES.get(asset_suffix)
+        asset_type = AssetSuffix(asset_suffix)
 
         if asset_type is None:
             raise TypeError(
                 "\nProvided asset tpye is not a supported.\n"
                 "Please submit a file with this type"
-                f"{[str(k) for k in ASSET_SUFFIXES.keys()]} "
+                f"{[str(m) for m in AssetSuffix.__members__]} "
             )
 
         return Asset(

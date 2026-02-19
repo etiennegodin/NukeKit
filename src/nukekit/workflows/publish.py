@@ -6,10 +6,10 @@ from ..core import (
     ManifestStore,
     Repository,
     console,
-    installer,
-    publisher,
+    copy,
     scanner,
 )
+from ..core.validator import resolve_version
 
 
 def publish(args, env: EnvContext):
@@ -34,14 +34,14 @@ def publish(args, env: EnvContext):
     asset = console.choose_menu(local_state)
 
     # 5. Resolve version
-    asset = publisher.resolve_version(repo.manifest, asset)
+    asset = resolve_version(repo.manifest, asset)
 
     # 6. Ensure metadata
     asset.ensure_metadata()
 
     # 7. Publish to repository
     destination_path = repo.get_asset_path(asset)
-    publisher.publish_asset_to_repo(asset.source_path, destination_path)
+    copy.copy_asset(asset.source_path, destination_path)
 
     # 8. Upate asset status
     asset.set_publish_status("published")
@@ -51,6 +51,9 @@ def publish(args, env: EnvContext):
     ManifestStore.save_to_json(repo_manifest, repo.manifest_path)
 
     # 10. Install locally and update local manifest
-    installer.install_asset_from_repo(repo, asset)
+
+    copy.copy_asset(
+        repo.get_asset_path(asset), env.user_paths.NUKE_KIT_DIR / asset.get_file_name()
+    )
     cached_manifest.add_asset(asset)
     ManifestStore.save_to_json(cached_manifest, env.user_paths.CACHED_MANIFEST)

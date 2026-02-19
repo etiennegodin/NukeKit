@@ -1,5 +1,5 @@
 import pytest
-from nukekit.core import Asset, Manifest, Repository, publisher
+from nukekit.core import Asset, Manifest, Repository, copy
 
 
 @pytest.fixture
@@ -34,5 +34,5 @@ def sample_empty_repo(sample_config):
 
 @pytest.fixture
 def sample_repo(sample_empty_repo, sample_asset):
-    publisher.publish_asset_to_repo(sample_empty_repo, sample_asset)
+    copy.copy_asset(sample_empty_repo, sample_asset)
     return sample_empty_repo

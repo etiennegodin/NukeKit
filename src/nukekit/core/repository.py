@@ -4,7 +4,7 @@ import logging
 import os
 from pathlib import Path
 
-from .assets import ASSET_SUFFIXES, Asset, AssetType
+from .assets import Asset, AssetType
 
 logger = logging.getLogger(__name__)
 
@@ -68,10 +68,7 @@ class Repository:
         # Force asset subfolder creation
         (self.root / asset.type / asset.name).mkdir(exist_ok=True)
 
-        suffix = next(
-            (key for key, val in ASSET_SUFFIXES.items() if val == asset.type), None
-        )
-        return self.root / asset.type / asset.name / f"{asset}{suffix}"
+        return self.root / asset.type / asset.name / f"{asset}{asset.type.suffix}"
 
     def get_type_directory(self, asset_type: AssetType) -> Path:
         """Get directory for given asset type."""

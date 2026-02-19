@@ -32,3 +32,14 @@ def test_asset_same(sample_gizmo_path):
     a1 = Asset.from_path(sample_gizmo_path)
     a2 = Asset.from_path(sample_gizmo_path)
     assert a1 == a2
+
+
+def test_asset_metadata(sample_asset):
+    sample_asset.ensure_metadata()
+    assert sample_asset.author is not None
+    assert sample_asset.id is not None
+    assert sample_asset.time is not None
+
+
+def test_asset_get_file_name(sample_asset):
+    assert sample_asset.get_file_name() == "tool_v0.1.0.gizmo "

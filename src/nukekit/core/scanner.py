@@ -2,13 +2,9 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from ..utils import _sort_dict
-from .assets import ASSET_SUFFIXES, Asset
-
-if TYPE_CHECKING:
-    pass
+from .assets import Asset, AssetSuffix, AssetType
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +12,7 @@ logger = logging.getLogger(__name__)
 def scan_folder(path: Path) -> dict:
     logger.debug(path)
     assets = {}
-    for suffix, asset_type in ASSET_SUFFIXES.items():
+    for suffix, asset_type in zip(AssetSuffix.__members__, AssetType.__members__):
         asset_paths = list(path.rglob(f"*{suffix}"))
         asset_subtype: dict[str, dict] = {}
         for path in asset_paths:

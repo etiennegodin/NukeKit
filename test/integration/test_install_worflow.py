@@ -1,4 +1,4 @@
-from nukekit.core import Asset, ManifestStore, Repository, installer
+from nukekit.core import Asset, ManifestStore, Repository, copy
 
 
 def test_install_asset_from_repo(tmp_path, sample_asset: Asset, sample_config: dict):
@@ -6,7 +6,9 @@ def test_install_asset_from_repo(tmp_path, sample_asset: Asset, sample_config: d
     repo = Repository.from_config(sample_config)
     cached_manifest = ManifestStore.load_from_json(local_folder)
 
-    installer.install_asset_from_repo(repo, sample_asset, local_folder)
+    # source_path = repo.get_asset_path(sample_asset)
+
+    copy.install_asset_from_repo(repo, sample_asset, local_folder)
     cached_manifest.add_asset(sample_asset)
     ManifestStore.save_to_json(cached_manifest, cached_manifest.source_path)
 

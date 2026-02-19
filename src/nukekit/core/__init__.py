@@ -1,8 +1,9 @@
-from . import console, installer, publisher, scanner
+from . import console, copy, scanner
 from .assets import Asset, AssetStatus, AssetType
 from .config import ConfigLoader, ConfigValidator
 from .context import EnvContext, envContextBuilder
-from .manifest import Manifest, ManifestStore
+from .manifest import Manifest
+from .manifest_store import ManifestStore
 from .repository import Repository
 from .versioning import Version
 
@@ -13,13 +14,12 @@ __all__ = [
     "EnvContext",
     "envContextBuilder",
     "Repository",
-    "installer",
     "Manifest",
     "ManifestStore",
     "Version",
     "scanner",
     "ConfigLoader",
     "ConfigValidator",
-    "publisher",
+    "copy",
     "console",
 ]
