@@ -25,8 +25,8 @@ class AssetType(StrEnum):
     SCRIPT = "Script"
 
     @property
-    def suffix(self) -> AssetSuffix:
-        return AssetSuffix(self.name)
+    def suffix(self) -> str:
+        return AssetSuffix[self.name].value
 
 
 class AssetStatus(StrEnum):
@@ -155,7 +155,7 @@ class Asset:
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
-        asset_type = AssetSuffix(asset_suffix)
+        asset_type = AssetType[AssetSuffix(asset_suffix).name]
 
         if asset_type is None:
             raise TypeError(
