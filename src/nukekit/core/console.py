@@ -19,8 +19,19 @@ RETURN_TYPES = Literal["bool", "str"]
 def _flatten_manifest_to_choices(
     data: dict,
 ) -> list[tuple[str, Asset]]:
-    """Flatten manifest data
-    (type -> name -> version -> Asset) to (display_line, asset) list."""
+    """
+    Flatten manifest data to a list of (display_line, asset) tuples.
+
+    Converts nested manifest structure (type -> name -> version -> Asset)
+    into a flat list suitable for single-step selection menus.
+
+    Args:
+        data: Nested dict from Manifest.to_dict().
+
+    Returns:
+        List of (display_string, Asset) tuples where display_string
+        format is "[Type] Name · Version".
+    """
     choices: list[tuple[str, Asset]] = []
     for type_key, names in data.items():
         type_str = getattr(type_key, "value", type_key) if type_key else ""
@@ -36,8 +47,19 @@ def _flatten_manifest_to_choices(
 def _unique_asset_names(
     data: dict,
 ) -> list[tuple[str, tuple[Any, str]]]:
-    """List unique (type, name) from manifest data.
-    Returns (display, (type_key, name))."""
+    """
+    Extract unique asset names from manifest data.
+
+    Groups assets by (type, name) and returns a list suitable for
+    the first step of a two-step selection (asset name selection).
+
+    Args:
+        data: Nested dict from Manifest.to_dict().
+
+    Returns:
+        List of (display_string, (type_key, name)) tuples where
+        display_string format is "[Type] Name".
+    """
     seen: set[tuple[Any, str]] = set()
     result: list[tuple[str, tuple[Any, str]]] = []
     for type_key, names in data.items():
@@ -53,7 +75,22 @@ def _unique_asset_names(
 def _version_choices_for_asset(
     data: dict, type_key: Any, name: str
 ) -> list[tuple[str, Asset]]:
-    """Build (display, Asset) list for one asset: Latest (x.y.z) + each version."""
+    """
+    Build version choices for a specific asset.
+
+    Creates a list of (display_string, Asset) tuples including:
+    - "Latest (x.y.z)" option pointing to the highest version
+    - Each individual version as a separate option
+
+    Args:
+        data: Nested dict from Manifest.to_dict().
+        type_key: Asset type key (e.g., AssetType enum or string).
+        name: Asset name.
+
+    Returns:
+        List of (display_string, Asset) tuples sorted by version
+        (newest first). First entry is always "Latest (x.y.z)".
+    """
     version_dict = data[type_key][name]
     if not version_dict:
         return []
@@ -150,6 +187,22 @@ def choose_asset_fuzzy(
 
 
 def choose_menu(d: dict, level_name: str = "Main menu") -> Asset | None:
+    """
+    Interactive nested menu for selecting an asset.
+
+    Recursively navigates dict (type -> name -> version -> Asset) /
+    using TerminalMenu. User drills down through levels until an Asset is selected.
+
+    Args:
+        d: Nested dict structure from Manifest.to_dict().
+        level_name: Title for the current menu level.
+
+    Returns:
+        Selected Asset, or None if user selects "Return" at top level.
+
+    Raises:
+        InvalidAssetError: If selection doesn't resolve to a valid Asset.
+    """
     value = None
     while True:
         d = stringify_keys(d)
@@ -182,14 +235,16 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset | None:
         return None
 
 
-def print_data(data: dict, label: str = "Manifest"):
+def print_data(data: dict, label: str = "Manifest") -> None:
     """
-    Print input dictionnary as tree in terminal
+    Print manifest data as a formatted tree in the terminal.
 
-    :param data: Data to displauy
-    :type data: dict
-    :param label: Top level label for this branch of the tree
-    :type label: str
+    Displays assets organized by type and name, showing status, version,
+    and ID for each asset version.
+
+    Args:
+        data: Nested dict from Manifest.to_dict() (type -> name -> version -> Asset).
+        label: Top-level label for the tree root.
     """
 
     format_string = "| {:<12} | {:<8} | {:<10} |"
@@ -227,16 +282,21 @@ def _format_options_list(options: Any):
 def user_input_choice(
     question: str, options: list[str] | None = None, type: RETURN_TYPES = "bool"
 ) -> bool | str:
-    """Ask user a question with options answers in terminal.
+    """
+    Prompt user for a choice from a list of options.
 
+    Continuously prompts until user enters a valid option. Automatically
+    adds "?" to question if missing.
 
     Args:
-        question (str): _description_
-        options (list[str] | None, optional): _description_. Defaults to None.
-        type (RETURN_TYPES, optional): _description_. Defaults to "bool".
+        question: Question text to display to user.
+        options: List of valid option strings. Defaults to ["y", "n"].
+        type: Return type - "bool" returns True/False based on "y"/"n",
+            "str" returns the selected option string.
 
     Returns:
-        bool | str: _description_
+        If type is "bool": True if user selected "y", False otherwise.
+        If type is "str": The selected option string.
     """
     if options is None:
         options = ["y", "n"]

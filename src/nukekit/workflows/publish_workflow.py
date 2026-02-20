@@ -28,17 +28,23 @@ def execute(
     """
     Execute publish workflow.
 
+    Scans for assets (local directory or NUKE_DIR), prompts user to select one,
+    resolves version conflicts, ensures metadata, publishes to repository,
+    and installs locally.
+
     Args:
-        deps: Injected dependencies
-        scan_local: If True, scan current directory
-        interactive: If True, prompt user
+        deps: Injected dependencies containing repository, manifests, and user paths.
+        scan_local: If True, scan current directory (Path.cwd()); else scan NUKE_DIR.
+        interactive: If True, prompt user for asset selection.
+            If False, raises NotImplementedError (non-interactive not yet supported).
 
     Returns:
-        dict with 'asset' key
+        Dictionary with 'asset' key containing the published Asset instance.
 
     Raises:
-        UserAbortedError: If user cancels
-        ValidationError: If asset is invalid
+        UserAbortedError: If user cancels during selection.
+        NotImplementedError: If interactive=False (not yet supported).
+        ValidationError: If asset validation fails (currently commented out).
     """
 
     # Get assets to choose from
@@ -52,7 +58,6 @@ def execute(
 
     # User selects asset
     if interactive:
-        console.print_data(local_state.to_dict())
         asset = console.choose_asset_fuzzy(local_state.to_dict(), prompt="Publish")
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")

@@ -20,13 +20,22 @@ def execute(
     """
     Execute scan workflow.
 
+    Scans for assets either from the local filesystem (NUKE_DIR) or from
+    the repository manifest. For local scans, merges with cached manifest
+    metadata when available.
+
     Args:
-        deps: Injected dependencies
-        location: ["local" to scan NUKE_DIR filesystem,
-                    "remote" to use repository manifest]
+        deps: Injected dependencies containing user paths and manifests.
+        location: "local" to scan NUKE_DIR filesystem, "remote" to use
+            repository manifest.
 
     Returns:
-        dict with 'assets' (manifest data) and 'count' (total asset versions)
+        Dictionary with:
+            - 'assets': Nested dict from Manifest.to_dict()
+            - 'count': Total number of asset versions found
+
+    Raises:
+        ValueError: If location is invalid or repository manifest not loaded.
     """
     if location == "local":
         if deps.cached_manifest is None:

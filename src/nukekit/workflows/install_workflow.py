@@ -18,22 +18,27 @@ def execute(deps: Dependencies, interactive: bool = True) -> dict:
     """
     Execute install workflow.
 
+    Prompts user to select an asset and version from the repository manifest,
+    then installs it locally to NUKE_KIT_DIR and updates the cached manifest.
+
     Args:
-        deps: Injected dependencies
-        interactive: If True, prompt user for asset selection
+        deps: Injected dependencies containing repository, manifests, and user paths.
+        interactive: If True, prompt user for asset and version selection.
+            If False, raises NotImplementedError (non-interactive not yet supported).
 
     Returns:
-        dict with 'asset' key
+        Dictionary with 'asset' key containing the installed Asset instance.
 
     Raises:
-        UserAbortedError: If user cancels
+        ValueError: If manifests are not loaded.
+        UserAbortedError: If user cancels during selection.
+        NotImplementedError: If interactive=False (not yet supported).
     """
     if deps.repo_manifest is None or deps.cached_manifest is None:
         raise ValueError("Manifests not loaded")
 
     # User chooses asset from repository manifest
     if interactive:
-        console.print_data(deps.repo_manifest.to_dict())
         asset = console.choose_asset_fuzzy(
             deps.repo_manifest.to_dict(),
             prompt="Select asset to install",

@@ -28,7 +28,13 @@ from .utils import ConfigLoader, init_logger
 console = Console()
 
 
-def main():
+def main() -> None:
+    """
+    Main entry point for the nukekit CLI.
+
+    Parses command-line arguments, loads configuration, creates dependencies,
+    and executes the requested command. Handles errors and user interruptions.
+    """
     parser = create_parser()
     args = parser.parse_args()
 
@@ -71,7 +77,12 @@ def main():
 
 
 def create_parser() -> argparse.ArgumentParser:
-    """Create argument parser."""
+    """
+    Create and configure the command-line argument parser.
+
+    Returns:
+        Configured ArgumentParser with subcommands for publish, install, and scan.
+    """
     parser = argparse.ArgumentParser(
         prog="nukekit", description="Nuke asset management system"
     )
@@ -119,7 +130,16 @@ def create_parser() -> argparse.ArgumentParser:
 
 
 def cmd_publish(args, app: ApplicationService) -> int:
-    """Handle publish command."""
+    """
+    Handle the publish command.
+
+    Args:
+        args: Parsed command-line arguments.
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
     try:
         result = app.publish_asset(scan_local=args.local, interactive=True)
 
@@ -142,7 +162,16 @@ def cmd_publish(args, app: ApplicationService) -> int:
 
 
 def cmd_install(args, app: ApplicationService) -> int:
-    """Handle install command."""
+    """
+    Handle the install command.
+
+    Args:
+        args: Parsed command-line arguments (may include --asset, --version).
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
     try:
         result = app.install_asset(
             asset_name=args.asset, version=args.version, interactive=True
@@ -167,7 +196,19 @@ def cmd_install(args, app: ApplicationService) -> int:
 
 
 def cmd_scan(args, app: ApplicationService) -> int:
-    """Handle scan command."""
+    """
+    Handle the scan command.
+
+    Scans for assets and displays them in a formatted table with version
+    highlighting (latest in green, others in yellow).
+
+    Args:
+        args: Parsed command-line arguments (includes location: "local" or "remote").
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
     try:
         result = app.scan_assets(location=args.location)
 

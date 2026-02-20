@@ -133,10 +133,17 @@ class ApplicationService:
         Execute scan workflow.
 
         Args:
-            location: "local" to scan NUKE_DIR, "remote" for repository manifest
+            location: "local" to scan NUKE_DIR filesystem, "remote" to use
+                repository manifest.
 
         Returns:
-            Result dict with 'assets' (manifest data) and 'count'
+            Dictionary with:
+                - 'status': "success"
+                - 'assets': Nested dict from Manifest.to_dict()
+                - 'count': Total number of asset versions
+
+        Raises:
+            WorkflowError: If scan workflow fails.
         """
         self.logger.info("Starting scan workflow", extra={"location": location})
 
