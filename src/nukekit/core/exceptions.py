@@ -56,6 +56,12 @@ class ManifestError(NukeKitError):
     pass
 
 
+class ManifestNotFoundError(NukeKitError):
+    """Errors related to manifest operations."""
+
+    pass
+
+
 class ManifestCorruptedError(ManifestError):
     """Manifest file is corrupted."""
 
@@ -70,6 +76,12 @@ class RepositoryError(NukeKitError):
 
 class RepositoryNotFoundError(RepositoryError):
     """Repository doesn't exist."""
+
+    pass
+
+
+class ScannerError(NukeKitError):
+    """Errors related to repository operations."""
 
     pass
 

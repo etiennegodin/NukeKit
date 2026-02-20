@@ -9,7 +9,7 @@ import logging
 
 from ..app.container import Dependencies
 from ..core import ManifestStore, console, copy
-from ..core.exceptions import UserAbortedError
+from ..core.exceptions import ManifestNotFoundError, UserAbortedError
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def execute(deps: Dependencies, interactive: bool = True) -> dict:
         NotImplementedError: If interactive=False (not yet supported).
     """
     if deps.repo_manifest is None or deps.cached_manifest is None:
-        raise ValueError("Manifests not loaded")
+        raise ManifestNotFoundError("Manifests not loaded")
 
     # User chooses asset from repository manifest
     if interactive:

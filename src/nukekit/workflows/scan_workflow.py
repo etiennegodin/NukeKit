@@ -9,6 +9,7 @@ import logging
 
 from ..app.container import Dependencies
 from ..core import ManifestStore
+from ..core.exceptions import ManifestNotFoundError, ScannerError
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +49,10 @@ def execute(
         )
     elif location == "remote":
         if deps.repo_manifest is None:
-            raise ValueError("Repository manifest not loaded")
+            raise ManifestNotFoundError("Repository manifest not loaded")
         manifest = deps.repo_manifest
     else:
-        raise ValueError(f"Unknown scan location: {location}")
+        raise ScannerError(f"Unknown scan location: {location}")
 
     data = manifest.to_dict()
     count = sum(
