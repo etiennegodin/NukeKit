@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import getpass
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
@@ -53,6 +53,13 @@ class Asset:
     author: str = None
     time: str = None
     id: str = None
+    tags: list[str] = field(default_factory=list)
+    category: str = ""
+    description: str = ""
+
+    def __post_init__(self):
+        """Ensure metadata at creation time"""
+        self.ensure_metadata()
 
     def _set_time(self) -> None:
         self.time = str(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))

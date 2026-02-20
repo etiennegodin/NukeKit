@@ -1,4 +1,5 @@
 import pytest
+from nukekit.app import Dependencies
 from nukekit.core import Asset, AssetType, Repository
 
 
@@ -19,12 +20,16 @@ def sample_config(tmp_path) -> dict:
 
 
 @pytest.fixture
-def sample_asset(sample_gizmo_path):
-    asset = Asset.from_path(sample_gizmo_path)
-    return asset
+def sample_asset(sample_gizmo_path) -> Asset:
+    return Asset.from_path(sample_gizmo_path)
 
 
-@pytest.fixture(scope="session")
-def sample_repo(tmp_path_factory):
+@pytest.fixture
+def sample_repo(tmp_path_factory) -> Repository:
     repo_dir = tmp_path_factory.mktemp("shared_repository")
     return Repository(repo_dir, list(AssetType))
+
+
+@pytest.fixture
+def sample_deps(sample_config) -> Dependencies:
+    return Dependencies.create(sample_config)

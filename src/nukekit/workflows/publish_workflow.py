@@ -9,13 +9,7 @@ import logging
 from pathlib import Path
 
 from ..app.container import Dependencies
-from ..core import (
-    Manifest,
-    ManifestStore,
-    console,
-    copy,
-    scanner,
-)
+from ..core import Asset, Manifest, ManifestStore, console, copy, scanner
 from ..core.exceptions import UserAbortedError
 from ..core.validator import resolve_version
 
@@ -23,7 +17,10 @@ logger = logging.getLogger(__name__)
 
 
 def execute(
-    deps: Dependencies, scan_local: bool = False, interactive: bool = True
+    deps: Dependencies,
+    scan_local: bool = False,
+    interactive: bool = True,
+    asset: Asset | None = None,
 ) -> dict:
     """
     Execute publish workflow.
@@ -61,16 +58,16 @@ def execute(
         asset = console.choose_asset_fuzzy(local_state.to_dict(), prompt="Publish")
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")
+
+        asset.ensure_message()
+
     else:
         # For GUI or programmatic use
-        raise NotImplementedError("Non-interactive publish not yet supported")
+        if asset is None:
+            raise NotImplementedError("Non-interactive publish not yet supported")
 
     # Resolve version conflicts
     asset = resolve_version(deps.repo_manifest.get_latest_asset_version(asset), asset)
-
-    # Ensure metadata
-    asset.ensure_metadata()
-    asset.ensure_message()
 
     # Validate asset
 
