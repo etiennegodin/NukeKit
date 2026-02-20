@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from nukekit.app import Dependencies
 from nukekit.core import Asset, AssetType, Repository
@@ -32,4 +34,4 @@ def sample_repo(tmp_path_factory) -> Repository:
 
 @pytest.fixture
 def sample_deps(sample_config) -> Dependencies:
-    return Dependencies.create(sample_config)
+    return Dependencies.create(sample_config, logger=logging.Logger)
