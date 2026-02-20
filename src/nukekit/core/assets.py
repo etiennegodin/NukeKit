@@ -158,7 +158,7 @@ class Asset:
         else:
             # No specified version, local asset
             asset_name = asset_stem
-            asset_version = Version.from_string("0.0.0")
+            asset_version = Version.from_string("0.1.0")
             logger.info(f"No specified version for {asset_path}")
 
         # Get object class from path suffix
