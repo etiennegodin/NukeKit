@@ -34,7 +34,7 @@ def execute(deps: Dependencies, interactive: bool = True) -> dict:
     # User chooses asset from repository manifest
     if interactive:
         console.print_data(deps.repo_manifest.to_dict())
-        asset = console.choose_menu(deps.repo_manifest.to_dict())
+        asset = console.choose_asset_fzf(deps.repo_manifest.to_dict(), prompt="Install")
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")
     else:

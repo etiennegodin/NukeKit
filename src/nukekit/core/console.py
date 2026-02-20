@@ -1,4 +1,6 @@
 import logging
+import shutil
+import subprocess
 from typing import Any, Literal, get_args, get_origin
 
 from rich import print
@@ -14,7 +16,69 @@ logger = logging.getLogger(__name__)
 RETURN_TYPES = Literal["bool", "str"]
 
 
-def choose_menu(d: dict, level_name: str = "Main menu") -> Asset:
+def _flatten_manifest_to_choices(
+    data: dict,
+) -> list[tuple[str, Asset]]:
+    """Flatten manifest data
+    (type -> name -> version -> Asset) to (display_line, asset) list."""
+    choices: list[tuple[str, Asset]] = []
+    for type_key, names in data.items():
+        type_str = getattr(type_key, "value", type_key) if type_key else ""
+        for name, versions in names.items():
+            for version_key, value in versions.items():
+                if isinstance(value, Asset):
+                    version_str = str(version_key)
+                    display = f"[{type_str}] {name} · {version_str}"
+                    choices.append((display, value))
+    return choices
+
+
+def choose_asset_fzf(manifest_data: dict, prompt: str = "Select asset") -> Asset | None:
+    """
+    Let the user pick one asset via fzf (fuzzy finder). Requires the `fzf` binary.
+
+    If fzf is not installed or the subprocess fails, falls back to choose_menu().
+
+    Args:
+        manifest_data: Nested dict from Manifest.to_dict()
+        (type -> name -> version -> Asset).
+        prompt: Optional prompt shown in fzf.
+
+    Returns:
+        Selected Asset, or None if user aborted.
+    """
+    choices = _flatten_manifest_to_choices(manifest_data)
+    if not choices:
+        return None
+
+    if not shutil.which("fzf"):
+        logger.debug("fzf not found, falling back to nested menu")
+        return choose_menu(manifest_data, level_name=prompt)
+
+    lines = [display for display, _ in choices]
+    try:
+        result = subprocess.run(
+            ["fzf", "--no-multi", f"--prompt={prompt}> ", "--height", "~50%"],
+            input="\n".join(lines),
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+        logger.warning("fzf failed: %s, falling back to nested menu", e)
+        return choose_menu(manifest_data, level_name=prompt)
+
+    selected = (result.stdout or "").strip()
+    if not selected or result.returncode != 0:
+        return None
+
+    for display, asset in choices:
+        if display == selected:
+            return asset
+    return None
+
+
+def choose_menu(d: dict, level_name: str = "Main menu") -> Asset | None:
     value = None
     while True:
         d = stringify_keys(d)

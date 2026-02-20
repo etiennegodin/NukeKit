@@ -53,7 +53,7 @@ def execute(
     # User selects asset
     if interactive:
         console.print_data(local_state.to_dict())
-        asset = console.choose_menu(local_state.to_dict())
+        asset = console.choose_asset_fzf(local_state.to_dict(), prompt="Publish")
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")
     else:
