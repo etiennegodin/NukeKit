@@ -17,13 +17,15 @@ dependencies = [
  "shortuuid",
  "pyaml",
  "rich",
- "simple_term_menu"
+ "simple_term_menu",
+ "InquirerPy",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest",
     "pytest-cov",
+    "pytest-dependency",
     "black",
     "ruff",
 ]
@@ -59,7 +61,7 @@ fix = true
 [tool.mypy]
 python_version = "3.11"
 strict = true
-ignore_missing_imports = true
+
 
 [tool.pytest.ini_options]
 addopts = "--cov=src/nukekit --cov-report=term-missing --cov-report=html"

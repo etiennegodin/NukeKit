@@ -133,21 +133,13 @@ def dumps_json(data) -> str:
 
 
 def load_json(path: Path) -> dict:
-    """_summary_
-
-    Args:
-        path (Path): _description_
-
-    Raises:
-        e: _description_
-
-    Returns:
-        dict: _description_
-    """
     try:
         with open(path) as file:
             data = json.load(file, object_hook=universal_decoder)
             return key_to_version(data)
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to read {path}: {e}")
+        raise
     except Exception as e:
-        logger.exception(e)
-        raise e
+        logger.error(f"Unexpected error reading manifest: {e}")
+        raise

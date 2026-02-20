@@ -1,166 +1,52 @@
 from __future__ import annotations
 
-import json
 import logging
+from dataclasses import dataclass, field
 from pathlib import Path
 
-from ..utils import UserPaths, _sort_dict, deep_merge
+from ..utils import deep_merge
 from .assets import Asset, AssetType
-from .scanner import scan_folder
-from .serialization import dump_json, load_json
 from .versioning import Version
 
 logger = logging.getLogger(__name__)
 
 
+@dataclass
 class Manifest:
-    def __init__(self, data: dict, root: Path):
-        self.ROOT = root
-        self.data = data
-        self.write_manifest()
+    """
+    Domain object representing a collection of versioned assets.
+    """
+
+    data: dict[str, dict[str, dict[str, Asset]]] = field(
+        default_factory=lambda: {t.value: {} for t in AssetType}
+    )
+
+    # Metadata about this manifest (optional)
+    source_path: Path | None = None
 
     @classmethod
-    def from_json(cls, path: Path) -> Manifest:
-        """Create Manifest from a file path"""
-        if isinstance(path, str):
-            path = Path(path)
-        root = path
-        data = cls.read_manifest(self=cls, path=root)
-        return cls(data=data, root=root)
+    def from_dict(cls, data: dict, source_path: Path | None = None) -> "Manifest":
+        """Create manifest from dictionary."""
+        return cls(data=data, source_path=source_path)
 
-    @classmethod
-    def from_local_state(
-        cls,
-        input_path: Path | UserPaths = UserPaths.NUKE_DIR,
-        manifest: Manifest | None = None,
-    ) -> Manifest:
-        """Create Manifest from scanner results"""
+    def add_asset(self, asset: Asset) -> None:
+        """Add or update an asset in the manifest."""
 
-        # Allow for custom output path from
-        if isinstance(input_path, Path):
-            if not input_path.is_dir():
-                raise TypeError("Provided path for scanner is not a dir")
-            output_path = input_path / "local_state.json"
-        elif isinstance(input_path, UserPaths):
-            output_path = input_path.STATE_FILE
-        data = scan_folder(input_path)
-
-        # Pull metadata from cached manifests
-        if manifest is not None:
-            data = manifest.compare_dict(data)
-
-        return cls(data=data, root=output_path)
-
-    @classmethod
-    def _new_empty_manifest(cls) -> dict:
-        return {a.value: {} for a in AssetType}
-
-    def read_manifest(self, path: Path | None = None) -> dict:
-        """Read and return manifest data. Returns empty dict if file doesn"t exist.
-
-        :param path: Optionnal path to read manifest. Defaults to manifest root
-        :type path: Path
-        :return: Data from manifest json file. Defaults to empty if not found.
-        :rtype: dict
-        """
-        if path is not None:
-            manifest_path = path
-        else:
-            manifest_path = self.ROOT
-
-        if not manifest_path.exists():
-            logger.warning(f"{manifest_path} does not exist, returning empty manifest")
-            return self._new_empty_manifest()
-        try:
-            with open(manifest_path):
-                data = load_json(manifest_path)
-
-                return _sort_dict(data)
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse manifest {manifest_path}: {e}")
-            return self._new_empty_manifest()
-        except Exception as e:
-            logger.error(f"Unexpected error reading manifest: {e}")
-            raise
-
-    def write_manifest(self, data: dict | None = None, verbose: bool = False) -> bool:
-        """
-        Write manifest data to disk.
-
-        :param data: Data to write on disk. If empty defaults to manifest"s data.
-        :type data: dict
-        :param verbose: Add a logger liner confirming successfull write
-        :type verbose: bool
-        :return: Confirmation of successfull write
-        :rtype: bool
-        """
-
-        if data is None:
-            try:
-                data = self.data
-            except Exception as e:
-                logger.error(f"Error loading manifest data from {self.ROOT}: {e}")
-                raise
-
-        # Sort outgoing dict
-        data = _sort_dict(data)
-
-        # Write to disk
-        dump_json(data, self.ROOT)
-
-        if verbose:
-            logger.info(f"Successfully wrote {self.ROOT}")
-        return True
-
-    def add(self, asset: Asset) -> bool:
-        """
-        Reads current manifest, adds asset and writes out updated manifest.
-
-        :param asset: Asset object to add to manifest
-        :type asset: Asset
-        :return: Confirmation of successfull add
-        :rtype: bool
-        """
-
-        data = self.read_manifest()
-
-        if asset.name not in data[asset.type]:
+        if asset.name not in self.data[asset.type]:
             # New asset
-            data[asset.type][asset.name] = {asset.version: asset}
-        else:
-            # Existing asset, add to asset"s dict
-            data[asset.type][asset.name][asset.version] = asset
+            self.data[asset.type][asset.name] = {}
 
-        if self.write_manifest(data):
-            # Updates current status
-            self.data = self.read_manifest()
-            logger.debug(
-                f"Successfully added {asset.name} v{asset.version} to {self.ROOT}"
-            )
-            return True
-        else:
-            return False
+        self.data[asset.type][asset.name][asset.version] = asset
 
     def get_latest_asset_version(self, asset: Asset) -> Version | None:
-        """
-        Parses the manifest and returns the highest version for this asset.
-
-        :param asset: Asset to return latest version
-        :type asset: Asset
-        :return: Version instance of latest asset"s version
-        :rtype: Version
-        """
-
-        data = self.read_manifest()
-
         try:
-            data[asset.type][asset.name]
+            self.data[asset.type][asset.name]
         except Exception:
             # Asset is not in manifest.
             return None
         else:
             # Asset is in manifest, get list of all versions.
-            asset_versions_list = list(data[asset.type][asset.name].keys())
+            asset_versions_list = list(self.data[asset.type][asset.name].keys())
             if len(asset_versions_list) > 1:
                 # If list has at least two version, sort and return highest value
                 return Version.highest_version(asset_versions_list)
@@ -168,7 +54,48 @@ class Manifest:
                 # Only one version
                 return asset_versions_list[0]
 
-    def compare_dict(self, other: dict | Manifest) -> Manifest:
-        if isinstance(other, Manifest):
-            other = other.data
-        return deep_merge(self.data, other)
+    def merge(self, other: "Manifest") -> "Manifest":
+        """
+        Merge another manifest into this one.
+        Returns a NEW manifest (immutable operation).
+        """
+        merged_data = deep_merge(self.data, other.data)
+        return Manifest(data=merged_data)
+
+    def to_dict(self) -> dict:
+        """Convert to JSON-serializable dict."""
+        return self.data
+
+    def get_asset(
+        self,
+        asset: Asset,
+    ) -> Asset | None:
+        """Get specific asset by name and version."""
+        try:
+            return self.data[asset.type.value][asset.name][asset.version]
+        except KeyError:
+            return None
+
+    def has_asset(
+        self,
+        asset: Asset,
+    ) -> bool:
+        """Check if asset exists in manifest."""
+        try:
+            asset_dict = self.data[asset.type.value][asset.name]
+            if asset.version is None:
+                return True  # Any version exists
+            return asset.version in asset_dict
+        except KeyError:
+            return False
+
+    def __len__(self) -> int:
+        """Return total number of asset versions."""
+        return sum(
+            len(versions)
+            for asset_type in self.data.values()
+            for versions in asset_type.values()
+        )
+
+    def __repr__(self) -> str:
+        return f"Manifest(assets={len(self)}, source={self.source_path})"

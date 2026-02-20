@@ -1,0 +1,93 @@
+{
+    "Script": {},
+    "Gizmo": {
+        "tool": {
+            "0.2.0": {
+                "name": "tool",
+                "version": "0.2.0",
+                "source_path": "/home/etienne/.nuke/nukekit/tool_v0.1.0.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "major",
+                "author": "etienne",
+                "time": "19/02/2026, 14:22:35",
+                "id": "L2r7q3pR2z",
+                "__type__": "Asset"
+            },
+            "0.1.0": {
+                "name": "tool",
+                "version": "0.1.0",
+                "source_path": "/home/etienne/.nuke/nukekit/tool_v0.1.0.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "yes ",
+                "author": "etienne",
+                "time": "19/02/2026, 14:21:50",
+                "id": "hLQrUUmw48",
+                "__type__": "Asset"
+            }
+        },
+        "my_gizmo": {
+            "2.0.0": {
+                "name": "my_gizmo",
+                "version": "2.0.0",
+                "source_path": "/home/etienne/.nuke/nukekit/my_gizmo_v1.0.0.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "hello",
+                "author": "etienne",
+                "time": "19/02/2026, 14:33:26",
+                "id": "UtZ4kHtCm9",
+                "__type__": "Asset"
+            },
+            "1.0.0": {
+                "name": "my_gizmo",
+                "version": "1.0.0",
+                "source_path": "/home/etienne/.nuke/nukekit/my_gizmo_v0.2.0.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": null,
+                "author": "etienne",
+                "time": "18/02/2026, 22:02:09",
+                "id": "dm5GsvXjdC",
+                "__type__": "Asset"
+            },
+            "0.2.0": {
+                "name": "my_gizmo",
+                "version": "0.2.0",
+                "source_path": "/home/etienne/.nuke/nukekit/my_gizmo_v0.1.0.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "adawda",
+                "author": "etienne",
+                "time": "13/02/2026, 13:15:52",
+                "id": "k7Zk9sNcUx",
+                "__type__": "Asset"
+            },
+            "0.1.0": {
+                "name": "my_gizmo",
+                "version": "0.1.0",
+                "source_path": "/home/etienne/.nuke/my_gizmo.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "awdawd",
+                "author": null,
+                "time": "13/02/2026, 13:14:40",
+                "id": "hbpnJPjPFR",
+                "__type__": "Asset"
+            },
+            "0.0.0": {
+                "name": "my_gizmo",
+                "version": "0.0.0",
+                "source_path": "/home/etienne/.nuke/my_gizmo.gizmo",
+                "status": "published",
+                "type": "Gizmo",
+                "message": "adawd",
+                "author": null,
+                "time": "13/02/2026, 13:12:55",
+                "id": "agm3Mz7kKw",
+                "__type__": "Asset"
+            }
+        }
+    }
+}

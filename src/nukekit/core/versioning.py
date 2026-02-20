@@ -73,12 +73,7 @@ class Version:
             else:
                 version_list_obj.append(v)
 
-        latest = sorted(version_list_obj)[0]
-        for v in version_list_obj:
-            # Compare
-            if v > latest:
-                latest = v
-        return latest
+        return max(version_list_obj)
 
     def __repr__(self) -> str:
         return f"Version('{self}')"

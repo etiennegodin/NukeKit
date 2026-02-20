@@ -1,71 +1,262 @@
+"""
+CLI entry point.
+
+Thin layer that:
+- Parses arguments
+- Creates dependencies
+- Calls application service
+- Handles presentation (output formatting)
+"""
+
 import argparse
-import os
-from pathlib import Path
+import logging
+import sys
 
-from .core import envContextBuilder
-from .utils import UserPaths, init_logger
-from .workflows import install, publish, scan
+from rich.console import Console
+from rich.panel import Panel
 
-ROOT_FOLDER = Path(os.getcwd())
-LOG_PATH = ROOT_FOLDER / "nukekit.log"
+from .app.container import Dependencies
+from .app.service import ApplicationService
+from .core.exceptions import (
+    ConfigurationError,
+    NukeKitError,
+    UserAbortedError,
+)
+from .core.versioning import Version
+from .utils import ConfigLoader, init_logger
+
+console = Console()
 
 
-def main():
-    # Setup parsers and arguments
-    parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument(
-        "--force", action="store_true", help="Wipe Local State Clean"
-    )
-    parent_parser.add_argument(
-        "--no-gui", action="store_true", help="Launch without gui"
-    )
+def main() -> None:
+    """
+    Main entry point for the nukekit CLI.
 
-    parser = argparse.ArgumentParser(
-        prog="NukeKit", description="--- Nuke Gizmo and Script manager ---"
-    )
-
-    subparsers = parser.add_subparsers(help="Available subcommands")
-
-    # Publish
-    parser_publish = subparsers.add_parser(
-        "publish", parents=[parent_parser], help="Record changes to the repository"
-    )
-    parser_publish.add_argument(
-        "--local", "-l", action="store_true", help="Publish from this directory"
-    )
-    parser_publish.set_defaults(func=publish)  # Associate a function
-
-    # Install
-    parser_install = subparsers.add_parser(
-        "install", parents=[parent_parser], help="Install asset to nuke directory"
-    )
-    parser_install.set_defaults(func=install)  # Associate a function
-
-    # Scan
-    parser_scan = subparsers.add_parser(
-        "scan", parents=[parent_parser], help="Scan directory for assets"
-    )
-    # parser_scan.add_argument("location", choices=scan_choices, help="Where to scan")
-    parser_scan.set_defaults(func=scan)  # Associate a function
-
+    Parses command-line arguments, loads configuration, creates dependencies,
+    and executes the requested command. Handles errors and user interruptions.
+    """
+    parser = create_parser()
     args = parser.parse_args()
 
-    # Get app context
-    env = envContextBuilder()
+    # Setup logging
+    logger = init_logger(level=logging.DEBUG if args.verbose else logging.INFO)
 
-    # Init logger
-    init_logger()
+    try:
+        # Load configuration
+        try:
+            config = ConfigLoader().load()
+        except Exception as e:
+            console.print(f"[red]Failed to load configuration: {e}[/red]")
+            sys.exit(1)
 
-    # Call the function associated with the subcommand
-    if hasattr(args, "func"):
-        # Dev force clean state
-        if args.force:
-            UserPaths.clean()
-        args.func(args, env)
-    else:
-        pass
-        # context.set_mode("publish")
-        # ui.launch(context)
+        # Create dependencies
+        try:
+            deps = Dependencies.create(config, logger=logger)
+        except ConfigurationError as e:
+            console.print(f"[red]Configuration error: {e}[/red]")
+            sys.exit(1)
+
+        # Create application service
+        app = ApplicationService(deps)
+
+        # Execute command
+        if hasattr(args, "func"):
+            exit_code = args.func(args, app)
+            sys.exit(exit_code)
+        else:
+            parser.print_help()
+            sys.exit(0)
+
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Interrupted by user[/yellow]")
+        sys.exit(130)
+    except Exception as e:
+        logger.exception("Unexpected error")
+        console.print(f"[red]Unexpected error: {e}[/red]")
+        sys.exit(1)
+
+
+def create_parser() -> argparse.ArgumentParser:
+    """
+    Create and configure the command-line argument parser.
+
+    Returns:
+        Configured ArgumentParser with subcommands for publish, install, and scan.
+    """
+    parser = argparse.ArgumentParser(
+        prog="nukekit", description="Nuke asset management system"
+    )
+
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+
+    subparsers = parser.add_subparsers(
+        title="commands", description="Available commands"
+    )
+
+    # Publish command
+    publish_parser = subparsers.add_parser(
+        "publish", help="Publish assets to repository"
+    )
+    publish_parser.add_argument(
+        "--local",
+        "-l",
+        action="store_true",
+        help="Scan current directory instead of Nuke directory",
+    )
+    publish_parser.set_defaults(func=cmd_publish)
+
+    # Install command
+    install_parser = subparsers.add_parser(
+        "install", help="Install assets from repository"
+    )
+    install_parser.add_argument("--asset", "-a", help="Specific asset to install")
+    install_parser.add_argument("--version", "-ver", help="Specific version to install")
+    install_parser.set_defaults(func=cmd_install)
+
+    # Scan command
+    scan_parser = subparsers.add_parser("scan", help="Scan for assets")
+    scan_parser.add_argument(
+        "location",
+        choices=["local", "remote"],
+        default="local",
+        nargs="?",
+        help="Where to scan (default: local)",
+    )
+    scan_parser.set_defaults(func=cmd_scan)
+
+    return parser
+
+
+def cmd_publish(args, app: ApplicationService) -> int:
+    """
+    Handle the publish command.
+
+    Args:
+        args: Parsed command-line arguments.
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
+    try:
+        result = app.publish_asset(scan_local=args.local, interactive=True)
+
+        console.print(
+            Panel(
+                f"[green]✓[/green] {result['message']}",
+                title="Success",
+                border_style="green",
+            )
+        )
+        return 0
+
+    except UserAbortedError:
+        console.print("[yellow]Publish cancelled[/yellow]")
+        return 0
+
+    except NukeKitError as e:
+        console.print(f"[red]✗ {e}[/red]")
+        return 1
+
+
+def cmd_install(args, app: ApplicationService) -> int:
+    """
+    Handle the install command.
+
+    Args:
+        args: Parsed command-line arguments (may include --asset, --version).
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
+    try:
+        result = app.install_asset(
+            asset_name=args.asset, version=args.version, interactive=True
+        )
+
+        console.print(
+            Panel(
+                f"[green]✓[/green] {result['message']}",
+                title="Success",
+                border_style="green",
+            )
+        )
+        return 0
+
+    except UserAbortedError:
+        console.print("[yellow]Install cancelled[/yellow]")
+        return 0
+
+    except NukeKitError as e:
+        console.print(f"[red]✗ {e}[/red]")
+        return 1
+
+
+def cmd_scan(args, app: ApplicationService) -> int:
+    """
+    Handle the scan command.
+
+    Scans for assets and displays them in a formatted table with version
+    highlighting (latest in green, others in yellow).
+
+    Args:
+        args: Parsed command-line arguments (includes location: "local" or "remote").
+        app: ApplicationService instance.
+
+    Returns:
+        Exit code: 0 on success, 1 on error.
+    """
+    try:
+        result = app.scan_assets(location=args.location)
+
+        console.print(f"[green]Found {result['count']} assets[/green]")
+
+        # Pretty print assets
+        from rich.table import Table
+
+        table = Table(title=f"Assets ({args.location})")
+        table.add_column("Name", style="cyan")
+        table.add_column("Type", style="magenta")
+        table.add_column("Versions", style="green")
+
+        def _version_sort_key(v):
+            """Sort key for versions."""
+            if hasattr(v, "major"):
+                return (v.major, v.minor, v.patch)
+            try:
+                ver = Version.from_string(str(v))
+                return (ver.major, ver.minor, ver.patch)
+            except (ValueError, TypeError):
+                return (0, 0, 0)
+
+        for asset_type, assets in result["assets"].items():
+            for name, versions in assets.items():
+                version_keys = list(versions.keys())
+                if not version_keys:
+                    version_str = ""
+                elif len(version_keys) == 1:
+                    version_str = f"[green]{version_keys[0]}[/green]"
+                else:
+                    latest = Version.highest_version(version_keys)
+                    version_parts = []
+                    for v in sorted(version_keys, key=_version_sort_key, reverse=True):
+                        v_str = str(v)
+                        if str(v) == str(latest):
+                            version_parts.append(f"[green]{v_str}[/green]")
+                        else:
+                            version_parts.append(f"[yellow]{v_str}[/yellow]")
+                    version_str = ", ".join(version_parts)
+                table.add_row(name, asset_type, version_str)
+
+        console.print(table)
+        return 0
+
+    except NukeKitError as e:
+        console.print(f"[red]✗ {e}[/red]")
+        return 1
 
 
 if __name__ == "__main__":

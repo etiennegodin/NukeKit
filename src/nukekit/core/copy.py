@@ -1,0 +1,26 @@
+from __future__ import annotations
+
+import logging
+import shutil
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+
+def copy_asset(source_path: Path, destination_path: Path) -> bool:
+    copied = False
+    if not source_path.exists():
+        raise FileExistsError("File")
+
+    try:
+        shutil.copy2(source_path, destination_path)
+        copied = True
+    except shutil.SameFileError:
+        logger.error("Source and destination represent the same file.")
+    except PermissionError:
+        logger.error("Permission denied.")
+    except FileNotFoundError:
+        logger.error("The source file or destination directory was not found.")
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+    return copied

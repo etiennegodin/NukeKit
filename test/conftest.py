@@ -1,5 +1,8 @@
+import logging
+
 import pytest
-from nukekit.core import Asset, Manifest, Repository, publisher
+from nukekit.app import Dependencies
+from nukekit.core import Asset, AssetType, Repository
 
 
 @pytest.fixture
@@ -11,7 +14,7 @@ def sample_gizmo_path(tmp_path):
 
 @pytest.fixture
 def sample_config(tmp_path) -> dict:
-    repo_root = tmp_path / "repo"
+    repo_root = tmp_path / "repository"
     return {
         "repository": {"root": repo_root, "subfolder": ["Gizmo", "Script"]},
         "user": {"nuke_dir": "~/.nuke"},
@@ -19,20 +22,16 @@ def sample_config(tmp_path) -> dict:
 
 
 @pytest.fixture
-def sample_asset(sample_gizmo_path):
-    asset = Asset.from_path(sample_gizmo_path)
-    return asset
+def sample_asset(sample_gizmo_path) -> Asset:
+    return Asset.from_path(sample_gizmo_path)
 
 
 @pytest.fixture
-def sample_empty_repo(sample_config):
-    repo = Repository(sample_config)
-    manifest = Manifest.from_json(repo.MANIFEST_PATH)
-    repo.add_manifest(manifest)
-    return repo
+def sample_repo(tmp_path_factory) -> Repository:
+    repo_dir = tmp_path_factory.mktemp("shared_repository")
+    return Repository(repo_dir, list(AssetType))
 
 
 @pytest.fixture
-def sample_repo(sample_empty_repo, sample_asset):
-    publisher.publish_asset_to_repo(sample_empty_repo, sample_asset)
-    return sample_empty_repo
+def sample_deps(sample_config) -> Dependencies:
+    return Dependencies.create(sample_config, logger=logging.Logger)
