@@ -37,4 +37,11 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
 
-autodoc_mock_imports = ["PyQt5", "shortuuid", "rich", "yaml", "simple_term_menu"]
+autodoc_mock_imports = [
+    "PyQt5",
+    "shortuuid",
+    "rich",
+    "yaml",
+    "simple_term_menu",
+    "InquirerPy",
+]

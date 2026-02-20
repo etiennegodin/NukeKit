@@ -19,18 +19,6 @@
 pip install nukekit
 ```
 
-### Optional: Fuzzy asset picker
-
-For a searchable asset list when running `nukekit install` or `nukekit publish`, install [fzf](https://github.com/junegunn/fzf). If fzf is not available, the CLI falls back to a nested menu.
-
-```bash
-# Linux (e.g. Debian/Ubuntu)
-sudo apt install fzf
-
-# macOS
-brew install fzf
-```
-
 ## Quick start
 
 ### Setup repository

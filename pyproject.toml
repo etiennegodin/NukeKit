@@ -17,12 +17,11 @@ dependencies = [
  "shortuuid",
  "pyaml",
  "rich",
- "simple_term_menu"
+ "simple_term_menu",
+ "InquirerPy",
 ]
 
 [project.optional-dependencies]
-# Fuzzy asset picker: install the fzf binary (e.g. apt install fzf, brew install fzf)
-fzf = []
 dev = [
     "pytest",
     "pytest-cov",

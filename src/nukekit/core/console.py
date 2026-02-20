@@ -1,8 +1,7 @@
 import logging
-import shutil
-import subprocess
 from typing import Any, Literal, get_args, get_origin
 
+from InquirerPy import inquirer
 from rich import print
 from rich.tree import Tree
 from simple_term_menu import TerminalMenu
@@ -10,6 +9,7 @@ from simple_term_menu import TerminalMenu
 from .assets import Asset
 from .exceptions import InvalidAssetError
 from .serialization import stringify_keys
+from .versioning import Version
 
 logger = logging.getLogger(__name__)
 
@@ -33,47 +33,118 @@ def _flatten_manifest_to_choices(
     return choices
 
 
-def choose_asset_fzf(manifest_data: dict, prompt: str = "Select asset") -> Asset | None:
-    """
-    Let the user pick one asset via fzf (fuzzy finder). Requires the `fzf` binary.
+def _unique_asset_names(
+    data: dict,
+) -> list[tuple[str, tuple[Any, str]]]:
+    """List unique (type, name) from manifest data.
+    Returns (display, (type_key, name))."""
+    seen: set[tuple[Any, str]] = set()
+    result: list[tuple[str, tuple[Any, str]]] = []
+    for type_key, names in data.items():
+        type_str = getattr(type_key, "value", type_key) if type_key else ""
+        for name in names:
+            key = (type_key, name)
+            if key not in seen:
+                seen.add(key)
+                result.append((f"[{type_str}] {name}", key))
+    return result
 
-    If fzf is not installed or the subprocess fails, falls back to choose_menu().
+
+def _version_choices_for_asset(
+    data: dict, type_key: Any, name: str
+) -> list[tuple[str, Asset]]:
+    """Build (display, Asset) list for one asset: Latest (x.y.z) + each version."""
+    version_dict = data[type_key][name]
+    if not version_dict:
+        return []
+    version_keys = list(version_dict.keys())
+    latest = Version.highest_version(version_keys)
+    # Resolve Asset for latest (key might be Version or str)
+    latest_asset = next(
+        (version_dict[k] for k in version_dict if str(k) == str(latest)),
+        next(iter(version_dict.values())),
+    )
+
+    def _version_sort_key(v: Any) -> tuple[int, int, int]:
+        if hasattr(v, "major"):
+            return (v.major, v.minor, v.patch)
+        try:
+            ver = Version.from_string(str(v))
+            return (ver.major, ver.minor, ver.patch)
+        except (ValueError, TypeError):
+            return (0, 0, 0)
+
+    sorted_versions = sorted(version_dict.keys(), key=_version_sort_key, reverse=True)
+    choices: list[tuple[str, Asset]] = [
+        (f"Latest ({latest})", latest_asset),
+    ]
+    for v in sorted_versions:
+        choices.append((str(v), version_dict[v]))
+    return choices
+
+
+def choose_asset_fuzzy(
+    manifest_data: dict,
+    prompt: str = "Select asset",
+    prompt_version: str = "Version to install",
+) -> Asset | None:
+    """
+    Two-step picker: choose asset (name) then version (Latest or specific).
+
+    Step 1: Fuzzy list of unique asset names [Type] Name.
+    Step 2: Fuzzy list "Latest (x.y.z)" plus each available version.
 
     Args:
         manifest_data: Nested dict from Manifest.to_dict()
         (type -> name -> version -> Asset).
-        prompt: Optional prompt shown in fzf.
+        prompt: Prompt for the asset step.
+        prompt_version: Prompt for the version step (e.g. "Version to install").
 
     Returns:
         Selected Asset, or None if user aborted.
     """
-    choices = _flatten_manifest_to_choices(manifest_data)
-    if not choices:
+    asset_choices = _unique_asset_names(manifest_data)
+    if not asset_choices:
         return None
 
-    if not shutil.which("fzf"):
-        logger.debug("fzf not found, falling back to nested menu")
-        return choose_menu(manifest_data, level_name=prompt)
-
-    lines = [display for display, _ in choices]
+    display_list = [display for display, _ in asset_choices]
     try:
-        result = subprocess.run(
-            ["fzf", "--no-multi", f"--prompt={prompt}> ", "--height", "~50%"],
-            input="\n".join(lines),
-            capture_output=True,
-            text=True,
-            timeout=300,
-        )
-    except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
-        logger.warning("fzf failed: %s, falling back to nested menu", e)
-        return choose_menu(manifest_data, level_name=prompt)
-
-    selected = (result.stdout or "").strip()
-    if not selected or result.returncode != 0:
+        selected_display = inquirer.fuzzy(
+            message=prompt,
+            choices=display_list,
+        ).execute()
+    except (KeyboardInterrupt, EOFError):
         return None
 
-    for display, asset in choices:
-        if display == selected:
+    if not selected_display:
+        return None
+
+    type_key, name = next(
+        (key for display, key in asset_choices if display == selected_display),
+        (None, None),
+    )
+    if type_key is None or name is None:
+        return None
+
+    version_choices = _version_choices_for_asset(manifest_data, type_key, name)
+    if not version_choices:
+        return None
+    if len(version_choices) == 1:
+        return version_choices[0][1]
+
+    version_display_list = [display for display, _ in version_choices]
+    try:
+        selected_version_display = inquirer.fuzzy(
+            message=prompt_version,
+            choices=version_display_list,
+        ).execute()
+    except (KeyboardInterrupt, EOFError):
+        return None
+
+    if not selected_version_display:
+        return None
+    for display, asset in version_choices:
+        if display == selected_version_display:
             return asset
     return None
 

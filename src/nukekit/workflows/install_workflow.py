@@ -34,7 +34,11 @@ def execute(deps: Dependencies, interactive: bool = True) -> dict:
     # User chooses asset from repository manifest
     if interactive:
         console.print_data(deps.repo_manifest.to_dict())
-        asset = console.choose_asset_fzf(deps.repo_manifest.to_dict(), prompt="Install")
+        asset = console.choose_asset_fuzzy(
+            deps.repo_manifest.to_dict(),
+            prompt="Select asset to install",
+            prompt_version="Version to install (Latest or specific)",
+        )
         if asset is None:
             raise UserAbortedError("User cancelled asset selection")
     else:

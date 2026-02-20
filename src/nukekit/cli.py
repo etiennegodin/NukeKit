@@ -22,6 +22,7 @@ from .core.exceptions import (
     NukeKitError,
     UserAbortedError,
 )
+from .core.versioning import Version
 from .utils import ConfigLoader, init_logger
 
 console = Console()
@@ -180,11 +181,34 @@ def cmd_scan(args, app: ApplicationService) -> int:
         table.add_column("Type", style="magenta")
         table.add_column("Versions", style="green")
 
+        def _version_sort_key(v):
+            """Sort key for versions."""
+            if hasattr(v, "major"):
+                return (v.major, v.minor, v.patch)
+            try:
+                ver = Version.from_string(str(v))
+                return (ver.major, ver.minor, ver.patch)
+            except (ValueError, TypeError):
+                return (0, 0, 0)
+
         for asset_type, assets in result["assets"].items():
             for name, versions in assets.items():
-                table.add_row(
-                    name, asset_type, ", ".join(str(v) for v in versions.keys())
-                )
+                version_keys = list(versions.keys())
+                if not version_keys:
+                    version_str = ""
+                elif len(version_keys) == 1:
+                    version_str = f"[green]{version_keys[0]}[/green]"
+                else:
+                    latest = Version.highest_version(version_keys)
+                    version_parts = []
+                    for v in sorted(version_keys, key=_version_sort_key, reverse=True):
+                        v_str = str(v)
+                        if str(v) == str(latest):
+                            version_parts.append(f"[green]{v_str}[/green]")
+                        else:
+                            version_parts.append(f"[yellow]{v_str}[/yellow]")
+                    version_str = ", ".join(version_parts)
+                table.add_row(name, asset_type, version_str)
 
         console.print(table)
         return 0
