@@ -10,9 +10,7 @@ Thin layer that:
 
 import argparse
 import logging
-import os
 import sys
-from pathlib import Path
 
 from rich.console import Console
 from rich.panel import Panel
@@ -27,9 +25,6 @@ from .core.exceptions import (
 from .utils import ConfigLoader, init_logger
 
 console = Console()
-
-ROOT_FOLDER = Path(os.getcwd())
-LOG_PATH = ROOT_FOLDER / "nukekit.log"
 
 
 def main():

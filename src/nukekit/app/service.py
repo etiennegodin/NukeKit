@@ -15,7 +15,7 @@ from ..core.exceptions import (
     UserAbortedError,
     WorkflowError,
 )
-from ..workflows import publish_workflow
+from ..workflows import install_workflow, publish_workflow
 from .container import Dependencies
 
 
@@ -82,3 +82,48 @@ class ApplicationService:
         except Exception as e:
             self.logger.exception("Unexpected error during publish")
             raise WorkflowError(f"Unexpected error: {e}") from e
+
+    def install_asset(
+        self,
+        asset_name: str | None = None,
+        version: str | None = None,
+        interactive: bool = True,
+    ) -> dict[str, Any]:
+        """
+        Execute install workflow.
+
+        Args:
+            asset_name: Optional specific asset to install (not yet supported)
+            version: Optional specific version (not yet supported)
+            interactive: If True, prompt user for selection
+
+        Returns:
+            Result dictionary with status and message
+
+        Raises:
+            WorkflowError: If workflow fails
+            UserAbortedError: If user cancels
+        """
+        self.logger.info("Starting install workflow")
+
+        try:
+            result = install_workflow.execute(deps=self.deps, interactive=interactive)
+
+            self.logger.info(f"Installed {result['asset']}")
+            return {
+                "status": "success",
+                "asset": result["asset"],
+                "message": f"Successfully installed {result['asset']}",
+            }
+
+        except UserAbortedError:
+            self.logger.info("Install cancelled by user")
+            raise
+
+        except NukeKitError as e:
+            self.logger.error(f"Install failed: {e}")
+            raise WorkflowError(f"Install failed: {e}") from e
+
+        except Exception as e:
+            self.logger.exception("Unexpected error during install")
+            raise WorkflowError(f"Install failed: {e}") from e
