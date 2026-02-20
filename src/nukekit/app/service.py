@@ -15,7 +15,7 @@ from ..core.exceptions import (
     UserAbortedError,
     WorkflowError,
 )
-from ..workflows import install_workflow, publish_workflow
+from ..workflows import install_workflow, publish_workflow, scan_workflow
 from .container import Dependencies
 
 
@@ -127,3 +127,30 @@ class ApplicationService:
         except Exception as e:
             self.logger.exception("Unexpected error during install")
             raise WorkflowError(f"Install failed: {e}") from e
+
+    def scan_assets(self, location: str = "local") -> dict[str, Any]:
+        """
+        Execute scan workflow.
+
+        Args:
+            location: "local" to scan NUKE_DIR, "remote" for repository manifest
+
+        Returns:
+            Result dict with 'assets' (manifest data) and 'count'
+        """
+        self.logger.info("Starting scan workflow", extra={"location": location})
+
+        try:
+            result = scan_workflow.execute(deps=self.deps, location=location)
+            self.logger.info(f"Scan found {result['count']} assets")
+            return {
+                "status": "success",
+                "assets": result["assets"],
+                "count": result["count"],
+            }
+        except NukeKitError as e:
+            self.logger.error(f"Scan failed: {e}")
+            raise WorkflowError(f"Scan failed: {e}") from e
+        except Exception as e:
+            self.logger.exception("Unexpected error during scan")
+            raise WorkflowError(f"Scan failed: {e}") from e
