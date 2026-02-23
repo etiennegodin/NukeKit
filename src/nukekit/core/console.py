@@ -1,10 +1,10 @@
 import logging
 from typing import Any, Literal, Union, get_args, get_origin
 
-from InquirerPy import inquirer
+from InquirerPy.inquirer import fuzzy  # type: ignore[attr-defined]
 from rich import print
 from rich.tree import Tree
-from simple_term_menu import TerminalMenu
+from simple_term_menu import TerminalMenu  # type: ignore[import-untyped]
 
 from .assets import Asset
 from .serialization import stringify_keys
@@ -145,7 +145,7 @@ def choose_asset_fuzzy(
 
     display_list = [display for display, _ in asset_choices]
     try:
-        selected_display = inquirer.fuzzy(
+        selected_display = fuzzy(
             message=prompt,
             choices=display_list,
         ).execute()
@@ -170,7 +170,7 @@ def choose_asset_fuzzy(
 
     version_display_list = [display for display, _ in version_choices]
     try:
-        selected_version_display = inquirer.fuzzy(
+        selected_version_display = fuzzy(
             message=prompt_version,
             choices=version_display_list,
         ).execute()
