@@ -7,6 +7,7 @@ The ApplicationService handles those concerns.
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from ..app.container import Dependencies
 from ..core import Asset, Manifest, ManifestStore, console, copy, scanner
@@ -21,7 +22,7 @@ def execute(
     scan_local: bool = False,
     interactive: bool = True,
     asset: Asset | None = None,
-) -> dict:
+) -> dict[Any, Any]:
     """
     Execute publish workflow.
 

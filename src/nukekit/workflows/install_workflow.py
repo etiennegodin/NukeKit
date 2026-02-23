@@ -6,6 +6,7 @@ The ApplicationService handles those concerns.
 """
 
 import logging
+from typing import Any
 
 from ..app.container import Dependencies
 from ..core import ManifestStore, console, copy
@@ -14,7 +15,7 @@ from ..core.exceptions import ManifestNotFoundError, UserAbortedError
 logger = logging.getLogger(__name__)
 
 
-def execute(deps: Dependencies, interactive: bool = True) -> dict:
+def execute(deps: Dependencies, interactive: bool = True) -> dict[Any, Any]:
     """
     Execute install workflow.
 

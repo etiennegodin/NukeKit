@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 import semver
 
@@ -28,7 +28,7 @@ class Version:
         return cls.from_string(".".join(str(val) for val in version_tuple))
 
     @classmethod
-    def from_string(cls, version_string) -> Version:
+    def from_string(cls, version_string: str) -> Version:
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
@@ -36,7 +36,7 @@ class Version:
         else:
             return cls(ver.major, ver.minor, ver.patch)
 
-    def version_up(self, type_name: VERSION_CLASSES):
+    def version_up(self, type_name: Literal[VERSION_CLASSES]):
         """
         Increment version number.
 
@@ -53,7 +53,9 @@ class Version:
             self.patch = 0
 
     @classmethod
-    def highest_version(cls, version_list: list[str | tuple | Version]) -> Version:
+    def highest_version(
+        cls, version_list: list[str | tuple[Any, Any] | Version]
+    ) -> Version:
         """
         Returns highest version for a versions list
 
@@ -78,11 +80,11 @@ class Version:
     def __repr__(self) -> str:
         return f"Version('{self}')"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.major}.{self.minor}.{self.patch}"
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec) -> str:
         return str(self)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))

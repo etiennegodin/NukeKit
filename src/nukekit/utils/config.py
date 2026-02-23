@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -36,7 +37,7 @@ class ConfigLoader:
         )
 
     @classmethod
-    def load(cls) -> dict:
+    def load(cls) -> Any:
         path = cls.resolve()
         with open(path) as file:
             return yaml.safe_load(file)

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from ..utils import deep_merge
 from .assets import Asset, AssetType
@@ -62,7 +63,7 @@ class Manifest:
         merged_data = deep_merge(self.data, other.data)
         return Manifest(data=merged_data)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[Any, Any]:
         """Convert to JSON-serializable dict."""
         return self.data
 

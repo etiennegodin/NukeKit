@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 import pytest
 from nukekit.app import Dependencies
@@ -13,7 +14,7 @@ def sample_gizmo_path(tmp_path):
 
 
 @pytest.fixture
-def sample_config(tmp_path) -> dict:
+def sample_config(tmp_path) -> dict[Any, Any]:
     repo_root = tmp_path / "repository"
     return {
         "repository": {"root": repo_root, "subfolder": ["Gizmo", "Script"]},

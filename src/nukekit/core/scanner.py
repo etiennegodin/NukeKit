@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from ..utils import _sort_dict
 from .assets import Asset, AssetType
@@ -9,7 +10,7 @@ from .assets import Asset, AssetType
 logger = logging.getLogger(__name__)
 
 
-def scan_folder(path: Path) -> dict:
+def scan_folder(path: Path) -> dict[Any, Any]:
     logger.debug(path)
     assets = {}
     for asset_type in list(AssetType):

@@ -4,6 +4,8 @@ NukeKit exception hierarchy.
 Provides structured error handling across the application.
 """
 
+from typing import Any
+
 
 class NukeKitError(Exception):
     """
@@ -13,7 +15,7 @@ class NukeKitError(Exception):
     all NukeKit-specific errors.
     """
 
-    def __init__(self, message: str, details: dict | None = None):
+    def __init__(self, message: str, details: dict[Any, Any] | None = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}

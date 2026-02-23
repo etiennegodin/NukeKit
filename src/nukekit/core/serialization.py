@@ -4,6 +4,7 @@ import json
 import logging
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 from .assets import Asset, AssetStatus, AssetType
 from .versioning import Version
@@ -11,7 +12,7 @@ from .versioning import Version
 logger = logging.getLogger(__name__)
 
 
-def dataclass_to_dict(obj):
+def dataclass_to_dict(obj: Any) -> Any:
     """Small dataclass serializer to avoid recursive"""
     result = {}
     for field in obj.__dataclass_fields__:
@@ -27,7 +28,7 @@ def dataclass_to_dict(obj):
     return result
 
 
-def stringify_keys(obj):
+def stringify_keys(obj: Any) -> Any:
     if isinstance(obj, dict):
         return {
             str(k) if isinstance(k, Version) else k: stringify_keys(v)
@@ -38,7 +39,7 @@ def stringify_keys(obj):
     return obj
 
 
-def key_to_version(obj):
+def key_to_version(obj: Any) -> Any:
     def test_version(x):
         try:
             Version.from_string(x)
@@ -54,7 +55,7 @@ def key_to_version(obj):
     return obj
 
 
-def universal_decoder(dct):
+def universal_decoder(dct) -> dict[Any, Any]:
     # Dynamic: Convert any key that ends with "_path" into a Path object
     for k, v in dct.items():
         if isinstance(v, str) and k.endswith("_path"):
@@ -91,7 +92,7 @@ class UniversalEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-def dump_json(data, path: Path):
+def dump_json(data, path: Path) -> None:
     """_summary_
 
     Args:
@@ -132,7 +133,7 @@ def dumps_json(data) -> str:
         return out
 
 
-def load_json(path: Path) -> dict:
+def load_json(path: Path) -> dict[Any, Any]:
     try:
         with open(path) as file:
             data = json.load(file, object_hook=universal_decoder)

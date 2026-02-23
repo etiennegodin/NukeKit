@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 from .assets import Asset, AssetType
 
@@ -39,7 +40,7 @@ class Repository:
         self._ensure_structure()
 
     @classmethod
-    def from_config(cls, config: dict) -> "Repository":
+    def from_config(cls, config: dict[Any, Any]) -> "Repository":
         """Create repository from config dictionary."""
 
         root = config["repository"]["root"]
