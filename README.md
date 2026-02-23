@@ -8,9 +8,7 @@
 - Publish/install workflow
 - Changelog tracking
 - Centralized asset repository
-- CLI and _GUI*_ interfaces
-
-*Not implemented yet
+- CLI interface
 
 
 ## Installation
@@ -44,6 +42,23 @@ nukekit install
 ```bash
 # Scan local Nuke directory
 nukekit scan 
+
+# Scan remote repository 
+nukekit scan remote 
+```
+
+```bash
+INFO: Starting scan workflow
+INFO: Scan found 10 assets
+Found 10 assets
+                    Assets (remote)                     
+┏━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name     ┃ Type  ┃ Versions                          ┃
+┡━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ tool     │ Gizmo │ 0.3.0, 0.2.0, 0.1.0               │
+│ my_gizmo │ Gizmo │ 2.0.0, 1.0.0, 0.2.0, 0.1.0, 0.0.0 │
+│ my_cool  │ Gizmo │ 0.1.0, 0.0.0                      │
+└──────────┴───────┴───────────────────────────────────┘
 ```
 
 ## Configuration
@@ -58,17 +73,4 @@ repository:
 user:
   nuke_dir: "~/.nuke"
 
-```
-
-## Project Structure
-```
-NukeKit/
-├── src/nukekit/
-│   ├── core/          # Business logic
-│   ├── ui/            # GUI components
-│   ├── utils/         # Utilities
-│   └── cli.py         # CLI entry point
-├── test/              # Test suite
-├── config/            # Default configs
-└── examples/          # Example assets
 ```
