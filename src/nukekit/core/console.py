@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Literal, get_args, get_origin
+from typing import Any, Literal, Union, get_args, get_origin
 
 from InquirerPy import inquirer
 from rich import print
@@ -7,7 +7,6 @@ from rich.tree import Tree
 from simple_term_menu import TerminalMenu
 
 from .assets import Asset
-from .exceptions import InvalidAssetError
 from .serialization import stringify_keys
 from .versioning import Version
 
@@ -17,7 +16,7 @@ RETURN_TYPES = Literal["bool", "str"]
 
 
 def _flatten_manifest_to_choices(
-    data: dict,
+    data: dict[Any, Any],
 ) -> list[tuple[str, Asset]]:
     """
     Flatten manifest data to a list of (display_line, asset) tuples.
@@ -45,7 +44,7 @@ def _flatten_manifest_to_choices(
 
 
 def _unique_asset_names(
-    data: dict,
+    data: dict[Any, Any],
 ) -> list[tuple[str, tuple[Any, str]]]:
     """
     Extract unique asset names from manifest data.
@@ -73,7 +72,7 @@ def _unique_asset_names(
 
 
 def _version_choices_for_asset(
-    data: dict, type_key: Any, name: str
+    data: dict[Any, Any], type_key: Any, name: str
 ) -> list[tuple[str, Asset]]:
     """
     Build version choices for a specific asset.
@@ -121,7 +120,7 @@ def _version_choices_for_asset(
 
 
 def choose_asset_fuzzy(
-    manifest_data: dict,
+    manifest_data: dict[Any, Any],
     prompt: str = "Select asset",
     prompt_version: str = "Version to install",
 ) -> Asset | None:
@@ -186,7 +185,7 @@ def choose_asset_fuzzy(
     return None
 
 
-def choose_menu(d: dict, level_name: str = "Main menu") -> Asset | None:
+def choose_menu(d: dict[Any, Any], level_name: str = "Main menu") -> Asset | None:
     """
     Interactive nested menu for selecting an asset.
 
@@ -224,18 +223,16 @@ def choose_menu(d: dict, level_name: str = "Main menu") -> Asset | None:
                 return value
             elif isinstance(value, dict):
                 value = choose_menu(value, level_name=key)
-        if value is not None:
-            return value
-    if value is not None:
+
         if isinstance(value, Asset):
             return value
-        raise InvalidAssetError("Selection is not a valid asset", {value: type(value)})
-
+    if isinstance(value, Asset):
+        return value
     else:
         return None
 
 
-def print_data(data: dict, label: str = "Manifest") -> None:
+def print_data(data: dict[Any, Any], label: str = "Manifest") -> None:
     """
     Print manifest data as a formatted tree in the terminal.
 
@@ -249,7 +246,7 @@ def print_data(data: dict, label: str = "Manifest") -> None:
 
     format_string = "| {:<12} | {:<8} | {:<10} |"
 
-    def recursive_tree(d: dict, t: Tree):
+    def recursive_tree(d: dict[Any, Any], t: Tree) -> None:
         t.add(format_string.format("Status", "Version", "Id"))
         for versions, asset in d.items():
             t.add(format_string.format(asset.status.name, asset.version, str(asset.id)))
@@ -273,15 +270,17 @@ def _add_question_mark(question: str) -> str:
     return question
 
 
-def _format_options_list(options: Any):
+def _format_options_list(options: Any) -> Any:
     if get_origin(options) is Literal:
         options = list(get_args(options))
     return options
 
 
 def user_input_choice(
-    question: str, options: list[str] | None = None, type: RETURN_TYPES = "bool"
-) -> bool | str:
+    question: str,
+    options: Union[list[str], None, Any] = None,
+    type: RETURN_TYPES = "bool",
+) -> Any:
     """
     Prompt user for a choice from a list of options.
 

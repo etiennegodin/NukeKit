@@ -16,8 +16,8 @@ class AssetValidator:
     def __init__(self) -> None:
         pass
 
-    def validate_asset(self):
-        return True
+    def validate_asset(self) -> None:
+        pass
 
 
 def resolve_version(latest_version: Version, asset: Asset) -> Asset:

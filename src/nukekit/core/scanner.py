@@ -15,7 +15,8 @@ def scan_folder(path: Path) -> dict[Any, Any]:
     assets = {}
     for asset_type in list(AssetType):
         asset_paths = list(path.rglob(f"*{asset_type.suffix}"))
-        asset_subtype: dict[str, dict] = {}
+        asset_subtype: dict[str, dict[Any, Any]]
+        asset_subtype = {}
         for path in asset_paths:
             asset = Asset.from_path(path)
             if asset.name not in asset_subtype.keys():

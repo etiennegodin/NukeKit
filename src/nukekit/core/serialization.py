@@ -39,8 +39,8 @@ def stringify_keys(obj: Any) -> Any:
     return obj
 
 
-def key_to_version(obj: Any) -> Any:
-    def test_version(x):
+def key_to_version(obj: dict[Any, Any]) -> dict[Any, Any]:
+    def test_version(x: str) -> bool:
         try:
             Version.from_string(x)
             return True
@@ -55,7 +55,7 @@ def key_to_version(obj: Any) -> Any:
     return obj
 
 
-def universal_decoder(dct) -> dict[Any, Any]:
+def universal_decoder(dct: dict[Any, Any]) -> dict[Any, Any] | Asset:
     # Dynamic: Convert any key that ends with "_path" into a Path object
     for k, v in dct.items():
         if isinstance(v, str) and k.endswith("_path"):
@@ -76,7 +76,7 @@ def universal_decoder(dct) -> dict[Any, Any]:
 
 
 class UniversalEncoder(json.JSONEncoder):
-    def default(self, obj):
+    def default(self, obj: Any) -> Any:
         # Handle Version as str rather than dict
         if isinstance(obj, Version):
             return str(obj)
@@ -92,7 +92,7 @@ class UniversalEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-def dump_json(data, path: Path) -> None:
+def dump_json(data: dict[Any, Any], path: Path) -> None:
     """_summary_
 
     Args:
@@ -111,7 +111,7 @@ def dump_json(data, path: Path) -> None:
         raise e
 
 
-def dumps_json(data) -> str:
+def dumps_json(data: dict[Any, Any]) -> str:
     """_summary_
 
     Args:

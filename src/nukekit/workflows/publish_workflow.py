@@ -68,7 +68,12 @@ def execute(
             raise NotImplementedError("Non-interactive publish not yet supported")
 
     # Resolve version conflicts
-    asset = resolve_version(deps.repo_manifest.get_latest_asset_version(asset), asset)
+    if deps.repo_manifest is None:
+        deps.repo_manifest = Manifest(source_path=deps.repository.manifest_path)
+
+    latest_version = deps.repo_manifest.get_latest_asset_version(asset)
+    if latest_version is not None:
+        asset = resolve_version(latest_version, asset)
 
     # Validate asset
 
