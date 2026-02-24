@@ -1,6 +1,6 @@
 # NukeKit
 
-> Version control system for Nuke Gizmos and Scripts
+Version control system for Nuke Gizmos and Scripts
 
 ## Features
 
