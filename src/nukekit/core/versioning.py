@@ -28,7 +28,7 @@ class Version:
         return cls.from_string(".".join(str(val) for val in version_tuple))
 
     @classmethod
-    def from_string(cls, version_string) -> Version:
+    def from_string(cls, version_string: str) -> Version:
         try:
             ver = semver.Version.parse(version_string)
         except ValueError as e:
@@ -36,7 +36,19 @@ class Version:
         else:
             return cls(ver.major, ver.minor, ver.patch)
 
-    def version_up(self, type_name: VERSION_CLASSES):
+    @staticmethod
+    def highest_version(version_list: list[Version]) -> Version:
+        """
+        Returns highest version for a versions list
+
+        :param version_list: List of versions to compare
+        :type version_list: list[str | tuple | Version]
+        :return: Highest version from list
+        :rtype: Version
+        """
+        return max(version_list)
+
+    def version_up(self, type_name: VERSION_CLASSES) -> None:
         """
         Increment version number.
 
@@ -52,37 +64,14 @@ class Version:
         elif type_name == "minor":
             self.patch = 0
 
-    @classmethod
-    def highest_version(cls, version_list: list[str | tuple | Version]) -> Version:
-        """
-        Returns highest version for a versions list
-
-        :param version_list: List of versions to compare
-        :type version_list: list[str | tuple | Version]
-        :return: Highest version from list
-        :rtype: Version
-        """
-        # Temp version as lowest possible
-        version_list_obj = []
-        for v in version_list:
-            # Handle multiple cases
-            if isinstance(v, str):
-                version_list_obj.append(Version.from_string(v))
-            elif isinstance(v, tuple):
-                version_list_obj.append(Version.from_tuple(v))
-            else:
-                version_list_obj.append(v)
-
-        return max(version_list_obj)
-
     def __repr__(self) -> str:
         return f"Version('{self}')"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.major}.{self.minor}.{self.patch}"
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec: str) -> str:
         return str(self)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))

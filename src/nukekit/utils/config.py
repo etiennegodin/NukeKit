@@ -36,7 +36,9 @@ class ConfigLoader:
         )
 
     @classmethod
-    def load(cls) -> dict:
+    def load(cls) -> dict[str, str]:
         path = cls.resolve()
         with open(path) as file:
-            return yaml.safe_load(file)
+            data: dict[str, str]
+            data = yaml.safe_load(file)
+            return data

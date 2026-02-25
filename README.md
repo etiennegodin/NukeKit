@@ -8,9 +8,7 @@ Version control system for Nuke Gizmos and Scripts
 - Publish/install workflow
 - Changelog tracking
 - Centralized asset repository
-- CLI and _GUI*_ interfaces
-
-*Not implemented yet
+- CLI interface
 
 
 ## Installation
@@ -44,6 +42,9 @@ nukekit install
 ```bash
 # Scan local Nuke directory
 nukekit scan 
+
+# Scan remote repository 
+nukekit scan remote 
 ```
 
 ## Configuration
@@ -60,15 +61,17 @@ user:
 
 ```
 
-## Project Structure
+## Project structure
+
 ```
 NukeKit/
 ├── src/nukekit/
-│   ├── core/          # Business logic
-│   ├── ui/            # GUI components
-│   ├── utils/         # Utilities
-│   └── cli.py         # CLI entry point
-├── test/              # Test suite
-├── config/            # Default configs
-└── examples/          # Example assets
+│   ├── app       # App services
+│   ├── core      # Business logic
+│   ├── utils     # Utilities
+│   └── workflows # Orchestrators
+│   └── cli.py    # CLI entry point
+├── test          # Test suite
+├── config        # Default configs
+└── examples      # Example assets
 ```

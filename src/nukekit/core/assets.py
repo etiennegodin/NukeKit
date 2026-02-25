@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import shortuuid
 
@@ -49,15 +49,15 @@ class Asset:
     source_path: Path
     status: AssetStatus
     type: AssetType
-    message: str = None
-    author: str = None
-    time: str = None
-    id: str = None
+    message: str = field(default_factory=str)
+    author: str = field(default_factory=str)
+    time: str = field(default_factory=str)
+    id: str = field(default_factory=str)
     tags: list[str] = field(default_factory=list)
     category: str = ""
     description: str = ""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Ensure metadata at creation time"""
         self.ensure_metadata()
 
@@ -96,10 +96,10 @@ class Asset:
     def set_install_status(self, status: INSTALL_STATUS) -> None:
         self.status = AssetStatus(status)
 
-    def get_file_name(self):
+    def get_file_name(self) -> str:
         return f"{self}{self.type.suffix}"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "version": str(self.version),

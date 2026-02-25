@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from ..utils import _sort_dict
 from .assets import Asset, AssetType
@@ -9,12 +10,13 @@ from .assets import Asset, AssetType
 logger = logging.getLogger(__name__)
 
 
-def scan_folder(path: Path) -> dict:
+def scan_folder(path: Path) -> dict[Any, Any]:
     logger.debug(path)
     assets = {}
     for asset_type in list(AssetType):
         asset_paths = list(path.rglob(f"*{asset_type.suffix}"))
-        asset_subtype: dict[str, dict] = {}
+        asset_subtype: dict[str, dict[Any, Any]]
+        asset_subtype = {}
         for path in asset_paths:
             asset = Asset.from_path(path)
             if asset.name not in asset_subtype.keys():

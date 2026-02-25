@@ -24,16 +24,16 @@ class Dependencies:
     # Core components
     repository: Repository
     user_paths: UserPaths
-    config: dict
+    config: dict[str, str]
     logger: logging.Logger
 
     # Manifests
-    repo_manifest: Manifest | None = None
-    cached_manifest: Manifest | None = None
+    repo_manifest: Manifest
+    cached_manifest: Manifest
 
     @classmethod
     def create(
-        cls, config: dict, logger: logging.Logger | None = None
+        cls, config: dict[str, str], logger: logging.Logger | None = None
     ) -> "Dependencies":
         """
         Create dependencies from configuration.
@@ -72,7 +72,7 @@ class Dependencies:
         )
 
     @staticmethod
-    def _validate_config(config: dict) -> None:
+    def _validate_config(config: dict[str, str]) -> None:
         """Validate configuration has required keys."""
         required = ["repository"]
         missing = [key for key in required if key not in config]
@@ -88,3 +88,9 @@ class Dependencies:
         self.cached_manifest = ManifestStore.load_from_json(
             self.user_paths.CACHED_MANIFEST
         )
+
+    def _ensure_manifests(self) -> None:
+        if self.repo_manifest is None:
+            self.repo_manifest = Manifest(source_path=self.repository.manifest_path)
+        if self.cached_manifest is None:
+            self.cached_manifest = Manifest(source_path=self.user_paths.CACHED_MANIFEST)

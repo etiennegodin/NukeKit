@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Iterable
 
 from ..utils import deep_merge
 from .assets import Asset, AssetType
@@ -17,7 +18,7 @@ class Manifest:
     Domain object representing a collection of versioned assets.
     """
 
-    data: dict[str, dict[str, dict[str, Asset]]] = field(
+    data: dict[str, dict[str, dict[Version, Asset]]] = field(
         default_factory=lambda: {t.value: {} for t in AssetType}
     )
 
@@ -25,7 +26,9 @@ class Manifest:
     source_path: Path | None = None
 
     @classmethod
-    def from_dict(cls, data: dict, source_path: Path | None = None) -> "Manifest":
+    def from_dict(
+        cls, data: dict[Any, Any], source_path: Path | None = None
+    ) -> "Manifest":
         """Create manifest from dictionary."""
         return cls(data=data, source_path=source_path)
 
@@ -46,6 +49,8 @@ class Manifest:
             return None
         else:
             # Asset is in manifest, get list of all versions.
+            asset_versions_list: Iterable[Version]
+            logger.debug(list(self.data[asset.type][asset.name].keys()))
             asset_versions_list = list(self.data[asset.type][asset.name].keys())
             if len(asset_versions_list) > 1:
                 # If list has at least two version, sort and return highest value
@@ -62,7 +67,7 @@ class Manifest:
         merged_data = deep_merge(self.data, other.data)
         return Manifest(data=merged_data)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[Any, Any]:
         """Convert to JSON-serializable dict."""
         return self.data
 

@@ -7,11 +7,12 @@ The ApplicationService handles those concerns.
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from ..app.container import Dependencies
 from ..core import Asset, Manifest, ManifestStore, console, copy, scanner
 from ..core.exceptions import UserAbortedError
-from ..core.validator import resolve_version
+from ..core.validator import AssetValidator, resolve_version
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ def execute(
     scan_local: bool = False,
     interactive: bool = True,
     asset: Asset | None = None,
-) -> dict:
+) -> dict[Any, Any]:
     """
     Execute publish workflow.
 
@@ -67,18 +68,16 @@ def execute(
             raise NotImplementedError("Non-interactive publish not yet supported")
 
     # Resolve version conflicts
-    asset = resolve_version(deps.repo_manifest.get_latest_asset_version(asset), asset)
+    if deps.repo_manifest is None:
+        deps.repo_manifest = Manifest(source_path=deps.repository.manifest_path)
+
+    latest_version = deps.repo_manifest.get_latest_asset_version(asset)
+    if latest_version is not None:
+        asset = resolve_version(latest_version, asset)
 
     # Validate asset
+    AssetValidator.validate_and_raise(asset)
 
-    """
-    is_valid, errors = AssetValidator.validate_asset(asset)
-    if not is_valid:
-        raise ValidationError(
-            f"Asset validation failed: {', '.join(errors)}", details={"errors": errors}
-        )
-
-    """
     # Publish to repository
     destination_path = deps.repository.get_asset_path(asset)
     copy.copy_asset(asset.source_path, destination_path)

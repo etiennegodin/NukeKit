@@ -6,6 +6,7 @@ The ApplicationService handles those concerns.
 """
 
 import logging
+from typing import Any
 
 from ..app.container import Dependencies
 from ..core import ManifestStore
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 def execute(
     deps: Dependencies,
     location: str = "local",
-) -> dict:
+) -> dict[Any, Any]:
     """
     Execute scan workflow.
 

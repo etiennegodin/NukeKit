@@ -11,6 +11,7 @@ Thin layer that:
 import argparse
 import logging
 import sys
+from argparse import Namespace
 
 from rich.console import Console
 from rich.panel import Panel
@@ -129,7 +130,7 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def cmd_publish(args, app: ApplicationService) -> int:
+def cmd_publish(args: Namespace, app: ApplicationService) -> int:
     """
     Handle the publish command.
 
@@ -161,7 +162,7 @@ def cmd_publish(args, app: ApplicationService) -> int:
         return 1
 
 
-def cmd_install(args, app: ApplicationService) -> int:
+def cmd_install(args: Namespace, app: ApplicationService) -> int:
     """
     Handle the install command.
 
@@ -195,7 +196,7 @@ def cmd_install(args, app: ApplicationService) -> int:
         return 1
 
 
-def cmd_scan(args, app: ApplicationService) -> int:
+def cmd_scan(args: Namespace, app: ApplicationService) -> int:
     """
     Handle the scan command.
 
@@ -222,7 +223,7 @@ def cmd_scan(args, app: ApplicationService) -> int:
         table.add_column("Type", style="magenta")
         table.add_column("Versions", style="green")
 
-        def _version_sort_key(v):
+        def _version_sort_key(v: Version) -> tuple[int, int, int]:
             """Sort key for versions."""
             if hasattr(v, "major"):
                 return (v.major, v.minor, v.patch)

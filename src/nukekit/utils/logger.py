@@ -6,7 +6,7 @@ from .paths import UserPaths
 
 
 def init_logger(
-    log_file: Path = UserPaths.LOG_FILE, level=logging.DEBUG
+    log_file: Path = UserPaths.LOG_FILE, level: int = logging.DEBUG
 ) -> logging.Logger:
     """Configure application-wide logging."""
 
