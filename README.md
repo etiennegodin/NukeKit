@@ -47,20 +47,6 @@ nukekit scan
 nukekit scan remote 
 ```
 
-```bash
-INFO: Starting scan workflow
-INFO: Scan found 10 assets
-Found 10 assets
-                    Assets (remote)                     
-┏━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Name     ┃ Type  ┃ Versions                          ┃
-┡━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ tool     │ Gizmo │ 0.3.0, 0.2.0, 0.1.0               │
-│ my_gizmo │ Gizmo │ 2.0.0, 1.0.0, 0.2.0, 0.1.0, 0.0.0 │
-│ my_cool  │ Gizmo │ 0.1.0, 0.0.0                      │
-└──────────┴───────┴───────────────────────────────────┘
-```
-
 ## Configuration
 Edit `~/.nukekit/config.yaml`:
 ```yaml
@@ -73,4 +59,19 @@ repository:
 user:
   nuke_dir: "~/.nuke"
 
+```
+
+## Project structure
+
+```
+NukeKit/
+├── src/nukekit/
+│   ├── app       # App services
+│   ├── core      # Business logic
+│   ├── utils     # Utilities
+│   └── workflows # Orchestrators
+│   └── cli.py    # CLI entry point
+├── test          # Test suite
+├── config        # Default configs
+└── examples      # Example assets
 ```
